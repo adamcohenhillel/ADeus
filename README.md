@@ -30,3 +30,7 @@ As people will soon notice, by C++ skills are limited, as well as my React and h
 ## TODOs
 
 - [] A
+
+```
+brew install gcc
+```
