@@ -1,3 +1,3 @@
-[submodule "device_coralai/coralmicro"]
-	path = device_coralai/coralmicro
+[submodule "devices/coralai/coralmicro"]
+	path = devices/coralai/coralmicro
 	url = https://github.com/google-coral/coralmicro
