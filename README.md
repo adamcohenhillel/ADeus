@@ -38,6 +38,19 @@ brew install gcc
 ### Build CoralAI device
 
 ```bash
+git clone https://github.com/adamcohenhillel/AdDeus.git
+
+```
+
+```bash
+git submodule add  https://github.com/google-coral/coralmicro devices/coralai/coralmicro
+```
+
+```bash
+git submodule update --init --recursive
+```
+
+```bash
 cd devices/coralai
 ```
 
@@ -50,5 +63,5 @@ make -C out -j4
 ```
 
 ```bash
-python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "Fios-ZkJp7" --wifi_psk "nil42steep82sat"
+python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
