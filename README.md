@@ -34,3 +34,21 @@ As people will soon notice, by C++ skills are limited, as well as my React and h
 ```
 brew install gcc
 ```
+
+### Build CoralAI device
+
+```bash
+cd devices/coralai
+```
+
+```bash
+cmake -B out -S .
+```
+
+```bash
+make -C out -j4
+```
+
+```bash
+python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "Fios-ZkJp7" --wifi_psk "nil42steep82sat"
+```
