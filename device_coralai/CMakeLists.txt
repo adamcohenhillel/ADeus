@@ -13,8 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include_directories(coralmicro)
 add_subdirectory(coralmicro)
-configure_file(ca-certificates.crt ${CMAKE_BINARY_DIR}/ca-certificates.crt COPYONLY)
-include_directories(.)
 
 add_executable_m7(coralmicro-app
     main.cc
