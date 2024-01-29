@@ -1,6 +1,5 @@
 # My AdDeus
 
-Test
 In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https://hu.ma.ne/aipin), [Rewind](https://www.rewind.ai/pendant), that are with us all the time, and **literally** listening to everything we say - it is crucial to have this setup completely open source, managed and owned by the user itself.
 
 Introducing: Open Source AI wearable device and software
@@ -66,3 +65,15 @@ make -C out -j4
 ```bash
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
+
+### Known Issues / Ideas to Contribute:
+
+1. Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video" - evem though it has nothing to do with the audio
+
+2. An easy setup script / deploy my own Ollama server to replace OpenAI
+
+3. Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work
+
+4. Instead of Wi-Fi, need to either use Bluetooth and pair it with the Mobile device OR add a 4G card that will allow it to be completly independent
+
+5.

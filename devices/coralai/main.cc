@@ -48,7 +48,7 @@ namespace coralmicro
         struct curl_slist *headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: audio/wav");
 
-        std::string remote_url = "https://ftkkhhdltskogoewnwov.supabase.co/functions/v1/record-audio";
+        std::string remote_url = "https://ftkkhhdltskogoewnwov.supabase.co/functions/v1/process-audio";
         size_t bytes_curled = 0;
 
         curl_easy_setopt(curl, CURLOPT_URL, remote_url.c_str());

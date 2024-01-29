@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.170.0/http/server.ts";
+import OpenAI, { toFile } from "https://deno.land/x/openai@v4.26.0/mod.ts";
+
 import { corsHeaders } from "../common/cors.ts";
-import axiod from "https://deno.land/x/axiod/mod.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 
 function createWavHeader(dataLength, sampleRate, numChannels, bitDepth) {
@@ -38,65 +39,78 @@ function createWavHeader(dataLength, sampleRate, numChannels, bitDepth) {
   return new Uint8Array(header);
 }
 
-async function transcribe(fileData) {
-  console.log("Transcribing audio...", fileData);
-  const supabase = supabaseClient();
-  // filename wavme, plus timestamp
-  const filename_timestamp = `wavme_${Date.now()}.wav`;
-  const { data, error } = await supabase.storage
-    .from("test")
-    .upload(filename_timestamp, fileData);
-
-  if (error) {
-    console.error("Error uploading file:", error);
-  }
-
-  const formData = new FormData();
-  formData.append("file", new Blob([fileData]), "openai.wav");
-  formData.append("model", "whisper-1");
-
-  try {
-    const response = await axiod.post(
-      "https://api.openai.com/v1/audio/transcriptions",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("OPENAI_API_KEY")}`, // Replace <TOKEN> with your actual OpenAI token
-          // Do not set Content-Type here, axiod will set it
-        },
-      }
-    );
-    console.log("Response:", response.data.text);
-    return response.data.text;
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-
-const recordAudio = async (req) => {
+const processAudio = async (req) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
+  const supabase = supabaseClient();
+
+  const openaiClient = new OpenAI({
+    apiKey: Deno.env.get("OPENAI_API_KEY"),
+  });
 
   console.log("**** Code version 0.0.2 ****");
 
   // Read the binary data from the request body
   const audioData = new Uint8Array(await req.arrayBuffer());
-  console.log("**************");
-  console.info(audioData);
-  console.log("**************");
-
   // Create WAV header
-  // Assuming 48000 Hz sample rate, 2 channels (stereo), and 16 bits per sample
+  // Assuming 16000 Hz sample rate, 1 channel, and 32 bits per sample
   const wavHeader = createWavHeader(audioData.length, 16000, 1, 32);
   const wavFile = new Uint8Array(wavHeader.length + audioData.length);
   wavFile.set(wavHeader, 0);
   wavFile.set(audioData, wavHeader.length);
 
   let transcript;
+  let embeddings;
   try {
-    transcript = await transcribe(wavFile);
+    const filenameTimestamp = `addeus_wav_${Date.now()}.wav`;
+
+    // const { data, error } = await supabase.storage
+    //   .from("test")
+    //   .upload(filenameTimestamp, wavFile);
+
+    // if (error) {
+    //   console.error("Error uploading file:", error);
+    // }
+
+    const transcriptResponse = await openaiClient.audio.transcriptions.create({
+      file: await toFile(wavFile, filenameTimestamp),
+      model: "whisper-1",
+    });
+    transcript = transcriptResponse.text;
+    let transcriptLowered = transcript.toLowerCase();
+    // ("thank" in transcriptLowered &&
+    //     "watch" in transcriptLowered &&
+    //     "video" in transcriptLowered)
+    if (
+      transcript == "" ||
+      transcript == null ||
+      (transcriptLowered.includes("thank") &&
+        transcriptLowered.includes("watch") &&
+        transcriptLowered.includes("video"))
+    ) {
+      return new Response(JSON.stringify({ message: "No transcript found." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     console.log("Transcript:", transcript);
+
+    const embeddingsResponse = await openaiClient.embeddings.create({
+      model: "text-embedding-ada-002",
+      input: transcript.replace(/\n/g, " ").replace(/\s{2,}/g, " "),
+    });
+    embeddings = embeddingsResponse.data[0].embedding;
+    console.log("Embeddings:", embeddings);
+
+    const { data, error } = await supabase
+      .from("records")
+      .insert({ raw_text: transcript, embeddings: embeddings });
+
+    if (error) {
+      console.error("Error inserting record:", error);
+    }
   } catch (error) {
     console.error("Transcription error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
@@ -105,7 +119,6 @@ const recordAudio = async (req) => {
     });
   }
 
-  // Respond with the transcription result
   return new Response(
     JSON.stringify({ message: "Audio transcribed successfully.", transcript }),
     {
@@ -115,4 +128,4 @@ const recordAudio = async (req) => {
   );
 };
 
-serve(recordAudio);
+serve(processAudio);
