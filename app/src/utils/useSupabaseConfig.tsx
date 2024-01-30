@@ -66,3 +66,27 @@ export function useSupabaseClient() {
 
   return supabaseClient;
 }
+
+export function useSupabase() {
+  const supabaseClient = useSupabaseClient();
+  const [user, setUser] = useState<any>();
+
+  useEffect(() => {
+    if (supabaseClient) {
+      const { data: authListener } = supabaseClient.auth.onAuthStateChange(
+        async (event: any, session: any) => {
+          const currentUser = session?.user;
+          setUser(currentUser);
+        }
+      );
+
+      return () => {
+        console.log("unsubscribing");
+        console.log(authListener);
+        authListener?.subscription?.unsubscribe();
+      };
+    }
+  }, [supabaseClient]);
+
+  return { user, supabaseClient };
+}
