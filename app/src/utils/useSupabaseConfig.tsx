@@ -81,8 +81,6 @@ export function useSupabase() {
       );
 
       return () => {
-        console.log("unsubscribing");
-        console.log(authListener);
         authListener?.subscription?.unsubscribe();
       };
     }

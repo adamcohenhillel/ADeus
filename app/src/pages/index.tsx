@@ -6,6 +6,8 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
 import { PiPaperPlaneRightBold } from "react-icons/pi";
 import { motion, AnimatePresence } from "framer-motion";
+import { MdLogout } from "react-icons/md";
+import { GoPlus } from "react-icons/go";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
 
@@ -238,6 +240,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
+  const [convoId, setConvoId] = useState<ConversationMessage[]>([]);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [numberOfLines, setNumberOfLines] = useState(1);
 
@@ -249,6 +252,15 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       setEntryData("");
 
       setWaitingForResponse(true);
+      const { data: d2, error: e2 } = await supabaseClient
+        .from("conversations")
+        .update({ context: newMessages })
+        .eq("id", convoId);
+
+      if (e2) {
+        toast.error(e2.message || e2.code || "Unknown error");
+      }
+
       const { data, error } = await supabaseClient.functions.invoke("chat", {
         body: { messageHistory: newMessages },
       });
@@ -279,21 +291,78 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
     }
   }, [messages]);
 
+  const newConversation = async () => {
+    try {
+      const { data, error } = await supabaseClient
+        .from("conversations")
+        .insert([
+          {
+            context: [
+              { role: "assistant", content: "Hey, how can I help you?" },
+            ],
+          },
+        ])
+        .select("*");
+      if (error) {
+        console.error("ERROR", error);
+      }
+      console.log("data", data);
+      setMessages(data[0].context);
+      setConvoId(data[0].id);
+    } catch (error: any) {
+      console.error("ERROR", error);
+      toast.error(error.message || error.code || error.msg || "Unknown error");
+    }
+  };
+
+  const fetchLastConversation = async () => {
+    try {
+      const { data, error } = await supabaseClient
+        .from("conversations")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (!data || data.length == 0 || error) {
+        newConversation();
+      } else {
+        console.log("data", data);
+        setMessages(data[0].context);
+        setConvoId(data[0].id);
+      }
+    } catch (error: any) {
+      console.error("ERROR", error);
+      toast.error(error.message || error.code || error.msg || "Unknown error");
+    }
+  };
+
+  useEffect(() => {
+    fetchLastConversation();
+  }, []);
+
   return (
     <div className="bg-adeusCream bg-opacity-20 overflow-y-scroll">
       {/* TOP BAR */}
       <div className="pt-safe h-24 bg-gradient-to-b from-adeusCream flex justify-between items-center fixed top-0 left-0 right-0"></div>
-
-      <div className="pt-safe p-8 mt-12 mb-32">
-        {/* <div
-          className="bg-black p-8 text-white"
+      <div className="fixed flex space-x-4 top-0 right-0 mt-safe p-2">
+        <div
+          className="w-8 h-8 bg-adeusCream rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg"
+          onClick={async () => await supabaseClient.auth.signOut()}
+        >
+          <MdLogout />
+        </div>
+        <div
+          className="w-8 h-8 bg-adeusCream rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg"
           onClick={async () => {
-            console.log("Clicked");
-            await supabaseClient.auth.signOut();
+            setMessages([]);
+            await newConversation();
           }}
         >
-          Logout
-        </div> */}
+          <GoPlus />
+        </div>
+      </div>
+
+      <div className="pt-safe p-8 mt-12 mb-32">
         <JournalingChat
           data={messages}
           waitingForResponse={waitingForResponse}
@@ -310,7 +379,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
         >
           <textarea
             ref={textareaRef}
-            className="p-2 w-full text-base items-center rounded-xl bg-transparent  focus:border-adeusRegular "
+            className="p-2 w-full text-base items-center rounded-xl bg-transparent focus:border-adeusRegular "
             id="textareaID"
             dir="auto"
             rows={numberOfLines}

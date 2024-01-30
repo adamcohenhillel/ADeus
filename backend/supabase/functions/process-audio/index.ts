@@ -43,7 +43,7 @@ const processAudio = async (req) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
-  const supabase = supabaseClient();
+  const supabase = supabaseClient(req);
 
   const openaiClient = new OpenAI({
     apiKey: Deno.env.get("OPENAI_API_KEY"),

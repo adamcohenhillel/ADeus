@@ -80,11 +80,13 @@ Build it for yourself, and build it for others. This can become the Linux of the
 
 #### Backend:
 
-1. The RAG (Retrieval-Augmented Generation) can be extremely improved
+1. The RAG (Retrieval-Augmented Generation) can be extremely improved:
+   - Need to process the audio not only into "embeddings" but also run an LLM on it to generate some context
+   - Need to query the RAG more effiecntly, maybe with timestamp as well, etc. - not only embeddings (relates to the processing part)
 
 #### On-device:
 
-1. Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work
+1. Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work too
 
 #### Mobile:
 
