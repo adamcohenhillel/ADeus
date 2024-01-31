@@ -14,6 +14,27 @@ If you are looking to get on board the building team, just head down to the
 
 This is a guide on how to set up your own, from buying the hardware to setting up the software.
 
+## Setup
+
+After understanding the different components we have, let's now start setting them up.
+
+1. First, clone the repo:
+
+```bash
+git clone https://github.com/adamcohenhillel/AdDeus
+```
+
+### Supabase:
+
+1. Go to supabase.co, create your account if you don't have one already
+2. Click "New Project", give it a name, and make sure to note the database password you are given
+3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
+4. Go to your terminal, and cd to the supabase folder - `cd AdDeus/supabase`
+5. Now, we need to install Supabase and set up the CLI, ideally, you should follow thier guide [here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
+   - run `npm i supabase --save-dev` to install the CLI (or checkout other options for different operation system)
+   - Install Docker on your computer
+6.
+
 ### Backend:
 
 1. Supabase -> pgvector
