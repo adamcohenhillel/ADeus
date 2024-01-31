@@ -43,13 +43,11 @@ A'ight, let's get this working for you!
 1. [Dev Board Micro](https://coral.ai/products/dev-board-micro/) ($80)
 2. [Wireless/Bluetooth Add-on](https://coral.ai/products/wireless-add-on/) ($20)
 3. [A case](https://coral.ai/products/dev-board-micro-case/) (Optional, 10$)
-4. Either a OpenAI key, or a Ollama server running somewhere
+4. Either an OpenAI key, or a Ollama server running somewhere you can reach via internet
 
 > Note: We are working on a version of this working with Raspberry PI Zero W, which will cost ~$20, stay tuned
 
-Now, after we understoof the different different components we have, let's set them up.
-
-First, obvs, cloning the repo:
+First - cloning the repo:
 
 ```bash
 git clone https://github.com/adamcohenhillel/AdDeus
@@ -70,19 +68,37 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 
 ### App (Web):
 
-You can either use the deployed version here: [adeusai.com](https://adeusai.com) (it is only a frontend client, you would need to login with your own supabase backend), or deploy one yourself
+Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
+
+To try it out, you can either use the deployed version of the web app here: [adeusai.com](https://adeusai.com) - which will ask you to connect to your own Supabase instance (it is only a frontend client).
+
+Or you can deploy the app yourself somewhere - the easiest is Vercel, or locally:
+
+```
+cd app
+npm i
+npm run dev
+```
+
+Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
+![login screenshot](docs/login_screenshot.png)
+
+Enter the four required details, which you should've obtained in the Supabase setup: Supabase URL, Supabase Anon API Key, email and password.
+
+And that is it - you should be able to start chatting!
+
+Lastly, we need to set up our hardware device, so we could start provide crucial context to our personal AI.
 
 ### Hardware - Coral AI device
+
+To set up
 
 ```
 brew install gcc
 brew install ngrok/ngrok/ngrok
 ```
 
-```bash
-git clone https://github.com/adamcohenhillel/AdDeus.git
-
-```
+In the root folder of this repository, run the following commands, which will download the Coral AI Micro Dev repository dependencies to your computer (it might take a while)
 
 ```bash
 git submodule add  https://github.com/google-coral/coralmicro devices/coralai/coralmicro
@@ -92,9 +108,21 @@ git submodule add  https://github.com/google-coral/coralmicro devices/coralai/co
 git submodule update --init --recursive
 ```
 
+Now that it finished, CD to the folder:
+
 ```bash
 cd devices/coralai
 ```
+
+And run the setup script:
+
+```bash
+bash coralmicro/setup.sh
+```
+
+> Note that if you're using Apple Silicon Mac, you might need to change the `coralmicro/scripts/requirements.txt` file, making the version of the package `hidapi==0.14.0` (see [issue](https://github.com/google-coral/coralmicro/pull/98))
+
+Once that it finished setting up, make sure to connect your Mic
 
 ```bash
 cmake -B out -S .
@@ -107,6 +135,9 @@ make -C out -j4
 ```bash
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
+
+It should be something like:
+![set up device video](docs/setup_device.mp4)
 
 ### Hardware - Rasberry Pi Zero W
 
