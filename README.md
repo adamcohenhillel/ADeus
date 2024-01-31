@@ -1,18 +1,29 @@
 # ADeus: Open-Source AI Wearable Device
 
-In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https://hu.ma.ne/aipin), [Rewind](https://www.rewind.ai/pendant), that are with us all the time, and **literally** listening to everything we say - it is crucial to have this setup completely open source, managed and owned by the user itself.
+In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https://hu.ma.ne/aipin), [Rewind](https://www.rewind.ai/pendant), that are with us all the time, **literally** listening to everything we say, and know much about us as our closest friends - it is crucial to be able to own this setup, to own our data, to have this completely open source, managed and owned by the user itself.
 
-If you are looking to get on board the building team, just head down to the
+**This is Adeus, the Open Source AI Wearble device -** and in this repo, you will guided on how to set up your own! From buying the hardware (~$100, and will be cheaper once we finish the Raspberry PI Zero version) to setting up the backend, the software, and start using your wearable!
 
-## Introduction:
+![Addeus v0.1](docs/addeus_01.jpeg)
 
-### This project has 3 parts:
+> p.s. any contribution would be amazing, whether you know how to code, and want to jump straight in to the codebase, a hardway person who can help out, or just looking to support this project finncanly (from $5) - please reach out to me on X/Twitter [@adamcohenhillel](https://twitter.com/adamcohenhillel)
 
-1. Mobile / Web app for intera
+- [Introduction](#introduction)
+- [Setup](#setup)
+  - [Supabase](#supabase)
+  - [Hardware (Coral AI)](#hardware-coral-aI)
+  - [Hardware (Rasberry Pi Zero)](#supabase)
+- [Areas to Contribute](#areas-to-contribute)
+
+### Introduction:
+
+Adeus consists of 3 parts:
+
+![addeus diagram](docs/addeus_diagram.png)
+
+1. Mobile / Web app for user to interact with
 2. Rasberry-Pi Pico W (worth $6)
 3. Supabase server-side for storing data and embeddings
-
-This is a guide on how to set up your own, from buying the hardware to setting up the software.
 
 ## Setup
 
@@ -35,29 +46,16 @@ git clone https://github.com/adamcohenhillel/AdDeus
    - Install Docker on your computer
 6.
 
-### Backend:
+### App (Web):
 
-1. Supabase -> pgvector
+Though the
 
-### Hardware
-
-This is
-
-## Contributions
-
-Contributions are more than welcomed. This should be maintained by us, for us.
-As people will soon notice, by C++ skills are limited, as well as my React and hardware skills - esssicntialy the entire pipeline of this project :P - any help would be amazing.
-
-## TODOs
-
-- [] A
+### Hardware - Coral AI device
 
 ```
 brew install gcc
 brew install ngrok/ngrok/ngrok
 ```
-
-### Build CoralAI device
 
 ```bash
 git clone https://github.com/adamcohenhillel/AdDeus.git
@@ -88,16 +86,20 @@ make -C out -j4
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
 
-### Areas to Contribute:
+## Areas to Contribute:
+
+Contributions are more than welcomed. This should be maintained by us, for us.
+As people will soon notice, by C++ skills are limited, as well as my React and hardware skills - esssicntialy the entire pipeline of this project :P - any help would be amazing.
 
 Build it for yourself, and build it for others. This can become the Linux of the OS, the Android of the mobile. It is raw, but we need to start from somewhere.
 
-#### Known Bugs:
+### Known Bugs:
 
-1. Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video" - evem though it has nothing to do with the audio
-2. Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be:
-   2.1 Bluetooth, pairing with the mobile device
-   2.2 Sdd a 4G card that will allow it to be completly independent
+- [ ] Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video" - evem though it has nothing to do with the audio
+
+- [ ] Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be:
+      2.1 Bluetooth, pairing with the mobile device
+      2.2 Sdd a 4G card that will allow it to be completly independent
 
 #### Backend:
 
