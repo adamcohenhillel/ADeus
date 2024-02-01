@@ -63,7 +63,7 @@ const processAudio = async (req) => {
   let transcript;
   let embeddings;
   try {
-    const filenameTimestamp = `addeus_wav_${Date.now()}.wav`;
+    const filenameTimestamp = `adeus_wav_${Date.now()}.wav`;
 
     // const { data, error } = await supabase.storage
     //   .from("test")
