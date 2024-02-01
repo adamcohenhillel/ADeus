@@ -225,7 +225,7 @@ function LoginComponent() {
         </div>
       </div>
       <p className="mt-8 text-sm text-gray-400 pb-6 mb-safe">
-        Don't have these details? Please check the setup guide{" "}
+        Don&apos;t have these details? Please check the setup guide{" "}
         <Link className="underline" href="https://x.com/adamcohenhillel">
           here
         </Link>
