@@ -306,6 +306,9 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       if (error) {
         console.error("ERROR", error);
       }
+      if (!data || data.length == 0) {
+        throw new Error("No data returned");
+      }
       console.log("data", data);
       setMessages(data[0].context);
       setConvoId(data[0].id);
