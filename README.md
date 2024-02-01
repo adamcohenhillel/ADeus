@@ -36,6 +36,8 @@ This will look something like:
 
 ## Setup
 
+> Note: I'm working on an easy setup.sh file that will do everything here more or less automatically, but it is still in the making
+
 A'ight, let's get this working for you!
 
 #### Prerequisite: ($110)
@@ -62,9 +64,14 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
 4. Go to your terminal, and cd to the supabase folder - `cd AdDeus/supabase`
 5. Now, we need to install Supabase and set up the CLI, ideally, you should follow thier guide [here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
-   - run `npm i supabase --save-dev` to install the CLI (or checkout other options for different operation system)
-   - Install Docker on your computer
-6.
+   - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/docs/guides/cli/getting-started))
+   - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker dameon to run in the background for deploying supabase functions)
+6. Now we need to login to Supabase CLI by running `supabase login` - this should pop up a browser window, which should prompt you through the auth
+7. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`)
+8. We can now deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt`
+9. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>`
+
+If everything worked, we should now be able to
 
 ### App (Web):
 
@@ -81,7 +88,8 @@ npm run dev
 ```
 
 Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
-![login screenshot](docs/login_screenshot.png)
+
+<img src="docs/login_screenshot.png" width="150">
 
 Enter the four required details, which you should've obtained in the Supabase setup: Supabase URL, Supabase Anon API Key, email and password.
 

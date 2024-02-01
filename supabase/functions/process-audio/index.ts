@@ -76,6 +76,8 @@ const processAudio = async (req) => {
     const transcriptResponse = await openaiClient.audio.transcriptions.create({
       file: await toFile(wavFile, filenameTimestamp),
       model: "whisper-1",
+      prompt:
+        'If this audio file does not contain any speech, please return "None"',
     });
     transcript = transcriptResponse.text;
     let transcriptLowered = transcript.toLowerCase();
@@ -83,11 +85,11 @@ const processAudio = async (req) => {
     //     "watch" in transcriptLowered &&
     //     "video" in transcriptLowered)
     if (
+      transcript == "None" ||
       transcript == "" ||
       transcript == null ||
       (transcriptLowered.includes("thank") &&
-        transcriptLowered.includes("watch") &&
-        transcriptLowered.includes("video"))
+        transcriptLowered.includes("watch"))
     ) {
       return new Response(JSON.stringify({ message: "No transcript found." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
