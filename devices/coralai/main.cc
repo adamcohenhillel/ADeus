@@ -98,7 +98,7 @@ namespace coralmicro
 
     void Main()
     {
-      printf("AdDeus Code version: 0.0.1\r\n");
+      printf("ADeus Code version: 0.0.1\r\n");
       LedSet(Led::kStatus, true); // Turn on Status LED to show the board is on.
 
       // ###################################################### //

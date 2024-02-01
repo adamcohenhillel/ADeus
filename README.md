@@ -15,7 +15,7 @@ In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https:/
 - [Areas to Contribute](#areas-to-contribute)
 - [CTA for the Community](#cta-for-the-community)
 
-![Addeus v0.1](docs/addeus_01.jpeg)
+![ADeus v0.1](docs/adeus_01.jpeg)
 
 > p.s. any contribution would be amazing, whether you know how to code, and want to jump straight in to the codebase, a hardware person who can help out, or just looking to support this project financially (can literally be $10) - please reach out to me on X/Twitter [@adamcohenhillel](https://twitter.com/adamcohenhillel)
 
@@ -32,7 +32,7 @@ Adeus consists of 3 parts:
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
 This will look something like:
-![addeus diagram](docs/addeus_diagram.png)
+![ADeus diagram](docs/adeus_diagram.png)
 
 ## Setup
 
@@ -62,7 +62,7 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 1. Go to [supabase.co](https://supabase.co), create your account if you don't have one already
 2. Click "New Project", give it a name, and make sure to note the database password you are given
 3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
-4. Go to your terminal, and cd to the supabase folder - `cd AdDeus/supabase`
+4. Go to your terminal, and cd to the supabase folder - `cd ./supabase`
 5. Now, we need to install Supabase and set up the CLI, ideally, you should follow thier guide [here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
    - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/docs/guides/cli/getting-started))
    - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker dameon to run in the background for deploying supabase functions)
