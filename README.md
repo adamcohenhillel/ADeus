@@ -61,19 +61,31 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 
 1. Go to [supabase.co](https://supabase.co), create your account if you don't have one already
 2. Click "New Project", give it a name, and make sure to note the database password you are given
+
+   <img src="docs/images/supabase_new_prpject.png" width="100">
+
 3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
+
+   <img src="docs/images/supabase_creds.png" width="200">
+
 4. Now, go to the authentication tab on the right navbar, which will take you to the user management UI. Click "Add User" -> "Add new user", fill an email and password, and make sure to check the "auto-confirm" option.
-5. From there, go to the SQL Editor tab and paste the [schema.sql](/supabase/schema.sql) from this repo, and execute. This will enable all the relevant extensions (pgvector) and create the tables.
-6. Go to your terminal, and cd to the supabase folder - `cd ./supabase`
-7. Now, we need to install Supabase and set up the CLI, ideally, you should follow thier guide [here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
+   <img src="docs/images/supabase_new_user.png" width="200">
+5. From there, go to the SQL Editor tab and paste the [schema.sql](/supabase/schema.sql) from this repo, and execute. This will enable all the relevant extensions (pgvector) and create the tables. It should create 2:
+   <img src="docs/images/supabase_tables.png" width="150">
+
+6. By now, you should have 4 things: `email` & `password` for your supabase user, and the `Supabase URL` and `API Anon Key`.
+
+7. If so, go to your terminal, and cd to the supabase folder: `cd ./supabase`
+
+8. Install Supabase and set up the CLI. You should follow thier [guide here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
    - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/docs/guides/cli/getting-started))
    - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker dameon to run in the background for deploying supabase functions)
-8. Now we need to login to Supabase CLI by running `supabase login` - this should pop up a browser window, which should prompt you through the auth
-9. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`)
-10. We can now deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt`
-11. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
+9. Now when we have the CLI, we need to login with oour Supabase account, running `supabase login` - this should pop up a browser window, which should prompt you through the auth
+10. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`)
+11. Now let's deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
+12. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
 
-If everything worked, we should now be able to start chatting with our personal AI via the app.
+If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
 
 ### App (Web):
 
@@ -84,7 +96,7 @@ To try it out, you can either use the deployed version of the web app here: [ade
 Or you can deploy the app yourself somewhere - the easiest is Vercel, or locally:
 
 ```
-cd app
+cd ./app
 npm i
 npm run dev
 ```
@@ -93,17 +105,17 @@ Once you have an app instance up and running, head to its address `your-app-addr
 
 <img src="docs/images/login_screenshot.png" width="150">
 
-Enter the four required details, which you should've obtained in the Supabase setup: Supabase URL, Supabase Anon API Key, email and password.
+Enter the four required details, which you should've obtained in the Supabase setup: `Supabase URL`, `Supabase Anon API Key`, `email` and `password`.
 
-And that is it - you should be able to start chatting!
+And you should be able to start chatting!
 
-Lastly, we need to set up our hardware device, so we could start provide crucial context to our personal AI.
+Now - let's configure our hardware device, so we could start provide crucial context to our personal AI!
 
 ### Hardware - Coral AI device
 
-To learn more about the device, it is good to check out the [official docs](https://coral.ai/docs/dev-board-micro/get-started/), our project is using [out-of-tree setup](official) with a [Wireless Add-on](https://coral.ai/docs/dev-board-micro/wireless-addon/)
+First, to learn more about the device, it is good to check out the [official docs](https://coral.ai/docs/dev-board-micro/get-started/). Our project is using [out-of-tree setup](official) with a [Wireless Add-on](https://coral.ai/docs/dev-board-micro/wireless-addon/).
 
-In the root folder of this repository, run the following commands, which will download the Coral AI Micro Dev repository dependencies to your computer (it might take a while)
+In the root folder of this repository, run the following commands, (which will download the Coral AI Micro Dev dependencies to your computer - note that it might take a few minutes):
 
 ```bash
 git submodule add  https://github.com/google-coral/coralmicro devices/coralai/coralmicro
@@ -119,7 +131,7 @@ Then, when it is finished, CD to the `devices/coralai` folder:
 cd devices/coralai
 ```
 
-And run the setup script:
+And run the setup script, which will make sure your computer can compile the code and pass it on to the device:
 
 ```bash
 bash coralmicro/setup.sh
@@ -127,7 +139,7 @@ bash coralmicro/setup.sh
 
 > Note that if you're using Apple Silicon Mac, you might need to change the `coralmicro/scripts/requirements.txt` file, making the version of the package `hidapi==0.14.0` (see [issue](https://github.com/google-coral/coralmicro/pull/98))
 
-Once the setup has finished too, you can connect your device
+Once the setup has finished running, you can connect your device via a USB-C, and run the following to create a build:
 
 ```bash
 cmake -B out -S .
@@ -137,11 +149,13 @@ cmake -B out -S .
 make -C out -j4
 ```
 
+And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth pairing is coming soon, see [ticket][https://github.com/adamcohenhillel/AdDeus/issues/8])
+
 ```bash
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
 
-It should be something like:
+The flow should be as follow:
 
 [![set up device video](docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
 
