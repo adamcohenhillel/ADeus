@@ -71,9 +71,10 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 4. Now, go to the authentication tab on the right navbar (<img src="docs/images/supabase_auth.png" width="100">), note that it can take a few moments for Supabase to finish setup the project
 
 5. There, you will see the "user management" UI. Click "Add User" -> "Add new user", fill an email and password, and make sure to check the "auto-confirm" option.
+
    <img src="docs/images/supabase_new_user.png" width="200">
 
-6. From there, go to the SQL Editor tab (<img src="docs/images/supabase_sql_editor.png" width="100">) and paste the [schema.sql](/supabase/schema.sql) from this repo, and execute. This will enable all the relevant extensions (pgvector) and create the tables. It should create 2:
+6. From there, go to the SQL Editor tab (<img src="docs/images/supabase_sql_editor.png" width="100">) and paste the [schema.sql](/supabase/schema.sql) from this repo, and execute. This will enable all the relevant extensions (pgvector) and create the two tables:
 
    <img src="docs/images/supabase_tables.png" width="150">
 
@@ -85,7 +86,7 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
    - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/docs/guides/cli/getting-started))
    - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker dameon to run in the background for deploying supabase functions)
 10. Now when we have the CLI, we need to login with oour Supabase account, running `supabase login` - this should pop up a browser window, which should prompt you through the auth
-11. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`)
+11. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`, and it will be under "reference id") - you can skip (enter) the database password, it's not needed.
 12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
 13. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
 
@@ -99,8 +100,15 @@ To try it out, you can either use the deployed version of the web app here: [ade
 
 Or you can deploy the app yourself somewhere - the easiest is Vercel, or locally:
 
-```
+from the root folder:
+
+```bash
 cd ./app
+```
+
+npm install and run:
+
+```bash
 npm i
 npm run dev
 ```
@@ -192,6 +200,8 @@ python3 checkOutput.py --device "/dev/cu.usbmodem101"
 
 (replace the `/dev/cu.usbmodem*` with whatever you got in the `ls` command)
 
+> Note: It might fail for the first few CURL requests, until it resolves the DNS
+
 ### Setup: Hardware - Rasberry Pi Zero W
 
 SOON! (cost $15, but need to solder a microphone)
@@ -214,21 +224,24 @@ Build it for yourself, and build it for others. This can become the Linux of the
 
 - [ ] Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video," even though it has nothing to do with the audio ([ticket #7](https://github.com/adamcohenhillel/AdDeus/issues/7))
 
-- [ ] Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be: [ticket #8](https://github.com/adamcohenhillel/AdDeus/issues/8)
+- [ ] Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be: ([ticket #8](https://github.com/adamcohenhillel/AdDeus/issues/8))
+
   - Bluetooth, pairing with the mobile device
   - Sdd a 4G card that will allow it to be completly independent
+
+- [ ] Sometimes when loading from scratch, it takes some time (2-3 curl requests) until it resolves the DNS of the Supabase instance ([ticket #8](https://github.com/adamcohenhillel/AdDeus/issues/12))
 
 #### Backend:
 
 - The RAG (Retrieval-Augmented Generation) can be extremely improved:
-  - [ ] Need to process the audio not only into "embeddings" but also run an LLM on it to generate some context [ticket #1](https://github.com/adamcohenhillel/AdDeus/issues/1)
-  - [ ] Need to query the RAG more efficiently, maybe with timestamp as well, etc. - not only embeddings (relates to the processing part) [ticket #2](https://github.com/adamcohenhillel/AdDeus/issues/2)
-- [ ] Improve security - currently I didn't spent too much time making the Supabase RLS really work (for writing data) [ticket #3](https://github.com/adamcohenhillel/AdDeus/issues/3)
+  - [ ] Need to process the audio not only into "embeddings" but also run an LLM on it to generate some context ([ticket #1](https://github.com/adamcohenhillel/AdDeus/issues/1))
+  - [ ] Need to query the RAG more efficiently, maybe with timestamp as well, etc. - not only embeddings (relates to the processing part) ([ticket #2](https://github.com/adamcohenhillel/AdDeus/issues/2))
+- [ ] Improve security - currently I didn't spent too much time making the Supabase RLS really work (for writing data) ([ticket #3](https://github.com/adamcohenhillel/AdDeus/issues/3))
 
 #### Hardware / On-device:
 
-- [ ] Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work too [ticket #4](https://github.com/adamcohenhillel/AdDeus/issues/4)
-- [ ] Currently the setup is without battery, need to find the easiest way to add this as part of the setup [ticket #5](https://github.com/adamcohenhillel/AdDeus/issues/5)
+- [ ] Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work too ([ticket #4](https://github.com/adamcohenhillel/AdDeus/issues/4))
+- [ ] Currently the setup is without battery, need to find the easiest way to add this as part of the setup ([ticket #5](https://github.com/adamcohenhillel/AdDeus/issues/5))
 
 #### Mobile:
 
@@ -237,7 +250,7 @@ Build it for yourself, and build it for others. This can become the Linux of the
 #### UX and Onboarding
 
 - [ ] An easy setup script / deploy my own Ollama server to replace OpenAI [ticket #6](https://github.com/adamcohenhillel/AdDeus/issues/6)
-- [ ] Add How-to for Ollama setup [ticket #9](https://github.com/adamcohenhillel/AdDeus/issues/9)
+- [ ] Add How-to for Ollama setup ([ticket #9](https://github.com/adamcohenhillel/AdDeus/issues/9))
 
 ## CTA for the Community:
 
