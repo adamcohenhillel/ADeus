@@ -7,11 +7,11 @@ In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https:/
 - [Introduction](#introduction)
 - [Setup](#setup)
   - [Prerequisite](#prerequisite-110)
-  - [Supabase](#supabase)
-  - [Web / Mobile App](#app-web)
-  - [Hardware (Coral AI)](#hardware---coral-ai-device)
-  - [Hardware (Rasberry Pi Zero)](#supabase)
-  - [Run with Ollama](#run-with-ollama)
+  - [Supabase](#setup-supabase)
+  - [Web / Mobile App](#setup-app-web)
+  - [Hardware (Coral AI)](#setup-hardware---coral-ai-device)
+  - [Hardware (Rasberry Pi Zero)](#setup-hardware---rasberry-pi-zero-w)
+  - [Run with Ollama](#setup-run-with-ollama)
 - [Areas to Contribute](#areas-to-contribute)
 - [CTA for the Community](#cta-for-the-community)
 
@@ -55,7 +55,7 @@ First - cloning the repo:
 git clone https://github.com/adamcohenhillel/ADeus
 ```
 
-### Supabase:
+#### Setup: Supabase
 
 We will use Supabase as our database (with vector search, pgvector), authentication, and cloud functions for processing information.
 
@@ -87,7 +87,7 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
 
-### App (Web):
+#### Setup: App (Web)
 
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
 
@@ -111,9 +111,13 @@ And you should be able to start chatting!
 
 Now - let's configure our hardware device, so we could start provide crucial context to our personal AI!
 
-### Hardware - Coral AI device
+### Setup: Hardware - Coral AI device
 
 First, to learn more about the device, it is good to check out the [official docs](https://coral.ai/docs/dev-board-micro/get-started/). Our project is using [out-of-tree setup](official) with a [Wireless Add-on](https://coral.ai/docs/dev-board-micro/wireless-addon/).
+
+Here is quick video showing how to "connect" the hardware pieces together, and install the software:
+
+[![set up device video](docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
 
 In the root folder of this repository, run the following commands, (which will download the Coral AI Micro Dev dependencies to your computer - note that it might take a few minutes):
 
@@ -155,18 +159,13 @@ And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth p
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
 
-The flow should be as follow:
-
-[![set up device video](docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
-
-### Hardware - Rasberry Pi Zero W
+### Setup: Hardware - Rasberry Pi Zero W
 
 SOON! (cost $15, but need to solder a microphone)
 
-### Run with Ollama
+### Setup: Run with Ollama
 
-Guide soon
-How-to will be written here soon, but it should be fairly simple with [Ollama](https://ollama.ai/) serve and `ngrok http 11434`
+How-to-Guide will be written here soon, but it should be fairly simple with [Ollama](https://ollama.ai/) serve and `ngrok http 11434`
 
 ```
 brew install ngrok/ngrok/ngrok
