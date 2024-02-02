@@ -173,7 +173,7 @@ namespace coralmicro
 
         // Send every few seconds
         if (audio_data.size() >=
-            16000 * sizeof(int32_t) * 10)
+            16000 * sizeof(int32_t) * 60)
         { // 5 seconds of audio
           printf("Sending audio data...\r\n\r\n\r\n");
           curl_global_init(CURL_GLOBAL_ALL);
