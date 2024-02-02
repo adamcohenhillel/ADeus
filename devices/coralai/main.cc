@@ -1,10 +1,7 @@
 #include <cstdio>
 #include <memory>
 
-#if defined(CURL_WIFI)
 #include "libs/base/wifi.h"
-#endif
-
 #include "libs/a71ch/a71ch.h"
 #include "libs/audio/audio_service.h"
 #include "libs/base/check.h"
@@ -47,11 +44,20 @@ namespace coralmicro
       {
         struct curl_slist *headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: audio/wav");
+        std::string invoke_func = "/functions/v1/process-audio";
+        std::string full_url;
 
-        std::string remote_url = "https://ftkkhhdltskogoewnwov.supabase.co/functions/v1/process-audio";
+#if defined(SUPABASE_URL)
+        full_url = SUPABASE_URL;
+        full_url += invoke_func;
+#else
+        throw std::runtime_error("SUPABASE_URL not defined, export SUPABASE_URL=...");
+#endif
+
+        // std::string remote_url = "https://ftkkhhdltskogoewnwov.supabase.co/functions/v1/process-audio";
         size_t bytes_curled = 0;
 
-        curl_easy_setopt(curl, CURLOPT_URL, remote_url.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, full_url.c_str());
         curl_easy_setopt(curl, CURLOPT_CAINFO, "coralmicro/ca-certificates.crt");
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.data());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data.size());

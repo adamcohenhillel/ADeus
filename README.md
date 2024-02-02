@@ -137,11 +137,17 @@ cd devices/coralai
 
 And run the setup script, which will make sure your computer can compile the code and pass it on to the device:
 
+> Note that if you're using Apple Silicon Mac, you might need to change the `coralmicro/scripts/requirements.txt` file, making the version of the package `hidapi==0.14.0` (see [issue](https://github.com/google-coral/coralmicro/pull/98))
+
 ```bash
 bash coralmicro/setup.sh
 ```
 
-> Note that if you're using Apple Silicon Mac, you might need to change the `coralmicro/scripts/requirements.txt` file, making the version of the package `hidapi==0.14.0` (see [issue](https://github.com/google-coral/coralmicro/pull/98))
+```bash
+export SUPABASE_URL"<YOUR_SUPABASE_URL"
+```
+
+> Note: Security RLS best practices is still WOP! (see [ticket #3](https://github.com/adamcohenhillel/AdDeus/issues/3))
 
 Once the setup has finished running, you can connect your device via a USB-C, and run the following to create a build:
 
@@ -158,6 +164,29 @@ And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth p
 ```bash
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"
 ```
+
+To debug the device, you can connect to it serial-y via the USB-C.
+
+First, find the serial id
+On Linux:
+
+```bash
+ls /dev/ttyACM*
+```
+
+On Mac:
+
+```bash
+ls /dev/cu.usbmodem*
+```
+
+Then run the [checkOutput.py](/devices/coralai/checkOutput.py) script:
+
+```python
+python3 checkOutput.py --device "/dev/cu.usbmodem101"
+```
+
+(replace the `/dev/cu.usbmodem*` with whatever you got in the `ls` command)
 
 ### Setup: Hardware - Rasberry Pi Zero W
 

@@ -1,9 +1,13 @@
-
 cmake_minimum_required(VERSION 3.13)
 
 # Toolchain must be set before project() call.
 if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/coralmicro/cmake/toolchain-arm-none-eabi-gcc.cmake)
+endif()
+
+# Check if the environment variable MY_VARIABLE is defined
+if(NOT DEFINED ENV{SUPABASE_URL})
+    message(FATAL_ERROR "Environment variable SUPABASE_URL is not defined!")
 endif()
 
 project(coralmicro-app)
@@ -28,3 +32,5 @@ target_link_libraries(coralmicro-app
 target_compile_definitions(coralmicro-app PRIVATE
     CURL_WIFI
 )
+target_compile_definitions(coralmicro-app PRIVATE SUPABASE_URL="$ENV{SUPABASE_URL}")
+
