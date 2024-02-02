@@ -140,6 +140,7 @@ python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicr
 ```
 
 It should be something like:
+
 [![set up device video](https://img.youtube.com/vi/_2KRSlpnXrA/0.jpg)](https://youtu.be/_2KRSlpnXrA)
 
 ### Hardware - Rasberry Pi Zero W
@@ -157,42 +158,42 @@ brew install ngrok/ngrok/ngrok
 
 ## Areas to Contribute:
 
-Contributions are more than welcomed. This should be maintained by us, for us.
-As people will soon notice, by C++ skills are limited, as well as my React and hardware skills - esssicntialy the entire pipeline of this project :P - any help would be amazing.
+As people will soon notice, my C++ skills are limited, as well as my React and hardware skills :P - any help would be amazing! Contributions are more than welcomed. This should be maintained by us, for us.
 
-Build it for yourself, and build it for others. This can become the Linux of the OS, the Android of the mobile. It is raw, but we need to start from somewhere.
+Build it for yourself, and build it for others. This can become the Linux of the OS, the Android of the mobile. It is raw, but we need to start from somewhere!
 
 ### Known Bugs:
 
-- [ ] #7 Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video" - evem though it has nothing to do with the audio
+- [ ] Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video," even though it has nothing to do with the audio ([ticket #7](https://github.com/adamcohenhillel/AdDeus/issues/7))
 
-- [ ] #8 Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be:
-  - [ ] Bluetooth, pairing with the mobile device
-  - [ ] Sdd a 4G card that will allow it to be completly independent
+- [ ] Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be: [ticket #8](https://github.com/adamcohenhillel/AdDeus/issues/8)
+  - Bluetooth, pairing with the mobile device
+  - Sdd a 4G card that will allow it to be completly independent
 
 #### Backend:
 
-- [ ] #1 The RAG (Retrieval-Augmented Generation) can be extremely improved:
-  - [ ] Need to process the audio not only into "embeddings" but also run an LLM on it to generate some context
-  - [ ] #2 Need to query the RAG more efficiently, maybe with timestamp as well, etc. - not only embeddings (relates to the processing part)
-- [ ] #3 Improve security - currently I didn't spent too much time making the Supabase RLS really work (for writing data)
+- The RAG (Retrieval-Augmented Generation) can be extremely improved:
+  - [ ] Need to process the audio not only into "embeddings" but also run an LLM on it to generate some context [ticket #1](https://github.com/adamcohenhillel/AdDeus/issues/1)
+  - [ ] Need to query the RAG more efficiently, maybe with timestamp as well, etc. - not only embeddings (relates to the processing part) [ticket #2](https://github.com/adamcohenhillel/AdDeus/issues/2)
+- [ ] Improve security - currently I didn't spent too much time making the Supabase RLS really work (for writing data) [ticket #3](https://github.com/adamcohenhillel/AdDeus/issues/3)
 
 #### Hardware / On-device:
 
-- [ ] #4 - Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work too
-- [ ] #5 Currently the setup is without battery, need to find the easiest way to add this as part of the setup
+- [ ] Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work too [ticket #4](https://github.com/adamcohenhillel/AdDeus/issues/4)
+- [ ] Currently the setup is without battery, need to find the easiest way to add this as part of the setup [ticket #5](https://github.com/adamcohenhillel/AdDeus/issues/5)
 
 #### Mobile:
 
-1. Improve user setup?
+- [ ] Improve user setup?
 
 #### UX and Onboarding
 
-- [ ] #6 An easy setup script / deploy my own Ollama server to replace OpenAI
+- [ ] An easy setup script / deploy my own Ollama server to replace OpenAI [ticket #6](https://github.com/adamcohenhillel/AdDeus/issues/6)
+- [ ] Add How-to for Ollama setup [ticket #9](https://github.com/adamcohenhillel/AdDeus/issues/9)
 
 ## CTA for the Community:
 
-A lot of companies and organizations are now after building the "Personal AI" - the one that will be a companion for individuals. This will be a paradigm shift of the way we all experince the digital (and physical) realms. Interacting with our agents that knows a lot about us, and help us navigate the world.
+A lot of companies and organizations are now after building the "Personal AI" - the one that will be a companion for individuals. This will be a paradigm shift of the way we all experince the digital (and physical) realms. Interacting with our AI that knows a lot about us, and help us navigate the world.
 
 The problem with all these initiatives, is that they don't really provide you with your own personal AI. It’s not private, you don’t own it. As long as you don’t have a way to opt out, and take your so-called personal AI elsewhere, it’s not yours, you merely renting it from somewhere.
 
@@ -200,6 +201,6 @@ The problem with all these initiatives, is that they don't really provide you wi
 
 The pioneers of the personal computers, the internet, they all knew it - and that what made it great, a period of possibilities. But since, as we all know, things had drifted. You don’t own things, merely renting them. You can’t take it elsewhere - and therefore the free-market forces of capitalism can’t be easily integrated into the digital realm.
 
-### Intro Vid
+Check out the Intro video:
 
 [![set up device video](https://img.youtube.com/vi/4CqEC2yLGQU/0.jpg)](https://youtu.be/4CqEC2yLGQU)
