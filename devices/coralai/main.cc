@@ -54,7 +54,6 @@ namespace coralmicro
         throw std::runtime_error("SUPABASE_URL not defined, export SUPABASE_URL=...");
 #endif
 
-        // std::string remote_url = "https://ftkkhhdltskogoewnwov.supabase.co/functions/v1/process-audio";
         size_t bytes_curled = 0;
 
         curl_easy_setopt(curl, CURLOPT_URL, full_url.c_str());
