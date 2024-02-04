@@ -4,11 +4,12 @@ import Link from "next/link";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
-import { PiPaperPlaneRight, PiPlus, PiSignOut } from "react-icons/pi";
+import { SendHorizonal, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 
 type ConversationMessage = {
   role: string;
@@ -277,10 +278,18 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
   const adjustNumRows = () => {
     const textarea = textareaRef.current;
     if (textarea) {
-      textarea.style.height = "auto"; // Reset height
-      const { scrollHeight, clientHeight } = textarea;
-      const rows = Math.ceil(scrollHeight / 30);
-      if (rows < 6) setNumberOfLines(rows);
+      const minNumberOfLines = 1;
+      const maxNumberOfLines = 6;
+      const { clientWidth } = textarea;
+      const numberOfPossibleCharactersInRow = Math.floor(clientWidth / 8); // if clientWidth was 844px then 844/8 = 105.5
+      const nextNumberOfLines = Math.ceil(entryData.length / numberOfPossibleCharactersInRow);
+      if (nextNumberOfLines < minNumberOfLines) {
+        setNumberOfLines(minNumberOfLines);
+      } else if (nextNumberOfLines > maxNumberOfLines) {
+        setNumberOfLines(maxNumberOfLines);
+      } else {
+        setNumberOfLines(nextNumberOfLines);
+      }
     }
   };
 
@@ -349,21 +358,23 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
 
       {/* TOP BAR */}
       <div className="fixed flex space-x-4 top-4 right-4">
-        <div
-          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-muted"
+        <Button
+          size={'icon'}
+          className="rounded-full bg-muted text-muted-foreground hover:bg-muted/80"
           onClick={async () => await supabaseClient.auth.signOut()}
         >
-          <PiSignOut />
-        </div>
-        <div
-          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-muted"
+          <LogOut size={20} />
+        </Button>
+        <Button
+          size={'icon'}
+          className="rounded-full bg-muted text-muted-foreground hover:bg-muted/80"
           onClick={async () => {
             setMessages([]);
             await newConversation();
           }}
         >
-          <PiPlus />
-        </div>
+          <Plus size={20} />
+        </Button>
         <ThemeToggle />
       </div>
 
@@ -374,17 +385,17 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
         />
       </div>
 
-      <div ref={bottomRef}>.</div>
+      <div ref={bottomRef} />
 
       {/* Bottom Nav */}
       <div className="flex flex-col justify-center items-center w-full fixed bottom-3">
         <nav
           style={{ height: `${3.5 + (numberOfLines - 1) * 1.5}rem` }}
-          className="flex flex-row items-center justify-between space-x-4 px-3 w-4/5  rounded-xl bg-opacity-20 backdrop-blur-md bg-muted/60"
+          className="flex flex-row items-center justify-between w-4/5 rounded-xl backdrop-blur-md"
         >
           <textarea
             ref={textareaRef}
-            className="p-2 w-full text-base items-center rounded-xl bg-transparent "
+            className="absolute top-0 left-0 p-2 w-full h-full text-base items-center rounded-xl pr-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/60"
             id="textareaID"
             dir="auto"
             rows={numberOfLines}
@@ -396,13 +407,14 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
             disabled={waitingForResponse}
             placeholder={messages.length <= 1 ? "What is on your mind?" : ""}
           ></textarea>
-          <button
+          <Button
+            size={'icon'}
+            className="relative disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-colors ml-auto mr-2"
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
-            className="bg-primary rounded-lg shadow-sm w-9 h-9 px-2 text-lg flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-colors"
           >
-            <PiPaperPlaneRight size={40} />
-          </button>
+            <SendHorizonal size={20} />
+          </Button>
         </nav>
       </div>
     </div>
