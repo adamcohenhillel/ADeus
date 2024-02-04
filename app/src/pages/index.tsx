@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
-import { PiPaperPlaneRightBold } from "react-icons/pi";
+import { PiPaperPlaneRight, PiPlus, PiSignOut } from "react-icons/pi";
 import { motion, AnimatePresence } from "framer-motion";
-import { MdLogout } from "react-icons/md";
-import { GoPlus } from "react-icons/go";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -21,13 +19,13 @@ function ChatDots({ size }: { size?: string }) {
   return (
     <div className="space-x-1 flex">
       <div
-        className={`bg-adeusRegular p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
+        className={`bg-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
       ></div>
       <div
-        className={`bg-adeusRegular p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
+        className={`bg-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
       ></div>
       <div
-        className={`bg-adeusRegular p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
+        className={`bg-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
       ></div>
     </div>
   );
@@ -70,8 +68,8 @@ const JournalingChat = ({
               <motion.div
                 className={
                   chat["role"] == "user"
-                    ? "bg-adeusRegular light:text-adeusCream rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
-                    : "bg-accent rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+                    ? "bg-primary rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
+                    : "bg-muted rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
                 }
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -141,7 +139,7 @@ function LoginComponent() {
   }
 
   return (
-    <div className="pt-safe mt-6 flex flex-col w-full p-8 light:bg-adeusCream">
+    <div className="pt-safe mt-6 flex flex-col w-full p-8">
       <h1 className="pt-4 text-2xl font-bold">Login to ADeus</h1>
 
       <div>
@@ -219,7 +217,7 @@ function LoginComponent() {
         <div className="flex flex-col items-center mt-6">
           <button
             onClick={EmailLogin}
-            className="w-full flex justify-center items-center h-10 font-bold rounded-md text-white bg-black active:bg-adeusRegular shadow-sm"
+            className="w-full flex justify-center items-center h-10 font-bold rounded-md shadow-sm"
           >
             nexum
           </button>
@@ -352,19 +350,19 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       {/* TOP BAR */}
       <div className="fixed flex space-x-4 top-4 right-4">
         <div
-          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-accent"
+          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-muted"
           onClick={async () => await supabaseClient.auth.signOut()}
         >
-          <MdLogout />
+          <PiSignOut />
         </div>
         <div
-          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-accent"
+          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-muted"
           onClick={async () => {
             setMessages([]);
             await newConversation();
           }}
         >
-          <GoPlus />
+          <PiPlus />
         </div>
         <ThemeToggle />
       </div>
@@ -382,11 +380,11 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       <div className="flex flex-col justify-center items-center w-full fixed bottom-3">
         <nav
           style={{ height: `${3.5 + (numberOfLines - 1) * 1.5}rem` }}
-          className="flex flex-row items-center justify-between space-x-4 px-2 w-4/5  rounded-xl bg-opacity-20 backdrop-blur-md bg-accent/60"
+          className="flex flex-row items-center justify-between space-x-4 px-3 w-4/5  rounded-xl bg-opacity-20 backdrop-blur-md bg-muted/60"
         >
           <textarea
             ref={textareaRef}
-            className="p-2 w-full text-base items-center rounded-xl bg-transparent focus:border-adeusRegular "
+            className="p-2 w-full text-base items-center rounded-xl bg-transparent "
             id="textareaID"
             dir="auto"
             rows={numberOfLines}
@@ -401,9 +399,9 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
           <button
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
-            className="bg-adeusRegular active:bg-adeusRegular rounded-xl shadow-sm shadow-adeusDark w-9 h-9 px-2 text-lg light:text-adeusCream flex items-center justify-center disabled:bg-gray-400 disabled:text-gray-600 disabled:shadow-none disabled:cursor-not-allowed"
+            className="bg-primary rounded-lg shadow-sm w-9 h-9 px-2 text-lg flex items-center justify-center disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-colors"
           >
-            <PiPaperPlaneRightBold size={40} />
+            <PiPaperPlaneRight size={40} />
           </button>
         </nav>
       </div>

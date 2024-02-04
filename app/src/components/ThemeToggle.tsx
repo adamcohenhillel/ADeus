@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useTheme } from "next-themes"
-import { GoMoon, GoSun } from "react-icons/go";
+import { PiMoon, PiSun } from "react-icons/pi";
 
 export function ThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme()
@@ -14,9 +14,9 @@ export function ThemeToggle() {
   }
 
   return (
-      <button className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-accent" onClick={handleToggle}>
-        {resolvedTheme === "dark" && <GoSun />}
-        {resolvedTheme === "light" && <GoMoon />}
+      <button className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-muted" onClick={handleToggle}>
+        {resolvedTheme === "dark" && <PiSun />}
+        {resolvedTheme === "light" && <PiMoon />}
         <span className="sr-only">Toggle theme</span>
       </button>
   )

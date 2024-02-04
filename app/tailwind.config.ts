@@ -9,11 +9,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        adeusCream: "#F5F4F0",
-        adeusDark: "#155C3C",
-        adeusRegular: "#4AA87A",
-        adeusLight: "#B2E4CD",
-        adeusLighter: "#d5e5d8",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
