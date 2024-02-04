@@ -281,7 +281,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       const minNumberOfLines = 1;
       const maxNumberOfLines = 6;
       const { clientWidth } = textarea;
-      const numberOfPossibleCharactersInRow = Math.floor(clientWidth / 8); // if clientWidth was 844px then 844/8 = 105.5
+      const numberOfPossibleCharactersInRow = Math.floor(clientWidth / 8);
       const nextNumberOfLines = Math.ceil(entryData.length / numberOfPossibleCharactersInRow);
       if (nextNumberOfLines < minNumberOfLines) {
         setNumberOfLines(minNumberOfLines);
