@@ -1,15 +1,15 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
-import { PiPaperPlaneRightBold } from "react-icons/pi";
+import { SendHorizonal, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MdLogout } from "react-icons/md";
-import { GoPlus } from "react-icons/go";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 
 type ConversationMessage = {
   role: string;
@@ -20,13 +20,13 @@ function ChatDots({ size }: { size?: string }) {
   return (
     <div className="space-x-1 flex">
       <div
-        className={`bg-adeusRegular p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
+        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
       ></div>
       <div
-        className={`bg-adeusRegular p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
+        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
       ></div>
       <div
-        className={`bg-adeusRegular p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
+        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
       ></div>
     </div>
   );
@@ -69,8 +69,8 @@ const JournalingChat = ({
               <motion.div
                 className={
                   chat["role"] == "user"
-                    ? "bg-adeusRegular text-adeusCream rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
-                    : "bg-white rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+                    ? "bg-primary rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
+                    : "bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
                 }
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,7 +82,7 @@ const JournalingChat = ({
           ))}
           {waitingForResponse ? (
             <motion.div
-              className="bg-white rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm  w-fit"
+              className="bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
@@ -140,13 +140,13 @@ function LoginComponent() {
   }
 
   return (
-    <div className="pt-safe mt-6 flex flex-col w-full p-8 bg-adeusCream">
+    <div className="pt-safe mt-6 flex flex-col w-full p-8">
       <h1 className="pt-4 text-2xl font-bold">Login to ADeus</h1>
 
       <div>
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block  text-sm font-medium mb-1"
             htmlFor="text"
           >
             Supabase URL
@@ -157,14 +157,14 @@ function LoginComponent() {
             type="text"
             value={supabaseUrl}
             onChange={(e) => setSupabaseUrl(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
 
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block  text-sm font-medium mb-1"
             htmlFor="email"
           >
             Supabase Token
@@ -175,14 +175,14 @@ function LoginComponent() {
             type="text"
             value={supabaseToken}
             onChange={(e) => setSupabaseToken(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
 
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block  text-sm font-medium mb-1"
             htmlFor="email"
           >
             Email
@@ -193,13 +193,13 @@ function LoginComponent() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block text-sm font-medium mb-1"
             htmlFor="password"
           >
             Password
@@ -210,21 +210,21 @@ function LoginComponent() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
 
         <div className="flex flex-col items-center mt-6">
-          <button
+          <Button
             onClick={EmailLogin}
-            className="w-full flex justify-center items-center h-10 font-bold rounded-md text-white bg-black active:bg-adeusRegular shadow-sm"
+            className="w-full font-bold"
           >
             nexum
-          </button>
+          </Button>
         </div>
       </div>
-      <p className="mt-8 text-sm text-gray-400 pb-6 mb-safe">
+      <p className="mt-8 text-sm opacity-50 pb-6 mb-safe">
         Don&apos;t have these details? Please check the setup guide{" "}
         <Link className="underline" href="https://x.com/adamcohenhillel">
           here
@@ -242,12 +242,10 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [convoId, setConvoId] = useState<ConversationMessage[]>([]);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
-  const [numberOfLines, setNumberOfLines] = useState(1);
 
   const onSendMsgClick = async () => {
     try {
       let newMessages = [...messages, { role: "user", content: entryData }];
-      setNumberOfLines(1);
       setMessages(newMessages);
       setEntryData("");
 
@@ -272,16 +270,6 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
     } catch (error: any) {
       console.error("ERROR", error);
       toast.error(error.message || error.code || error.msg || "Unknown error");
-    }
-  };
-
-  const adjustNumRows = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = "auto"; // Reset height
-      const { scrollHeight, clientHeight } = textarea;
-      const rows = Math.ceil(scrollHeight / 30);
-      if (rows < 6) setNumberOfLines(rows);
     }
   };
 
@@ -344,64 +332,71 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
   }, []);
 
   return (
-    <div className="bg-adeusCream bg-opacity-20 overflow-y-scroll">
+    <div>
+      {/* TOP GRADIENT */}
+      <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
+
       {/* TOP BAR */}
-      <div className="pt-safe h-24 bg-gradient-to-b from-adeusCream flex justify-between items-center fixed top-0 left-0 right-0"></div>
-      <div className="fixed flex space-x-4 top-0 right-0 mt-safe p-2">
-        <div
-          className="w-8 h-8 bg-adeusCream rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg"
+      <div className="fixed flex space-x-4 top-4 right-4">
+        <Button
+          size={'icon'}
+          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={async () => await supabaseClient.auth.signOut()}
         >
-          <MdLogout />
-        </div>
-        <div
-          className="w-8 h-8 bg-adeusCream rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg"
+          <LogOut size={20} />
+        </Button>
+        <Button
+          size={'icon'}
+          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={async () => {
             setMessages([]);
             await newConversation();
           }}
         >
-          <GoPlus />
-        </div>
+          <Plus size={20} />
+        </Button>
+        <ThemeToggle />
       </div>
 
-      <div className="pt-safe p-8 mt-12 mb-32">
+      <div className="p-8 mt-12 mb-32">
         <JournalingChat
           data={messages}
           waitingForResponse={waitingForResponse}
         />
       </div>
 
-      <div ref={bottomRef}>.</div>
-
-      {/* Bottom Nav */}
-      <div className="flex flex-col justify-center items-center w-full fixed mb-safe bottom-3 mb-4 mx-2 ">
-        <nav
-          style={{ height: `${3.5 + (numberOfLines - 1) * 1.5}rem` }}
-          className="flex flex-row items-center justify-between space-x-4 px-2 w-4/5  rounded-xl bg-opacity-20 backdrop-blur-md bg-white shadow-[0_0px_5px_5px_rgba(0,0,0,0.1)]"
+      <div ref={bottomRef} />
+      <div className="fixed bottom-3 w-full flex items-center justify-center">
+        <div 
+          style={{
+            height: `${textareaRef.current?.scrollHeight}px`,
+          }}
+          className="flex flex-col justify-center items-center w-10/12 relative max-h-[200px]"
         >
           <textarea
             ref={textareaRef}
-            className="p-2 w-full text-base items-center rounded-xl bg-transparent focus:border-adeusRegular "
-            id="textareaID"
-            dir="auto"
-            rows={numberOfLines}
+            className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/20 py-4 placeholder-muted-foreground/40"
+            rows={1}
             value={entryData}
             onChange={(e) => {
               setEntryData(e.target.value);
-              adjustNumRows();
+              if (textareaRef.current) {
+                textareaRef.current.style.height = 'auto';
+                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+              }
             }}
             disabled={waitingForResponse}
-            placeholder={messages.length <= 1 ? "What is on your mind?" : ""}
+            placeholder="What is on your mind?"
           ></textarea>
-          <button
+          <Button
+            size={'icon'}
+            className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 transition-colors ml-auto"
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
-            className="bg-adeusDark active:bg-adeusRegular rounded-xl shadow-sm shadow-adeusDark w-9 h-9 px-2 text-lg text-adeusCream flex items-center justify-center disabled:bg-gray-400 disabled:text-gray-600 disabled:shadow-none disabled:cursor-not-allowed"
           >
-            <PiPaperPlaneRightBold size={40} />
-          </button>
-        </nav>
+            <SendHorizonal size={20} />
+          </Button>
+        </div>
       </div>
     </div>
   );
