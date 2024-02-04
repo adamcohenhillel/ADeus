@@ -82,7 +82,7 @@ const JournalingChat = ({
           ))}
           {waitingForResponse ? (
             <motion.div
-              className="bg-accent rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+              className="bg-primary rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
