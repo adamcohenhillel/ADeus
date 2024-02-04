@@ -70,7 +70,7 @@ const JournalingChat = ({
                 className={
                   chat["role"] == "user"
                     ? "bg-primary rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
-                    : "bg-muted rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+                    : "bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
                 }
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,7 +82,7 @@ const JournalingChat = ({
           ))}
           {waitingForResponse ? (
             <motion.div
-              className="bg-muted rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+              className="bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
@@ -340,14 +340,14 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       <div className="fixed flex space-x-4 top-4 right-4">
         <Button
           size={'icon'}
-          className="rounded-full bg-muted text-muted-foreground hover:bg-muted/80"
+          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={async () => await supabaseClient.auth.signOut()}
         >
           <LogOut size={20} />
         </Button>
         <Button
           size={'icon'}
-          className="rounded-full bg-muted text-muted-foreground hover:bg-muted/80"
+          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={async () => {
             setMessages([]);
             await newConversation();
@@ -375,7 +375,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
         >
           <textarea
             ref={textareaRef}
-            className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/60 py-4 placeholder-muted-foreground/40"
+            className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/20 py-4 placeholder-muted-foreground/40"
             rows={1}
             value={entryData}
             onChange={(e) => {
@@ -390,7 +390,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
           ></textarea>
           <Button
             size={'icon'}
-            className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-colors ml-auto"
+            className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 transition-colors ml-auto"
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
           >
