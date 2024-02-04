@@ -242,12 +242,10 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [convoId, setConvoId] = useState<ConversationMessage[]>([]);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
-  const [numberOfLines, setNumberOfLines] = useState(1);
 
   const onSendMsgClick = async () => {
     try {
       let newMessages = [...messages, { role: "user", content: entryData }];
-      setNumberOfLines(1);
       setMessages(newMessages);
       setEntryData("");
 
@@ -272,24 +270,6 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
     } catch (error: any) {
       console.error("ERROR", error);
       toast.error(error.message || error.code || error.msg || "Unknown error");
-    }
-  };
-
-  const adjustNumRows = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      const minNumberOfLines = 1;
-      const maxNumberOfLines = 6;
-      const { clientWidth } = textarea;
-      const numberOfPossibleCharactersInRow = Math.floor(clientWidth / 8);
-      const nextNumberOfLines = Math.ceil(entryData.length / numberOfPossibleCharactersInRow);
-      if (nextNumberOfLines < minNumberOfLines) {
-        setNumberOfLines(minNumberOfLines);
-      } else if (nextNumberOfLines > maxNumberOfLines) {
-        setNumberOfLines(maxNumberOfLines);
-      } else {
-        setNumberOfLines(nextNumberOfLines);
-      }
     }
   };
 
@@ -354,7 +334,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
   return (
     <div>
       {/* TOP GRADIENT */}
-      <div className="h-24 bg-gradient-to-b from-card flex justify-between items-center fixed top-0 w-full"></div>
+      <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
 
       {/* TOP BAR */}
       <div className="fixed flex space-x-4 top-4 right-4">
@@ -386,36 +366,37 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       </div>
 
       <div ref={bottomRef} />
-
-      {/* Bottom Nav */}
-      <div className="flex flex-col justify-center items-center w-full fixed bottom-3">
-        <nav
-          style={{ height: `${3.5 + (numberOfLines - 1) * 1.5}rem` }}
-          className="flex flex-row items-center justify-between w-4/5 rounded-xl backdrop-blur-md"
+      <div className="fixed bottom-3 w-full flex items-center justify-center">
+        <div 
+          style={{
+            height: `${textareaRef.current?.scrollHeight}px`,
+          }}
+          className="flex flex-col justify-center items-center w-10/12 relative max-h-[200px]"
         >
           <textarea
             ref={textareaRef}
-            className="absolute top-0 left-0 p-2 w-full h-full text-base items-center rounded-xl pr-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/60"
-            id="textareaID"
-            dir="auto"
-            rows={numberOfLines}
+            className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/60 py-0 pt-4 pb-2 placeholder-muted-foreground/40"
+            rows={1}
             value={entryData}
             onChange={(e) => {
               setEntryData(e.target.value);
-              adjustNumRows();
+              if (textareaRef.current) {
+                textareaRef.current.style.height = 'auto';
+                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+              }
             }}
             disabled={waitingForResponse}
-            placeholder={messages.length <= 1 ? "What is on your mind?" : ""}
+            placeholder="What is on your mind?"
           ></textarea>
           <Button
             size={'icon'}
-            className="relative disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-colors ml-auto mr-2"
+            className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted transition-colors ml-auto"
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
           >
             <SendHorizonal size={20} />
           </Button>
-        </nav>
+        </div>
       </div>
     </div>
   );
