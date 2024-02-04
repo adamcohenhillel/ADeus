@@ -20,13 +20,13 @@ function ChatDots({ size }: { size?: string }) {
   return (
     <div className="space-x-1 flex">
       <div
-        className={`bg-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
+        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
       ></div>
       <div
-        className={`bg-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
+        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
       ></div>
       <div
-        className={`bg-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
+        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
       ></div>
     </div>
   );
@@ -82,7 +82,7 @@ const JournalingChat = ({
           ))}
           {waitingForResponse ? (
             <motion.div
-              className="bg-primary rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+              className="bg-muted rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
@@ -375,7 +375,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
         >
           <textarea
             ref={textareaRef}
-            className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/60 py-0 pt-4 pb-2 placeholder-muted-foreground/40"
+            className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/60 py-4 placeholder-muted-foreground/40"
             rows={1}
             value={entryData}
             onChange={(e) => {
