@@ -216,12 +216,12 @@ function LoginComponent() {
         </div>
 
         <div className="flex flex-col items-center mt-6">
-          <button
+          <Button
             onClick={EmailLogin}
-            className="w-full flex justify-center items-center h-10 font-bold rounded-md shadow-sm"
+            className="w-full font-bold"
           >
             nexum
-          </button>
+          </Button>
         </div>
       </div>
       <p className="mt-8 text-sm opacity-50 pb-6 mb-safe">
