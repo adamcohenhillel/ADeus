@@ -10,6 +10,7 @@ import { MdLogout } from "react-icons/md";
 import { GoPlus } from "react-icons/go";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type ConversationMessage = {
   role: string;
@@ -69,8 +70,8 @@ const JournalingChat = ({
               <motion.div
                 className={
                   chat["role"] == "user"
-                    ? "bg-adeusRegular text-adeusCream rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
-                    : "bg-white rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+                    ? "bg-adeusRegular light:text-adeusCream rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
+                    : "bg-accent rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
                 }
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,7 +83,7 @@ const JournalingChat = ({
           ))}
           {waitingForResponse ? (
             <motion.div
-              className="bg-white rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm  w-fit"
+              className="bg-accent rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
@@ -140,13 +141,13 @@ function LoginComponent() {
   }
 
   return (
-    <div className="pt-safe mt-6 flex flex-col w-full p-8 bg-adeusCream">
+    <div className="pt-safe mt-6 flex flex-col w-full p-8 light:bg-adeusCream">
       <h1 className="pt-4 text-2xl font-bold">Login to ADeus</h1>
 
       <div>
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block  text-sm font-medium mb-1"
             htmlFor="text"
           >
             Supabase URL
@@ -157,14 +158,14 @@ function LoginComponent() {
             type="text"
             value={supabaseUrl}
             onChange={(e) => setSupabaseUrl(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
 
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block  text-sm font-medium mb-1"
             htmlFor="email"
           >
             Supabase Token
@@ -175,14 +176,14 @@ function LoginComponent() {
             type="text"
             value={supabaseToken}
             onChange={(e) => setSupabaseToken(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
 
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block  text-sm font-medium mb-1"
             htmlFor="email"
           >
             Email
@@ -193,13 +194,13 @@ function LoginComponent() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
         <div className="flex flex-wrap pt-4">
           <label
-            className="block text-black text-sm font-medium mb-1"
+            className="block text-sm font-medium mb-1"
             htmlFor="password"
           >
             Password
@@ -210,7 +211,7 @@ function LoginComponent() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="form-input w-full text-gray-800 h-10 border-2 rounded-md pl-2"
+            className="form-input w-full  h-10 border-2 rounded-md pl-2"
             required
           />
         </div>
@@ -224,7 +225,7 @@ function LoginComponent() {
           </button>
         </div>
       </div>
-      <p className="mt-8 text-sm text-gray-400 pb-6 mb-safe">
+      <p className="mt-8 text-sm opacity-50 pb-6 mb-safe">
         Don&apos;t have these details? Please check the setup guide{" "}
         <Link className="underline" href="https://x.com/adamcohenhillel">
           here
@@ -344,18 +345,20 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
   }, []);
 
   return (
-    <div className="bg-adeusCream bg-opacity-20 overflow-y-scroll">
+    <div>
+      {/* TOP GRADIENT */}
+      <div className="h-24 bg-gradient-to-b from-card flex justify-between items-center fixed top-0 w-full"></div>
+
       {/* TOP BAR */}
-      <div className="pt-safe h-24 bg-gradient-to-b from-adeusCream flex justify-between items-center fixed top-0 left-0 right-0"></div>
-      <div className="fixed flex space-x-4 top-0 right-0 mt-safe p-2">
+      <div className="fixed flex space-x-4 top-4 right-4">
         <div
-          className="w-8 h-8 bg-adeusCream rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg"
+          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-accent"
           onClick={async () => await supabaseClient.auth.signOut()}
         >
           <MdLogout />
         </div>
         <div
-          className="w-8 h-8 bg-adeusCream rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg"
+          className="w-8 h-8 rounded-full items-center flex justify-center cursor-pointer z-10 drop-shadow-lg bg-accent"
           onClick={async () => {
             setMessages([]);
             await newConversation();
@@ -363,9 +366,10 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
         >
           <GoPlus />
         </div>
+        <ThemeToggle />
       </div>
 
-      <div className="pt-safe p-8 mt-12 mb-32">
+      <div className="p-8 mt-12 mb-32">
         <JournalingChat
           data={messages}
           waitingForResponse={waitingForResponse}
@@ -375,10 +379,10 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
       <div ref={bottomRef}>.</div>
 
       {/* Bottom Nav */}
-      <div className="flex flex-col justify-center items-center w-full fixed mb-safe bottom-3 mb-4 mx-2 ">
+      <div className="flex flex-col justify-center items-center w-full fixed bottom-3">
         <nav
           style={{ height: `${3.5 + (numberOfLines - 1) * 1.5}rem` }}
-          className="flex flex-row items-center justify-between space-x-4 px-2 w-4/5  rounded-xl bg-opacity-20 backdrop-blur-md bg-white shadow-[0_0px_5px_5px_rgba(0,0,0,0.1)]"
+          className="flex flex-row items-center justify-between space-x-4 px-2 w-4/5  rounded-xl bg-opacity-20 backdrop-blur-md bg-accent/60"
         >
           <textarea
             ref={textareaRef}
@@ -397,7 +401,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
           <button
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
-            className="bg-adeusDark active:bg-adeusRegular rounded-xl shadow-sm shadow-adeusDark w-9 h-9 px-2 text-lg text-adeusCream flex items-center justify-center disabled:bg-gray-400 disabled:text-gray-600 disabled:shadow-none disabled:cursor-not-allowed"
+            className="bg-adeusRegular active:bg-adeusRegular rounded-xl shadow-sm shadow-adeusDark w-9 h-9 px-2 text-lg light:text-adeusCream flex items-center justify-center disabled:bg-gray-400 disabled:text-gray-600 disabled:shadow-none disabled:cursor-not-allowed"
           >
             <PiPaperPlaneRightBold size={40} />
           </button>
