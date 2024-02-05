@@ -3,13 +3,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { toast } from "react-toastify";
 import { SendHorizonal, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type ConversationMessage = {
   role: string;
