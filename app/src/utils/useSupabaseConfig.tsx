@@ -69,22 +69,31 @@ export function useSupabaseClient() {
 
 export function useSupabase() {
   const supabaseClient = useSupabaseClient();
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | null>(null);
+  const [sessionChecked, setSessionChecked] = useState<boolean>(false);
 
   useEffect(() => {
-    if (supabaseClient) {
-      const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-        async (event: AuthChangeEvent, session: Session | null) => {
-          const currentUser = session?.user;
-          setUser(currentUser);
-        }
-      );
+    if (!supabaseClient) return;
 
-      return () => {
-        authListener?.subscription?.unsubscribe();
-      };
-    }
+    const checkSession = async () => {
+      const session = await supabaseClient.auth.getSession();
+      setUser(session?.data.session?.user || null);
+      setSessionChecked(true); // Indicate that the session check is complete
+    };
+
+    checkSession();
+    
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, [supabaseClient]);
 
-  return { user, supabaseClient };
+  return { user, supabaseClient, sessionChecked };
 }
+

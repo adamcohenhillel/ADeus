@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 type ConversationMessage = {
   role: string;
@@ -403,15 +404,20 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
 }
 
 export default function Index() {
-  const { user, supabaseClient } = useSupabase();
+  const { user, supabaseClient, sessionChecked } = useSupabase();
 
-  return (
-    <>
-      {supabaseClient && user ? (
-        <ChatComponent supabaseClient={supabaseClient} />
-      ) : (
-        <LoginComponent />
-      )}
-    </>
-  );
+  if (!supabaseClient || !sessionChecked) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginComponent />;
+  }
+
+  return <ChatComponent supabaseClient={supabaseClient} />;
 }
+
