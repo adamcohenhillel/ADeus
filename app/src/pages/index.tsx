@@ -10,7 +10,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
-import LoadingSpinner from "@/components/LoadingSpinner";
 
 type ConversationMessage = {
   role: string;
