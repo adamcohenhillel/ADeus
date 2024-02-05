@@ -404,19 +404,13 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
 }
 
 export default function Index() {
-  const { user, supabaseClient, sessionChecked } = useSupabase();
-
-  if (!supabaseClient || !sessionChecked) {
-    return (
-      <div className="flex items-center justify-center w-full h-screen">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
+  const { user, supabaseClient } = useSupabase();
+  
   if (!user) {
     return <LoginComponent />;
   }
+
+  if (!supabaseClient) throw new Error("Supabase client not found");
 
   return <ChatComponent supabaseClient={supabaseClient} />;
 }

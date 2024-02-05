@@ -70,22 +70,13 @@ export function useSupabaseClient() {
 export function useSupabase() {
   const supabaseClient = useSupabaseClient();
   const [user, setUser] = useState<User | null>(null);
-  const [sessionChecked, setSessionChecked] = useState<boolean>(false);
 
   useEffect(() => {
     if (!supabaseClient) return;
-
-    const checkSession = async () => {
-      const session = await supabaseClient.auth.getSession();
-      setUser(session?.data.session?.user || null);
-      setSessionChecked(true);
-    };
-
-    checkSession();
     
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user || null);
+        setUser(session?.user ?? null);
       }
     );
 
@@ -94,6 +85,6 @@ export function useSupabase() {
     };
   }, [supabaseClient]);
 
-  return { user, supabaseClient, sessionChecked };
+  return { user, supabaseClient };
 }
 
