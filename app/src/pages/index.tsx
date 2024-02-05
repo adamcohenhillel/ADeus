@@ -403,21 +403,11 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
 }
 
 export default function Index() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
   const { user, supabaseClient } = useSupabase();
-
-  useEffect(() => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }, [user]);
 
   return (
     <>
-      {loggedIn && user ? (
+      {supabaseClient && user ? (
         <ChatComponent supabaseClient={supabaseClient} />
       ) : (
         <LoginComponent />

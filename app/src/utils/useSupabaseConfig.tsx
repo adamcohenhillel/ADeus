@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Preferences } from "@capacitor/preferences";
-import { createClient } from "@supabase/supabase-js";
+import { AuthChangeEvent, Session, SupabaseClient, User, createClient } from "@supabase/supabase-js";
 
 export function useSupabaseConfig() {
   const [supabaseUrl, setSupabaseUrl] = useState("");
@@ -55,7 +55,7 @@ export function useSupabaseConfig() {
 
 export function useSupabaseClient() {
   const { supabaseUrl, supabaseToken } = useSupabaseConfig();
-  const [supabaseClient, setSupabaseClient] = useState<any>();
+  const [supabaseClient, setSupabaseClient] = useState<SupabaseClient>();
 
   useEffect(() => {
     if (supabaseUrl && supabaseToken) {
@@ -69,12 +69,12 @@ export function useSupabaseClient() {
 
 export function useSupabase() {
   const supabaseClient = useSupabaseClient();
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     if (supabaseClient) {
       const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-        async (event: any, session: any) => {
+        async (event: AuthChangeEvent, session: Session | null) => {
           const currentUser = session?.user;
           setUser(currentUser);
         }
