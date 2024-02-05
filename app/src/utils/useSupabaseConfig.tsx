@@ -78,7 +78,7 @@ export function useSupabase() {
     const checkSession = async () => {
       const session = await supabaseClient.auth.getSession();
       setUser(session?.data.session?.user || null);
-      setSessionChecked(true); // Indicate that the session check is complete
+      setSessionChecked(true);
     };
 
     checkSession();
