@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { toast } from "react-toastify";
-import { SendHorizonal, Plus, LogOut } from "lucide-react";
+import { SendHorizontal, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
@@ -394,7 +394,7 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
             disabled={waitingForResponse || entryData.length == 0}
             onClick={() => onSendMsgClick()}
           >
-            <SendHorizonal size={20} />
+            <SendHorizontal size={20} />
           </Button>
         </div>
       </div>
