@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { SendHorizonal, Plus, LogOut } from "lucide-react";
+import { SendHorizontal, Plus, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
@@ -131,7 +131,7 @@ function LoginComponent() {
       } else {
         toast.success("Login successful");
         setSupabaseConfig(supabaseUrl, supabaseToken);
-        router.reload();
+        router.push("/");
       }
     } catch (error: any) {
       console.error("ERROR", error);
