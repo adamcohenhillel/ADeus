@@ -1,12 +1,12 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
-import { toast } from "react-toastify";
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import PromptForm from "./PromptForm";
+import { toast } from "sonner";
 
 export default function Chat({
   supabaseClient,
