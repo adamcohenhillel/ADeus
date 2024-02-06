@@ -1,6 +1,6 @@
-import React from 'react'
-import { Button } from './ui/button';
-import { SendHorizontal } from 'lucide-react';
+import React from "react";
+import { Button } from "./ui/button";
+import { SendHorizontal } from "lucide-react";
 
 export default function PromptForm({
   textareaRef,
@@ -16,8 +16,8 @@ export default function PromptForm({
   onSendMsgClick: () => void;
 }) {
   return (
-    <div className="fixed bottom-3 w-full flex items-center justify-center">
-      <div 
+    <div className="fixed bottom-3 w-full flex items-center justify-center mb-safe">
+      <div
         style={{
           height: `${textareaRef.current?.scrollHeight}px`,
         }}
@@ -31,7 +31,7 @@ export default function PromptForm({
           onChange={(e) => {
             setEntryData(e.target.value);
             if (textareaRef.current) {
-              textareaRef.current.style.height = 'auto';
+              textareaRef.current.style.height = "auto";
               textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             }
           }}
@@ -39,7 +39,7 @@ export default function PromptForm({
           placeholder="What is on your mind?"
         ></textarea>
         <Button
-          size={'icon'}
+          size={"icon"}
           className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 transition-colors ml-auto"
           disabled={waitingForResponse || entryData.length == 0}
           onClick={() => onSendMsgClick()}
@@ -48,5 +48,5 @@ export default function PromptForm({
         </Button>
       </div>
     </div>
-  )
+  );
 }
