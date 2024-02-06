@@ -405,11 +405,9 @@ function ChatComponent({ supabaseClient }: { supabaseClient: SupabaseClient }) {
 export default function Index() {
   const { user, supabaseClient } = useSupabase();
   
-  if (!user) {
+  if (!user || !supabaseClient) {
     return <LoginComponent />;
   }
-
-  if (!supabaseClient) throw new Error("Supabase client not found");
 
   return <ChatComponent supabaseClient={supabaseClient} />;
 }
