@@ -3,7 +3,10 @@
 
 int main()
 {
-    setup_default_uart();
-    printf("Hello, world!\n");
-    return 0;
+    stdio_init_all();
+    while (true)
+    {
+        printf("Hello, world!\n");
+        sleep_ms(1000);
+    }
 }
