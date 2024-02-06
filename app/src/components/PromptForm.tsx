@@ -16,7 +16,7 @@ export default function PromptForm({
   onSendMsgClick: () => void;
 }) {
   return (
-    <div className="fixed bottom-3 w-full flex items-center justify-center mb-safe">
+    <div className="fixed bottom-3 w-full flex items-center justify-center">
       <div
         style={{
           height: `${textareaRef.current?.scrollHeight}px`,
