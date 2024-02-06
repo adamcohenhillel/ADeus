@@ -111,6 +111,8 @@ export default function Chat({
 
   return (
     <>
+      <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
+      
       <div className="fixed flex space-x-4 top-4 right-4">
         <LogoutButton
           supabaseClient={supabaseClient}
