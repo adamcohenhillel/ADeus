@@ -6,12 +6,11 @@
 #include <curl/curl.h>
 #include <cassert>
 
-
 // void sendData(std::vector<char> &buffer)
 // {
 //     CURL *curl;
 //     CURLcode res;
-//     std::string url = "https://cvctravnzlqjcasfrvzy.supabase.co/functions/v1/process-audio";
+//     std::string url = "";
 
 //     curl_global_init(CURL_GLOBAL_ALL);
 //     curl = curl_easy_init();
@@ -95,7 +94,7 @@ int main()
     // After calling snd_pcm_set_params, you can query the actual buffer size and period size set by ALSA
     snd_pcm_get_params(capture_handle, &buffer_size, &period_size);
     std::vector<char> buffer(period_size * bytesPerSample);
-    
+
     // Prepare to use the capture handle
     snd_pcm_prepare(capture_handle);
     std::ofstream wavFile("output.wav", std::ios::binary);
