@@ -41,7 +41,7 @@ To use the script, you need to provide the --base-url (-u) and --token (-t) para
 
 For detailed help, including all available options, run the script with the --help flag.
 ```bash
-python recorder.py --help
+python main.py --help
 ```
 
 ## Important Notes
