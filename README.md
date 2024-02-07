@@ -218,7 +218,7 @@ supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>
 
 Once that is set up, simple click the toggle in the top left of the chat interface to start experimenting with tons of AI models.
 
-<img src="docs/images/openrouter.png" width="200">
+<img src="docs/images/openrouter.png" width="500">
 
 ### Setup: Run with Ollama
 
