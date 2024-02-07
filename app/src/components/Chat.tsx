@@ -121,7 +121,6 @@ export default function Chat({
 
   const fetchLastConversation = async (chatId?: number) => {
     console.log('chatId', chatId)
-
     try {
       const { data, error } = await supabaseClient
         .from("conversations")
