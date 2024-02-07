@@ -29,7 +29,7 @@ ensure_package_installed() {
 
 # Compile the project
 echo "Compiling the project..."
-g++ -std=c++11 maingpio.cpp -g -o maingpio -lasound -lcurl -lpthread
+g++ -std=c++11 main1.cpp -g -o main1 -lasound -lcurl -lpthread
 if [ $? -ne 0 ]; then
     echo "Compilation failed. Please check your source code and dependencies."
     exit 1
