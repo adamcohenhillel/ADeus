@@ -5,6 +5,46 @@ import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 import { ApplicationError, UserError } from "../common/errors.ts";
 
+async function callOpenRouter(modelId, messages) {
+  // Your OpenRouter API key and other configurations
+  const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: modelId, // Use the model ID passed to the function
+      messages: messages,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const completion = await response.json();
+
+  console.log("completion: ", completion)
+  const message = completion.choices[0].message
+  return message;
+}
+
+async function callOpenAI(openaiClient, messages) {
+
+  let completion = await openaiClient.chat.completions.create({
+    model: "gpt-4-1106-preview",
+    messages: messages,
+  });
+  console.log("completion: ", completion);
+  console.log(
+    "completion.choices[0].content: ",
+    completion.choices[0].content
+  );
+  return completion.choices[0].message;
+}
+
 const chat = async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -21,9 +61,10 @@ const chat = async (req) => {
     throw new ApplicationError(
       "Unable to get auth user details in request data"
     );
-  const { messageHistory } = await req.json();
+  const { messageHistory, useOpenRouter, modelId } = await req.json();
   if (!messageHistory) throw new UserError("Missing query in request data");
 
+  //use this key for embeddings and for model generation
   const openaiClient = new OpenAI({
     apiKey: Deno.env.get("OPENAI_API_KEY"),
   });
@@ -52,6 +93,7 @@ const chat = async (req) => {
     throw new ApplicationError("Error getting records from Supabase");
   }
 
+  //the messages that are passed in for the prompt
   let messages = [
     {
       role: "system",
@@ -66,29 +108,28 @@ const chat = async (req) => {
   ];
   console.log("messages: ", messages);
 
+  //if UseOpenRouter = true generate with OpenRouter, if false generate with OpenAI
   try {
-    let completion = await openaiClient.chat.completions.create({
-      model: "gpt-4-1106-preview",
-      messages: messages,
-    });
-    console.log("completion: ", completion);
-    console.log(
-      "completion.choices[0].content: ",
-      completion.choices[0].content
-    );
+    let responseMessage;
+    if (useOpenRouter) {
+      responseMessage = await callOpenRouter(modelId, messageHistory);
+    } else {
+      responseMessage = await callOpenAI(openaiClient, messageHistory);
+    }
+
     return new Response(
       JSON.stringify({
-        msg: completion.choices[0].message,
+        msg: responseMessage,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       }
     );
-  } catch (openAiError) {
-    console.log("!!! Error in OpenAI fallback: ", openAiError);
-    throw openAiError;
-  }
+    } catch (error) {
+      console.log("Error: ", error);
+      throw new ApplicationError("Error processing chat completion");
+    }
 
   return new Response(
     JSON.stringify({

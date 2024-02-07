@@ -11,6 +11,7 @@ In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https:/
   - [Web / Mobile App](#setup-app-web)
   - [Hardware (Coral AI)](#setup-hardware---coral-ai-device)
   - [Hardware (Rasberry Pi Zero)](#setup-hardware---rasberry-pi-zero-w)
+  - [Run with OpenRouter](#setup-run-with-openrouter)
   - [Run with Ollama](#setup-run-with-ollama)
 - [Areas to Contribute](#areas-to-contribute)
 - [CTA for the Community](#cta-for-the-community)
@@ -89,6 +90,7 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 11. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`, and it will be under "reference id") - you can skip (enter) the database password, it's not needed.
 12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
 13. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
+14. If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run `supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>`.
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
 
@@ -205,6 +207,18 @@ python3 checkOutput.py --device "/dev/cu.usbmodem101"
 ### Setup: Hardware - Rasberry Pi Zero W
 
 SOON! (cost $15, but need to solder a microphone)
+
+### Setup: Run with OpenRouter
+
+If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run 
+
+``` 
+supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>
+```
+
+Once that is set up, simple click the toggle in the top left of the chat interface to start experimenting with tons of AI models.
+
+<img src="docs/images/openrouter.png" width="200">
 
 ### Setup: Run with Ollama
 
