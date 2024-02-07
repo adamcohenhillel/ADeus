@@ -93,7 +93,7 @@ export default function ChatsHistory({
                             </motion.div>
                         ))}
                     </div>
-                ) : listReceived ? <span>You don't have chats.</span> : <span>Loading...</span>}
+                ) : listReceived ? <span>You dont have chats.</span> : <span>Loading...</span>}
             </AnimatePresence>
         </div>
     );
