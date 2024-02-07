@@ -1,12 +1,14 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
+import ChatsHistory, { HistoryChat } from './chatsHistory';
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { Plus, History } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import PromptForm from "./PromptForm";
 import { toast } from "sonner";
+import { Console } from "console";
 
 export default function Chat({
   supabaseClient,
@@ -18,8 +20,10 @@ export default function Chat({
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [historyChats, setChatsList] = useState<HistoryChat[]>([]);
   const [chatId, setChatId] = useState<Message[]>([]);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
+  const [showChatsHistory, setShowChatsHistory] = useState(false);
 
   const onSendMsgClick = async () => {
     try {
@@ -84,12 +88,14 @@ export default function Chat({
     }
   };
 
-  const fetchLastConversation = async () => {
+  const fetchLastConversation = async (chatId?: number) => {
+    console.log('chatId', chatId)
     try {
       const { data, error } = await supabaseClient
         .from("conversations")
         .select("*")
         .order("created_at", { ascending: false })
+        .filter("id", chatId ? "eq" : "not.eq", chatId ? chatId : 0)
         .limit(1);
 
       if (!data || data.length == 0 || error) {
@@ -127,14 +133,30 @@ export default function Chat({
         >
           <Plus size={20} />
         </Button>
+
+        <Button
+          size={"icon"}
+          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
+          onClick={() => {
+            setShowChatsHistory(!showChatsHistory)
+          }}
+        >
+          <History size={20} />
+        </Button>
+
         <ThemeToggle />
       </div>
 
       <div className="p-8 mt-12 mb-32">
-        <ChatLog
-          messages={messages}
-          waitingForResponse={waitingForResponse}
-        />
+        {(
+          showChatsHistory ?
+            <ChatsHistory 
+              supabaseClient={supabaseClient} 
+              handleClose={() => { setShowChatsHistory(!showChatsHistory) }}
+              fetchLastConversation={(chatId) => { fetchLastConversation(chatId) }}
+            /> :
+            <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
+        )}
       </div>
 
       <div ref={bottomRef} />
