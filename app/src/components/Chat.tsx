@@ -59,7 +59,6 @@ export default function Chat({
         throw error;
       }
 
-      console.log(data)
       setMessages([...newMessages, data?.msg]);
     } catch (error: any) {
       console.error("ERROR", error);
