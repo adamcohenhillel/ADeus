@@ -14,8 +14,8 @@ void sendData(const std::string &filePath)
 
     CURL *curl;
     CURLcode res;
-    std::string url = "YOUR PROCESS AUDIO FUNCTION ENDPOINT";
-    std::string authToken = "YOUR AUTH TOKEN";
+    std::string url = getenv("SUPABASE_URL") + "/functions/v1/process-audio";
+    std::string authToken = getenv("AUTH_TOKEN");
 
     // Use filesystem to get the file size
     auto fileSize = fs::file_size(filePath);
@@ -61,7 +61,6 @@ void sendData(const std::string &filePath)
     curl_global_cleanup();
 }
 
-// Function to write WAV header
 void writeWavHeader(std::ofstream &file, int sampleRate, int bitsPerSample, int channels, int dataSize)
 {
     file.write("RIFF", 4);
