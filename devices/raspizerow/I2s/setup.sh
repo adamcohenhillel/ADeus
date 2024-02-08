@@ -1,3 +1,6 @@
+###THIS IS NOT READY TO USE###
+
+
 #!/bin/bash
 
 sudo apt-get update
