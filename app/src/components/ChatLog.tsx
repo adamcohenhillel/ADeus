@@ -8,10 +8,10 @@ export interface Message {
 
 export default function ChatLog({
   messages,
-  waitingForResponse,
+  isLoading,
 }: {
   messages: Message[];
-  waitingForResponse: boolean;
+  isLoading: boolean;
 }) {
   return (
     <AnimatePresence initial={false}>
@@ -40,7 +40,7 @@ export default function ChatLog({
               </motion.div>
             </div>
           ))}
-          {waitingForResponse ? (
+          {isLoading ? (
             <motion.div
               className="bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
               initial={{ opacity: 0, y: 20 }}

@@ -10,59 +10,113 @@ import { toast } from "sonner";
 import NewConversationButton from "./NewConversationButton";
 import ConversationHistory from "./ConversationHistory";
 import { NavMenu } from "./NavMenu";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { get } from "http";
 
 export default function Chat({
   supabaseClient,
 }: {
   supabaseClient: SupabaseClient;
 }) {
+  const queryClient = useQueryClient()
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState<Message[]>([]);
+  const [conversationId, setConversationId] = useState(0);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
 
-  const onSendMsgClick = async () => {
-    try {
-      let newMessages = [...messages, { role: "user", content: entryData }];
-      setMessages(newMessages);
-      setEntryData("");
-
-      setWaitingForResponse(true);
-      const { data: d2, error: e2 } = await supabaseClient
+  const lastConversation = useQuery({
+    queryKey: ['conversations'],
+    queryFn: async () => {
+      const { data, error } = await supabaseClient
         .from("conversations")
-        .update({ context: newMessages })
-        .eq("id", conversationId);
-
-      if (e2) {
-        toast.error(e2.message || e2.code || "Unknown error");
-      }
-
-      const { data, error } = await supabaseClient.functions.invoke("chat", {
-        body: { messageHistory: newMessages },
-      });
-      setWaitingForResponse(false);
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1);
       if (error) {
         throw error;
       }
-      setMessages([...newMessages, data?.msg]);
-    } catch (error: any) {
-      console.error("ERROR", error);
-      toast.error(error.message || error.code || error.msg || "Unknown error");
+      return data;
     }
-  };
+  })
 
-  useEffect(() => {
-    if (messages.length > 1) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  const getConversationById = useQuery({
+    queryKey: ['conversations', conversationId],
+    queryFn: async () => {
+      const { data, error } = await supabaseClient
+        .from("conversations")
+        .select("*")
+        .eq("id", conversationId);
+      if (error) {
+        throw error;
+      }
+      return data;
     }
-  }, [messages]);
+  })
 
-  const newConversation = async () => {
-    try {
+  const sendMessage = useMutation({
+    mutationFn: async (newMessages: Message[]) => {
+      const { data, error } = await supabaseClient
+        .from("conversations")
+        .update({ context: newMessages })
+        .eq("id", conversationId);
+      if (error) {
+        throw error;
+      }
+      return data as unknown as Message[];
+    },
+    onSuccess: (data) => {
+      setMessages(data);
+    },
+  })
+
+
+
+  // const onSendMsgClick = async () => {
+  //   try {
+  //     let newMessages = [...messages, { role: "user", content: entryData }];
+  //     setMessages(newMessages);
+  //     setEntryData("");
+
+  //     setWaitingForResponse(true);
+  //     const { data: d2, error: e2 } = await supabaseClient
+  //       .from("conversations")
+  //       .update({ context: newMessages })
+  //       .eq("id", conversationId);
+
+  //     if (e2) {
+  //       toast.error(e2.message || e2.code || "Unknown error");
+  //     }
+
+  //     const { data, error } = await supabaseClient.functions.invoke("chat", {
+  //       body: { messageHistory: newMessages },
+  //     });
+  //     setWaitingForResponse(false);
+  //     if (error) {
+  //       throw error;
+  //     }
+  //     setMessages([...newMessages, data?.msg]);
+  //   } catch (error: any) {
+  //     console.error("ERROR", error);
+  //     toast.error(error.message || error.code || error.msg || "Unknown error");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (messages.length > 1) {
+  //     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  //   }
+  // }, [messages]);
+
+    const newConversation = useMutation({
+    mutationFn: async () => {
       const { data, error } = await supabaseClient
         .from("conversations")
         .insert([
@@ -74,45 +128,67 @@ export default function Chat({
         ])
         .select("*");
       if (error) {
-        console.error("ERROR", error);
+        throw error;
       }
-      if (!data || data.length == 0) {
-        throw new Error("No data returned");
-      }
-      console.log("data", data);
+      return data;
+    },
+    onSuccess: (data) => {
       setMessages(data[0].context);
       setConversationId(data[0].id);
-    } catch (error: any) {
-      console.error("ERROR", error);
-      toast.error(error.message || error.code || error.msg || "Unknown error");
-    }
-  };
+    },
+  })
+  // const newConversation = async () => {
+  //   try {
+  //     const { data, error } = await supabaseClient
+  //       .from("conversations")
+  //       .insert([
+  //         {
+  //           context: [
+  //             { role: "assistant", content: "Hey, how can I help you?" },
+  //           ],
+  //         },
+  //       ])
+  //       .select("*");
+  //     if (error) {
+  //       console.error("ERROR", error);
+  //     }
+  //     if (!data || data.length == 0) {
+  //       throw new Error("No data returned");
+  //     }
+  //     console.log("data", data);
+  //     setMessages(data[0].context);
+  //     setConversationId(data[0].id);
+  //   } catch (error: any) {
+  //     console.error("ERROR", error);
+  //     toast.error(error.message || error.code || error.msg || "Unknown error");
+  //   }
+  // };
 
-  const fetchLastConversation = async (conversationId?: number) => {
-    try {
-      const { data, error } = await supabaseClient
-        .from("conversations")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .filter("id", conversationId ? "eq" : "not.eq", conversationId ? conversationId : 0)
-        .limit(1);
+  // const fetchLastConversation = async (conversationId?: number) => {
+  //   try {
+  //     const { data, error } = await supabaseClient
+  //       .from("conversations")
+  //       .select("*")
+  //       .order("created_at", { ascending: false })
+  //       .filter("id", conversationId ? "eq" : "not.eq", conversationId ? conversationId : 0)
+  //       .limit(1);
 
-      if (!data || data.length == 0 || error) {
-        newConversation();
-      } else {
-        console.log("data", data);
-        setMessages(data[0].context);
-        setConversationId(data[0].id);
-      }
-    } catch (error: any) {
-      console.error("ERROR", error);
-      toast.error(error.message || error.code || error.msg || "Unknown error");
-    }
-  };
+  //     if (!data || data.length == 0 || error) {
+  //       newConversation();
+  //     } else {
+  //       console.log("data", data);
+  //       setMessages(data[0].context);
+  //       setConversationId(data[0].id);
+  //     }
+  //   } catch (error: any) {
+  //     console.error("ERROR", error);
+  //     toast.error(error.message || error.code || error.msg || "Unknown error");
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchLastConversation();
-  }, []);
+  // useEffect(() => {
+  //   fetchLastConversation();
+  // }, []);
 
   return (
     <>
@@ -122,9 +198,8 @@ export default function Chat({
         <NavMenu>
           <LogoutButton supabaseClient={supabaseClient} />
           <NewConversationButton
-            createNewConversation={async () => {
-              setMessages([]);
-              await newConversation();
+            createNewConversation={() => {
+              newConversation.mutate();
             }}
           />
           <Button
@@ -147,14 +222,17 @@ export default function Chat({
             handleClose={() => {
               setShowConversationHistory(!showConversationHistory);
             }}
-            fetchLastConversation={(chatId) => {
-              fetchLastConversation(chatId);
+            setConversationId={(id) => {
+              setConversationId(id);
+              getConversationById.refetch();
+              setMessages(getConversationById.data?.[0].context);
+              console.log("id", id);
             }}
           />
         ) : (
           <ChatLog
             messages={messages}
-            waitingForResponse={waitingForResponse}
+            isLoading={lastConversation.isLoading || getConversationById.isLoading}
           />
         )}
       </div>
@@ -165,7 +243,10 @@ export default function Chat({
         entryData={entryData}
         setEntryData={setEntryData}
         waitingForResponse={waitingForResponse}
-        onSendMsgClick={onSendMsgClick}
+        sendMessage={() => {
+          const newMessages = [...messages, { role: "user", content: entryData }];
+          sendMessage.mutate(newMessages);
+        }}
       />
     </>
   );

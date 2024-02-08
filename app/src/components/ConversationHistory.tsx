@@ -12,11 +12,11 @@ export interface Conversation {
 export default function ConversationHistory({
     supabaseClient,
     handleClose,
-    fetchLastConversation,
+    setConversationId,
 }: {
     supabaseClient: SupabaseClient;
     handleClose: () => void;
-    fetchLastConversation: (conversationId: number) => void;
+    setConversationId: (id: number) => void;
 }) {
     const [conversations, setConversations] = useState<Conversation[]>([]);
 
@@ -88,7 +88,7 @@ export default function ConversationHistory({
                                 </div>
                                 <div className="flex flex-col justify-center items-center pl-10">
                                     <ArrowRight size={20} onClick={() => {
-                                        fetchLastConversation(conversation["id"]);
+                                        setConversationId(conversation["id"]);
                                         handleClose();
                                     }}></ArrowRight>
                                     <Trash className='mt-2' size={20} onClick={async () => { await removeConversation(conversation["id"]) }}></Trash>
