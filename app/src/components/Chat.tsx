@@ -9,6 +9,7 @@ import PromptForm from "./PromptForm";
 import { toast } from "sonner";
 import NewConversationButton from "./NewConversationButton";
 import ConversationHistory from "./ConversationHistory";
+import { NavMenu } from "./NavMenu";
 
 export default function Chat({
   supabaseClient,
@@ -118,24 +119,25 @@ export default function Chat({
       <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
 
       <div className="fixed flex space-x-4 top-4 right-4">
-        <LogoutButton supabaseClient={supabaseClient} />
-        <NewConversationButton
-          createNewConversation={async () => {
-            setMessages([]);
-            await newConversation();
-          }}
-        />
-        <Button
-          size={"icon"}
-          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
-          onClick={() => {
-            setShowConversationHistory(!showConversationHistory);
-          }}
-        >
-          <History size={20} />
-        </Button>
-
-        <ThemeToggle />
+        <NavMenu>
+          <LogoutButton supabaseClient={supabaseClient} />
+          <NewConversationButton
+            createNewConversation={async () => {
+              setMessages([]);
+              await newConversation();
+            }}
+          />
+          <Button
+            size={"icon"}
+            className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
+            onClick={() => {
+              setShowConversationHistory(!showConversationHistory);
+            }}
+          >
+            <History size={20} />
+          </Button>
+          <ThemeToggle />
+        </NavMenu>
       </div>
 
       <div className="p-8 mt-12 mb-32">
