@@ -14,7 +14,13 @@ void sendData(const std::string &filePath)
 
     CURL *curl;
     CURLcode res;
-    std::string url = getenv("SUPABASE_URL") + "/functions/v1/process-audio";
+    const char *supabaseUrlEnv = getenv("SUPABASE_URL");
+    if (!supabaseUrlEnv)
+    {
+        std::cerr << "Environment variable SUPABASE_URL is not set." << std::endl;
+        return; // or handle the error as appropriate
+    }
+    std::string url = std::string(supabaseUrlEnv) + "/functions/v1/process-audio";
     std::string authToken = getenv("AUTH_TOKEN");
 
     // Use filesystem to get the file size
