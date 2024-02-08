@@ -5,26 +5,12 @@ import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 import { ApplicationError, UserError } from "../common/errors.ts";
 
-async function callOpenRouter(modelId, messages) {
+async function callOpenRouter(openRouterClient, modelId, messages) {
   // Your OpenRouter API key and other configurations
-  const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: modelId, // Use the model ID passed to the function
-      messages: messages,
-    }),
+  let completion = await openRouterClient.chat.completions.create({
+    model: modelId,
+    messages: messages,
   });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const completion = await response.json();
 
   console.log("completion: ", completion)
   const message = completion.choices[0].message
@@ -67,6 +53,11 @@ const chat = async (req) => {
   //use this key for embeddings and for model generation
   const openaiClient = new OpenAI({
     apiKey: Deno.env.get("OPENAI_API_KEY"),
+  });
+
+  const openRouterClient = new OpenAI({
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: Deno.env.get("OPENROUTER_API_KEY") 
   });
 
   console.log("messageHistory: ", messageHistory);
@@ -112,7 +103,7 @@ const chat = async (req) => {
   try {
     let responseMessage;
     if (useOpenRouter) {
-      responseMessage = await callOpenRouter(modelId, messageHistory);
+      responseMessage = await callOpenRouter(openRouterClient, modelId, messageHistory);
     } else {
       responseMessage = await callOpenAI(openaiClient, messageHistory);
     }
