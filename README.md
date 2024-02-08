@@ -57,71 +57,11 @@ git clone https://github.com/adamcohenhillel/ADeus
 
 #### Setup: Supabase
 
-We will use Supabase as our database (with vector search, pgvector), authentication, and cloud functions for processing information.
-
-1. Go to [supabase.co](https://supabase.co), create your account if you don't have one already
-2. Click "New Project", give it a name, and make sure to note the database password you are given
-
-   <img src="docs/images/supabase_new_prpject.png" width="100">
-
-3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
-
-   <img src="docs/images/supabase_creds.png" width="200">
-
-4. Now, go to the authentication tab on the right navbar (<img src="docs/images/supabase_auth.png" width="100">), note that it can take a few moments for Supabase to finish setup the project
-
-5. There, you will see the "user management" UI. Click "Add User" -> "Add new user", fill an email and password, and make sure to check the "auto-confirm" option.
-
-   <img src="docs/images/supabase_new_user.png" width="200">
-
-6. From there, go to the SQL Editor tab (<img src="docs/images/supabase_sql_editor.png" width="100">) and paste the [schema.sql](/supabase/schema.sql) from this repo, and execute. This will enable all the relevant extensions (pgvector) and create the two tables:
-
-   <img src="docs/images/supabase_tables.png" width="150">
-
-7. By now, you should have 4 things: `email` & `password` for your supabase user, and the `Supabase URL` and `API Anon Key`.
-
-8. If so, go to your terminal, and cd to the supabase folder: `cd ./supabase`
-
-9. Install Supabase and set up the CLI. You should follow thier [guide here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
-   - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/docs/guides/cli/getting-started))
-   - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker dameon to run in the background for deploying supabase functions)
-10. Now when we have the CLI, we need to login with oour Supabase account, running `supabase login` - this should pop up a browser window, which should prompt you through the auth
-11. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`, and it will be under "reference id") - you can skip (enter) the database password, it's not needed.
-12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
-13. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
-
-If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
+Check out
 
 #### Setup: App (Web)
 
-Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
-
-To try it out, you can either use the deployed version of the web app here: [adeusai.com](https://adeusai.com) - which will ask you to connect to your own Supabase instance (it is only a frontend client).
-
-Or you can deploy the app yourself somewhere - the easiest is Vercel, or locally:
-
-from the root folder:
-
-```bash
-cd ./app
-```
-
-npm install and run:
-
-```bash
-npm i
-npm run dev
-```
-
-Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
-
-<img src="docs/images/login_screenshot.png" width="150">
-
-Enter the four required details, which you should've obtained in the Supabase setup: `Supabase URL`, `Supabase Anon API Key`, `email` and `password`.
-
-And you should be able to start chatting!
-
-Now - let's configure our hardware device, so we could start provide crucial context to our personal AI!
+check out
 
 ### Setup: Hardware - Coral AI device
 
@@ -214,40 +154,11 @@ How-to-Guide will be written here soon, but it should be fairly simple with [Oll
 brew install ngrok/ngrok/ngrok
 ```
 
-## Areas to Contribute:
+## How to Contribute:
 
 As people will soon notice, my C++ skills are limited, as well as my React and hardware skills :P - any help would be amazing! Contributions are more than welcomed. This should be maintained by us, for us.
 
 Build it for yourself, and build it for others. This can become the Linux of the OS, the Android of the mobile. It is raw, but we need to start from somewhere!
-
-### Known Bugs:
-
-- [ ] Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video," even though it has nothing to do with the audio ([ticket #7](https://github.com/adamcohenhillel/AdDeus/issues/7))
-
-- [ ] Currently it is using Wi-Fi, which makes it not-so mobile. An alternative approach would either be: ([ticket #8](https://github.com/adamcohenhillel/AdDeus/issues/8))
-
-  - Bluetooth, pairing with the mobile device
-  - Sdd a 4G card that will allow it to be completly independent
-
-- [ ] Sometimes when loading from scratch, it takes some time (2-3 curl requests) until it resolves the DNS of the Supabase instance ([ticket #8](https://github.com/adamcohenhillel/AdDeus/issues/12))
-
-#### Backend:
-
-- The RAG (Retrieval-Augmented Generation) can be extremely improved:
-  - [ ] Need to process the audio not only into "embeddings" but also run an LLM on it to generate some context ([ticket #1](https://github.com/adamcohenhillel/AdDeus/issues/1))
-  - [ ] Need to query the RAG more efficiently, maybe with timestamp as well, etc. - not only embeddings (relates to the processing part) ([ticket #2](https://github.com/adamcohenhillel/AdDeus/issues/2))
-- [ ] Improve security - currently I didn't spent too much time making the Supabase RLS really work (for writing data) ([ticket #3](https://github.com/adamcohenhillel/AdDeus/issues/3))
-
-#### Hardware / On-device:
-
-- [ ] Run on a Rasberry Pi Pico / Zero, as it is much much cheaper, and should do the work too ([ticket #4](https://github.com/adamcohenhillel/AdDeus/issues/4))
-- [ ] Currently the setup is without battery, need to find the easiest way to add this as part of the setup ([ticket #5](https://github.com/adamcohenhillel/AdDeus/issues/5))
-
-#### Mobile:
-
-- [ ] Improve user setup?
-
-#### UX and Onboarding
 
 - [ ] An easy setup script / deploy my own Ollama server to replace OpenAI [ticket #6](https://github.com/adamcohenhillel/AdDeus/issues/6)
 - [ ] Add How-to for Ollama setup ([ticket #9](https://github.com/adamcohenhillel/AdDeus/issues/9))
