@@ -5,30 +5,25 @@ import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 import { ApplicationError, UserError } from "../common/errors.ts";
 
-async function callOpenRouter(openRouterClient, modelId, messages) {
-  // Your OpenRouter API key and other configurations
-  let completion = await openRouterClient.chat.completions.create({
-    model: modelId,
-    messages: messages,
-  });
-
-  console.log("completion: ", completion)
-  const message = completion.choices[0].message
-  return message;
-}
-
-async function callOpenAI(openaiClient, messages) {
-
-  let completion = await openaiClient.chat.completions.create({
-    model: "gpt-4-1106-preview",
-    messages: messages,
-  });
-  console.log("completion: ", completion);
-  console.log(
-    "completion.choices[0].content: ",
-    completion.choices[0].content
-  );
-  return completion.choices[0].message;
+async function generateResponse(useOpenRouter, openaiClient, openRouterClient, modelId, messages) {
+  let completion;
+  if (useOpenRouter) {
+    // OpenRouter call
+    completion = await openRouterClient.chat.completions.create({
+      model: modelId, // Make sure modelId is correctly set for OpenRouter
+      messages: messages,
+    });
+    console.log("OpenRouter completion: ", completion);
+    return completion.choices[0].message; 
+  } else {
+    // OpenAI call
+    completion = await openaiClient.chat.completions.create({
+      model: "gpt-4-1106-preview", 
+      messages: messages,
+    });
+    console.log("OpenAI completion: ", completion);
+    return completion.choices[0].message; 
+  }
 }
 
 const chat = async (req) => {
@@ -101,12 +96,7 @@ const chat = async (req) => {
 
   //if UseOpenRouter = true generate with OpenRouter, if false generate with OpenAI
   try {
-    let responseMessage;
-    if (useOpenRouter) {
-      responseMessage = await callOpenRouter(openRouterClient, modelId, messageHistory);
-    } else {
-      responseMessage = await callOpenAI(openaiClient, messageHistory);
-    }
+    const responseMessage = await generateResponse(useOpenRouter, openaiClient, openRouterClient, modelId, messages);
 
     return new Response(
       JSON.stringify({
