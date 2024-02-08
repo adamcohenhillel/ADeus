@@ -1,4 +1,6 @@
 #include <alsa/asoundlib.h>
+#include <filesystem>
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -6,28 +8,58 @@
 #include <curl/curl.h>
 #include <cassert>
 
-// void sendData(std::vector<char> &buffer)
-// {
-//     CURL *curl;
-//     CURLcode res;
-//     std::string url = "";
+void sendData(const std::string &filePath)
+{
+    namespace fs = std::filesystem;
 
-//     curl_global_init(CURL_GLOBAL_ALL);
-//     curl = curl_easy_init();
-//     if (curl)
-//     {
-//         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-//         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, buffer.data());
-//         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, buffer.size());
+    CURL *curl;
+    CURLcode res;
+    std::string url = "YOUR PROCESS AUDIO FUNCTION ENDPOINT";
+    std::string authToken = "YOUR AUTH TOKEN";
 
-//         res = curl_easy_perform(curl);
-//         if (res != CURLE_OK)
-//             std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+    // Use filesystem to get the file size
+    auto fileSize = fs::file_size(filePath);
+    if (fileSize == static_cast<uintmax_t>(-1))
+    {
+        std::cerr << "Could not determine file size: " << filePath << std::endl;
+        return;
+    }
 
-//         curl_easy_cleanup(curl);
-//     }
-//     curl_global_cleanup();
-// }
+    // Initialize CURL
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl = curl_easy_init();
+    if (curl)
+    {
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, ("Authorization: Bearer " + authToken).c_str());
+        headers = curl_slist_append(headers, "Content-Type: audio/wav");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(fileSize));
+
+        // Open file for reading in binary mode
+        FILE *fd = fopen(filePath.c_str(), "rb");
+        if (!fd)
+        {
+            std::cerr << "Failed to open file: " << filePath << std::endl;
+            curl_easy_cleanup(curl);
+            return;
+        }
+        curl_easy_setopt(curl, CURLOPT_READDATA, fd);
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Enable verbose for testing
+
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+
+        // Cleanup
+        fclose(fd);
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+    }
+    curl_global_cleanup();
+}
 
 // Function to write WAV header
 void writeWavHeader(std::ofstream &file, int sampleRate, int bitsPerSample, int channels, int dataSize)
@@ -135,6 +167,10 @@ int main()
     writeWavHeader(wavFile, sampleRate, bitsPerSample, channels, dataSize);
     wavFile.write(accumulatedBuffer.data(), dataSize);
     wavFile.close();
+    sendData("output.wav");
+
+    // Delete the file after sending
+    std::filesystem::remove("output.wav");
 
     // Stop PCM device and drop pending frames
     snd_pcm_drop(capture_handle);
