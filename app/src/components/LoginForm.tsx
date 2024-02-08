@@ -55,10 +55,7 @@ export default function LoginForm() {
 
       <div>
         <div className="flex flex-wrap pt-4">
-          <label
-            className="block  text-sm font-medium mb-1"
-            htmlFor="text"
-          >
+          <label className="block  text-sm font-medium mb-1" htmlFor="text">
             Supabase URL
           </label>
           <input
@@ -73,10 +70,7 @@ export default function LoginForm() {
         </div>
 
         <div className="flex flex-wrap pt-4">
-          <label
-            className="block  text-sm font-medium mb-1"
-            htmlFor="email"
-          >
+          <label className="block  text-sm font-medium mb-1" htmlFor="email">
             Supabase Token
           </label>
           <input
@@ -91,10 +85,7 @@ export default function LoginForm() {
         </div>
 
         <div className="flex flex-wrap pt-4">
-          <label
-            className="block  text-sm font-medium mb-1"
-            htmlFor="email"
-          >
+          <label className="block  text-sm font-medium mb-1" htmlFor="email">
             Email
           </label>
           <input
@@ -108,10 +99,7 @@ export default function LoginForm() {
           />
         </div>
         <div className="flex flex-wrap pt-4">
-          <label
-            className="block text-sm font-medium mb-1"
-            htmlFor="password"
-          >
+          <label className="block text-sm font-medium mb-1" htmlFor="password">
             Password
           </label>
           <input
@@ -126,15 +114,12 @@ export default function LoginForm() {
         </div>
 
         <div className="flex flex-col items-center mt-6">
-          <Button
-            onClick={emailLogin}
-            className="w-full font-bold"
-          >
+          <Button onClick={emailLogin} className="w-full font-bold">
             Login
           </Button>
         </div>
       </div>
-      <p className="mt-8 text-sm opacity-50 pb-6 mb-safe">
+      <p className="mt-8 text-sm opacity-50 pb-6">
         Don&apos;t have these details? Please check the setup guide{" "}
         <Link className="underline" href="https://x.com/adamcohenhillel">
           here

@@ -1,7 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
-import ChatsHistory, { HistoryChat } from './chatsHistory';
+import ChatsHistory, { HistoryChat } from "./chatsHistory";
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
 import { Plus, History } from "lucide-react";
@@ -89,7 +89,7 @@ export default function Chat({
   };
 
   const fetchLastConversation = async (chatId?: number) => {
-    console.log('chatId', chatId)
+    console.log("chatId", chatId);
     try {
       const { data, error } = await supabaseClient
         .from("conversations")
@@ -118,13 +118,11 @@ export default function Chat({
   return (
     <>
       <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
-      
+
       <div className="fixed flex space-x-4 top-4 right-4">
-        <LogoutButton
-          supabaseClient={supabaseClient}
-        />
+        <LogoutButton supabaseClient={supabaseClient} />
         <Button
-          size={'icon'}
+          size={"icon"}
           className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={async () => {
             setMessages([]);
@@ -138,7 +136,7 @@ export default function Chat({
           size={"icon"}
           className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={() => {
-            setShowChatsHistory(!showChatsHistory)
+            setShowChatsHistory(!showChatsHistory);
           }}
         >
           <History size={20} />
@@ -148,14 +146,21 @@ export default function Chat({
       </div>
 
       <div className="p-8 mt-12 mb-32">
-        {(
-          showChatsHistory ?
-            <ChatsHistory 
-              supabaseClient={supabaseClient} 
-              handleClose={() => { setShowChatsHistory(!showChatsHistory) }}
-              fetchLastConversation={(chatId) => { fetchLastConversation(chatId) }}
-            /> :
-            <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
+        {showChatsHistory ? (
+          <ChatsHistory
+            supabaseClient={supabaseClient}
+            handleClose={() => {
+              setShowChatsHistory(!showChatsHistory);
+            }}
+            fetchLastConversation={(chatId) => {
+              fetchLastConversation(chatId);
+            }}
+          />
+        ) : (
+          <ChatLog
+            messages={messages}
+            waitingForResponse={waitingForResponse}
+          />
         )}
       </div>
 
