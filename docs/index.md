@@ -4,6 +4,14 @@ Welcome, contributer! What you are doing here is truly amazing. Open source cont
 
 First, let's understand how Adeus is built:
 
-[test](./use_python_recorder)
+Adeus consists of 3 parts:
 
-[test](./setup_supabase)
+![ADeus diagram](./images/adeus_diagram.png)
+
+1. **A mobile / web app:**
+   an interface that lets the user to interact with their assistant and data via chat.
+
+2. **Hardware device (Currently Coral AI, but soon a Rasberry-Pi Zero W worth $15):** this will be the wearable that will record everything, and send it to the backend to be processed
+3. **Supabase :** Our backend, and datavase, where we will process and store data, and interact with LLMs.
+   Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
+   - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.

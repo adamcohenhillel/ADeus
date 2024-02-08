@@ -1,4 +1,7 @@
-# Setup Supabase
+---
+title: Setting up the backend (Supabase)
+description: add description
+---
 
 We will use Supabase as our database (with vector search, pgvector), authentication, and cloud functions for processing information.
 
@@ -34,3 +37,11 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 13. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
+
+### Setup: Run with Ollama
+
+How-to-Guide will be written here soon, but it should be fairly simple with [Ollama](https://ollama.ai/) serve and `ngrok http 11434`
+
+```
+brew install ngrok/ngrok/ngrok
+```

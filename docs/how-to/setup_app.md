@@ -1,3 +1,8 @@
+---
+title: Setting up the mobile / web app
+description: add description
+---
+
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
 
 To try it out, you can either use the deployed version of the web app here: [adeusai.com](https://adeusai.com) - which will ask you to connect to your own Supabase instance (it is only a frontend client).
