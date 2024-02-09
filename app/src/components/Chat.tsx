@@ -1,11 +1,11 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
-import ChatsHistory, { HistoryChat } from './chatsHistory';
+import ChatsHistory, { HistoryChat } from "./chatsHistory";
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
-import { Select } from "./ui/select"
-import { Switch } from "./ui/switch"
+import { Select } from "./ui/select";
+import { Switch } from "./ui/switch";
 import { Plus, History } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import PromptForm from "./PromptForm";
@@ -31,12 +31,10 @@ export default function Chat({
   const [chatId, setChatId] = useState<Message[]>([]);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [showChatsHistory, setShowChatsHistory] = useState(false);
+  const [isOpenRouterAvailable, setIsOpenRouterAvailable] = useState(false);
 
-  const [useOpenRouter, setUseOpenRouter] = useState(false);
   const [openRouterModels, setOpenRouterModels] = useState<Model[]>([]); // State to store model names
-  const [selectedModel, setSelectedModel] = useState(''); // State to store the selected model ID
-
-
+  const [selectedModel, setSelectedModel] = useState(""); // State to store the selected model ID
 
   const onSendMsgClick = async () => {
     try {
@@ -51,7 +49,7 @@ export default function Chat({
         .eq("id", chatId);
 
       const { data, error } = await supabaseClient.functions.invoke("chat", {
-        body: { messageHistory: newMessages, useOpenRouter, modelId: selectedModel }, // Pass the selected model ID along
+        body: { messageHistory: newMessages, modelId: selectedModel }, // Pass the selected model ID along
       });
 
       setWaitingForResponse(false);
@@ -66,24 +64,34 @@ export default function Chat({
     }
   };
 
-  //fetch OpenRouter Models
+  //fetch OpenRouter Models if OpenRouter Key Exists
   useEffect(() => {
-    async function fetchModels() {
+    async function fetchOpenRouterConfig() {
       try {
-        const response = await fetch('https://openrouter.ai/api/v1/models');
-        const data = await response.json();
-        setOpenRouterModels(data.data);
+        const { data } = await supabaseClient.functions.invoke(
+          "get-openrouter-config",
+          {
+            method: "GET",
+          }
+        );
 
-        if (data.data.length > 0) {
-          setSelectedModel(data.data[0].id);
+        if (data && data.isOpenRouterAvailable) {
+          setIsOpenRouterAvailable(true);
+          setOpenRouterModels(data.models);
+          if (data.models.length > 0) {
+            setSelectedModel(data.models[0].id);
+          }
+        } else {
+          setIsOpenRouterAvailable(false);
         }
       } catch (error) {
-        console.error("Error fetching models:", error);
+        console.error("Error fetching OpenRouter config:", error);
+        setIsOpenRouterAvailable(false);
       }
     }
 
-    fetchModels();
-  }, [])
+    fetchOpenRouterConfig();
+  }, []);
 
   useEffect(() => {
     if (messages.length > 1) {
@@ -119,7 +127,7 @@ export default function Chat({
   };
 
   const fetchLastConversation = async (chatId?: number) => {
-    console.log('chatId', chatId)
+    console.log("chatId", chatId);
     try {
       const { data, error } = await supabaseClient
         .from("conversations")
@@ -148,22 +156,10 @@ export default function Chat({
   return (
     <>
       <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
-      
+
       <div className="fixed flex items-center top-4 left-4 mb-10 space-x-2">
-        {/* Toggle switch to choose between OpenAI and OpenRouter */}
-        <div className="flex-shrink-0">
-          <Switch
-            checked={useOpenRouter}
-            onChange={(checked) => {
-              setUseOpenRouter(checked);
-              if (!checked) setSelectedModel(openRouterModels[0].id); // Reset to default model when toggling off
-            }}
-            size="sm"
-            label="Use OpenRouter"
-          />
-        </div>
         {/* Dropdown for selecting OpenRouter models */}
-        {useOpenRouter && (
+        {isOpenRouterAvailable && (
           <div className="flex-grow min-w-40">
             <Select
               value={selectedModel}
@@ -173,7 +169,6 @@ export default function Chat({
               {openRouterModels.map((model) => (
                 <option key={model.id} value={model.id}>
                   {model.name}
-                  {/* "Hi" */}
                 </option>
               ))}
             </Select>
@@ -182,11 +177,9 @@ export default function Chat({
       </div>
 
       <div className="fixed flex space-x-4 top-4 right-4 overflow-x-auto">
-        <LogoutButton
-          supabaseClient={supabaseClient}
-        />
+        <LogoutButton supabaseClient={supabaseClient} />
         <Button
-          size={'icon'}
+          size={"icon"}
           className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={async () => {
             setMessages([]);
@@ -199,7 +192,7 @@ export default function Chat({
           size={"icon"}
           className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
           onClick={() => {
-            setShowChatsHistory(!showChatsHistory)
+            setShowChatsHistory(!showChatsHistory);
           }}
         >
           <History size={20} />
@@ -208,14 +201,21 @@ export default function Chat({
       </div>
 
       <div className="p-8 mt-12 mb-32">
-      {(
-          showChatsHistory ?
-            <ChatsHistory 
-              supabaseClient={supabaseClient} 
-              handleClose={() => { setShowChatsHistory(!showChatsHistory) }}
-              fetchLastConversation={(chatId) => { fetchLastConversation(chatId) }}
-            /> :
-            <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
+        {showChatsHistory ? (
+          <ChatsHistory
+            supabaseClient={supabaseClient}
+            handleClose={() => {
+              setShowChatsHistory(!showChatsHistory);
+            }}
+            fetchLastConversation={(chatId) => {
+              fetchLastConversation(chatId);
+            }}
+          />
+        ) : (
+          <ChatLog
+            messages={messages}
+            waitingForResponse={waitingForResponse}
+          />
         )}
       </div>
 

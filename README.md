@@ -92,8 +92,6 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 13. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
 14. If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run `supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>`.
 
-If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
-
 #### Setup: App (Web)
 
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
@@ -210,15 +208,13 @@ SOON! (cost $15, but need to solder a microphone)
 
 ### Setup: Run with OpenRouter
 
-If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run 
+If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run
 
-``` 
+```
 supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>
 ```
 
-Once that is set up, simple click the toggle in the top left of the chat interface to start experimenting with tons of AI models.
-
-<img src="docs/images/openrouter.png" width="500">
+Once that is set up, you will have a models dropdown in the chat ui available to choose from any models you'd like available by OpenRouter.
 
 ### Setup: Run with Ollama
 
