@@ -5,12 +5,10 @@ import ChatsHistory, { HistoryChat } from "./chatsHistory";
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
 import { Select } from "./ui/select";
-import { Switch } from "./ui/switch";
 import { Plus, History } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import PromptForm from "./PromptForm";
 import { toast } from "sonner";
-import { Console } from "console";
 
 interface Model {
   id: string;
