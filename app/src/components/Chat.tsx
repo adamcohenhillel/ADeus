@@ -1,14 +1,15 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
-import ChatsHistory, { HistoryChat } from './chatsHistory';
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
-import { Plus, History } from "lucide-react";
+import { History } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import PromptForm from "./PromptForm";
 import { toast } from "sonner";
-import { Console } from "console";
+import NewConversationButton from "./NewConversationButton";
+import ConversationHistory from "./ConversationHistory";
+import { NavMenu } from "./NavMenu";
 
 export default function Chat({
   supabaseClient,
@@ -20,10 +21,9 @@ export default function Chat({
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [historyChats, setChatsList] = useState<HistoryChat[]>([]);
-  const [chatId, setChatId] = useState<Message[]>([]);
+  const [conversationId, setConversationId] = useState<Message[]>([]);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
-  const [showChatsHistory, setShowChatsHistory] = useState(false);
+  const [showConversationHistory, setShowConversationHistory] = useState(false);
 
   const onSendMsgClick = async () => {
     try {
@@ -35,7 +35,7 @@ export default function Chat({
       const { data: d2, error: e2 } = await supabaseClient
         .from("conversations")
         .update({ context: newMessages })
-        .eq("id", chatId);
+        .eq("id", conversationId);
 
       if (e2) {
         toast.error(e2.message || e2.code || "Unknown error");
@@ -81,21 +81,20 @@ export default function Chat({
       }
       console.log("data", data);
       setMessages(data[0].context);
-      setChatId(data[0].id);
+      setConversationId(data[0].id);
     } catch (error: any) {
       console.error("ERROR", error);
       toast.error(error.message || error.code || error.msg || "Unknown error");
     }
   };
 
-  const fetchLastConversation = async (chatId?: number) => {
-    console.log('chatId', chatId)
+  const fetchLastConversation = async (conversationId?: number) => {
     try {
       const { data, error } = await supabaseClient
         .from("conversations")
         .select("*")
         .order("created_at", { ascending: false })
-        .filter("id", chatId ? "eq" : "not.eq", chatId ? chatId : 0)
+        .filter("id", conversationId ? "eq" : "not.eq", conversationId ? conversationId : 0)
         .limit(1);
 
       if (!data || data.length == 0 || error) {
@@ -103,7 +102,7 @@ export default function Chat({
       } else {
         console.log("data", data);
         setMessages(data[0].context);
-        setChatId(data[0].id);
+        setConversationId(data[0].id);
       }
     } catch (error: any) {
       console.error("ERROR", error);
@@ -118,44 +117,45 @@ export default function Chat({
   return (
     <>
       <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
-      
+
       <div className="fixed flex space-x-4 top-4 right-4">
-        <LogoutButton
-          supabaseClient={supabaseClient}
-        />
-        <Button
-          size={'icon'}
-          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
-          onClick={async () => {
-            setMessages([]);
-            await newConversation();
-          }}
-        >
-          <Plus size={20} />
-        </Button>
-
-        <Button
-          size={"icon"}
-          className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
-          onClick={() => {
-            setShowChatsHistory(!showChatsHistory)
-          }}
-        >
-          <History size={20} />
-        </Button>
-
-        <ThemeToggle />
+        <NavMenu>
+          <LogoutButton supabaseClient={supabaseClient} />
+          <NewConversationButton
+            createNewConversation={async () => {
+              setMessages([]);
+              await newConversation();
+            }}
+          />
+          <Button
+            size={"icon"}
+            className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
+            onClick={() => {
+              setShowConversationHistory(!showConversationHistory);
+            }}
+          >
+            <History size={20} />
+          </Button>
+          <ThemeToggle />
+        </NavMenu>
       </div>
 
       <div className="p-8 mt-12 mb-32">
-        {(
-          showChatsHistory ?
-            <ChatsHistory 
-              supabaseClient={supabaseClient} 
-              handleClose={() => { setShowChatsHistory(!showChatsHistory) }}
-              fetchLastConversation={(chatId) => { fetchLastConversation(chatId) }}
-            /> :
-            <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
+        {showConversationHistory ? (
+          <ConversationHistory
+            supabaseClient={supabaseClient}
+            handleClose={() => {
+              setShowConversationHistory(!showConversationHistory);
+            }}
+            fetchLastConversation={(chatId) => {
+              fetchLastConversation(chatId);
+            }}
+          />
+        ) : (
+          <ChatLog
+            messages={messages}
+            waitingForResponse={waitingForResponse}
+          />
         )}
       </div>
 

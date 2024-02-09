@@ -4,55 +4,58 @@ import { Trash, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 
-export interface HistoryChat {
+export interface Conversation {
     id: number;
     created_at: string;
 };
 
-export default function ChatsHistory({
+export default function ConversationHistory({
     supabaseClient,
     handleClose,
     fetchLastConversation,
 }: {
     supabaseClient: SupabaseClient;
     handleClose: () => void;
-    fetchLastConversation: (chatId: number) => void;
+    fetchLastConversation: (conversationId: number) => void;
 }) {
-    const [listReceived, setListReceived] = useState(false);
-    const [chatsList, setChats] = useState<HistoryChat[]>([]);
+    const [conversations, setConversations] = useState<Conversation[]>([]);
 
-    const fetchChatsList = async () => {
+    const removeConversation = async (conversationId: number) => {
         try {
+            const { error } = await supabaseClient
+                .from("conversations")
+                .delete()
+                .eq("id", conversationId);
+        } catch (error: any) {
+            console.error("ERROR", error);
+        } finally {
             const { data, error } = await supabaseClient
                 .from("conversations")
                 .select("id, created_at")
                 .order("created_at", { ascending: false });
             if (data) {
-                setChats(data);
+                setConversations(data);
             }
-        } catch (error: any) {
-            console.error("ERROR", error);
         }
-    };
-
-    const removeChat = async (chatId: number) => {
-        try {
-            const { data, error } = await supabaseClient
-                .from("conversations")
-                .delete()
-                .eq("id", chatId);
-            if (data) {
-                setChats(data);
-            }
-        } catch (error: any) {
-            console.error("ERROR", error);
-        }
-        await fetchChatsList();
     }
 
     useEffect(() => {
-        fetchChatsList();
-    }, []);
+        const fetchConversationList = async () => {
+            try {
+                const { data, error } = await supabaseClient
+                    .from("conversations")
+                    .select("id, created_at")
+                    .order("created_at", { ascending: false });
+                if (data) {
+                    setConversations(data);
+                }
+            } catch (error: any) {
+                console.error("ERROR", error);
+            }
+        };
+        
+        fetchConversationList();
+    }, [supabaseClient]);
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -69,31 +72,31 @@ export default function ChatsHistory({
             </Button>
 
             <AnimatePresence initial={false}>
-                {chatsList.length > 0 ? (
+                {conversations.length > 0 ? (
                     <div className="space-y-4">
-                        {chatsList.map((chat) => (
+                        {conversations.map((conversation) => (
                             <motion.div
-                                key={chat.id}
+                                key={conversation.id}
                                 className="card flex bg-muted/20 rounded-xl px-4 py-3 mb-2 shadow-sm"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                             >
                                 <div className="flex flex-col justify-between">
-                                    <div>ID: {chat.id}</div>
-                                    <div className="text-sm text-gray-500">Created: {formatDate(chat.created_at)}</div>
+                                    <div>ID: {conversation.id}</div>
+                                    <div className="text-sm text-gray-500">Created: {formatDate(conversation.created_at)}</div>
                                 </div>
                                 <div className="flex flex-col justify-center items-center pl-10">
                                     <ArrowRight size={20} onClick={() => {
-                                        fetchLastConversation(chat["id"]);
+                                        fetchLastConversation(conversation["id"]);
                                         handleClose();
                                     }}></ArrowRight>
-                                    <Trash className='mt-2' size={20} onClick={async () => { await removeChat(chat["id"]) }}></Trash>
+                                    <Trash className='mt-2' size={20} onClick={async () => { await removeConversation(conversation["id"]) }}></Trash>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
-                ) : listReceived ? <span>You dont have chats.</span> : <span>Loading...</span>}
+                ) :  <span>Loading...</span>}
             </AnimatePresence>
         </div>
     );
