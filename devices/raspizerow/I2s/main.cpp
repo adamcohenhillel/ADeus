@@ -1,14 +1,69 @@
-#include <alsa/asoundlib.h>
-#include <filesystem>
-#include <string>
-#include <cstdlib>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <vector>
 #include <iostream>
 #include <fstream>
-#include <vector>
+#include <alsa/asoundlib.h>
 #include <curl/curl.h>
+#include <filesystem>
 #include <cassert>
+#include <signal.h>
+#include <atomic>
 
-void sendData(const std::string &filePath)
+// Used to handle Ctrl+C
+volatile std::atomic<bool> running(true);
+
+// Assuming 4 bytes per sample for S32_LE format and mono audio
+int bytesPerSample = 4;
+int channels = 1;
+unsigned int sampleRate = 48000;
+int durationInSeconds = 60; // Duration you want to accumulate before sending
+int targetBytes = sampleRate * durationInSeconds * bytesPerSample * channels;
+int rc;
+
+template <typename T>
+class SafeQueue
+{
+private:
+    std::queue<T> queue;
+    std::mutex mutex;
+    std::condition_variable cond;
+
+public:
+    void push(T value)
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        queue.push(value);
+        cond.notify_one();
+    }
+
+    T pop()
+    {
+        std::unique_lock<std::mutex> lock(mutex);
+        cond.wait(lock, [this]
+                  { return !queue.empty(); });
+        T value = queue.front();
+        queue.pop();
+        return value;
+    }
+
+    bool empty()
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        return queue.empty();
+    }
+};
+SafeQueue<std::vector<char>> audioQueue;
+
+// Used to handle Ctrl+C
+void signalHandler(int signum)
+{
+    running = false;
+}
+
+void sendWav(const std::string &filePath)
 {
     namespace fs = std::filesystem;
 
@@ -20,6 +75,7 @@ void sendData(const std::string &filePath)
         std::cerr << "Environment variable SUPABASE_URL is not set." << std::endl;
         return; // or handle the error as appropriate
     }
+
     std::string url = std::string(supabaseUrlEnv) + "/functions/v1/process-audio";
     std::string authToken = getenv("AUTH_TOKEN");
 
@@ -67,7 +123,7 @@ void sendData(const std::string &filePath)
     curl_global_cleanup();
 }
 
-void writeWavHeader(std::ofstream &file, int sampleRate, int bitsPerSample, int channels, int dataSize)
+void writeWavHeader(std::ofstream &file, int bitsPerSample, int dataSize)
 {
     file.write("RIFF", 4);
     int chunkSize = 36 + dataSize;
@@ -89,55 +145,12 @@ void writeWavHeader(std::ofstream &file, int sampleRate, int bitsPerSample, int 
     file.write(reinterpret_cast<const char *>(&dataSize), 4);
 }
 
-int main()
+void recordAudio(snd_pcm_t *capture_handle, snd_pcm_uframes_t period_size)
 {
-    snd_pcm_t *capture_handle;
-    snd_pcm_format_t format = SND_PCM_FORMAT_S32_LE;
-
-    // Assuming 4 bytes per sample for S32_LE format and mono audio
-    int bytesPerSample = 4;
-    int channels = 1;
-    unsigned int sampleRate = 48000;
-    int durationInSeconds = 15; // Duration you want to accumulate before sending
-    int targetBytes = sampleRate * durationInSeconds * bytesPerSample * channels;
-    int rc;
-
-    // Open PCM device for recording (capture)
-    rc = snd_pcm_open(&capture_handle, "plughw:0", SND_PCM_STREAM_CAPTURE, 0);
-    assert(rc >= 0);
-    if (rc < 0)
-    {
-        std::cerr << "Unable to open pcm device: " << snd_strerror(rc) << std::endl;
-        return 1;
-    }
-
-    snd_pcm_uframes_t buffer_size;
-    snd_pcm_uframes_t period_size;
-
-    rc = snd_pcm_set_params(capture_handle,
-                            format,
-                            SND_PCM_ACCESS_RW_INTERLEAVED,
-                            channels,
-                            sampleRate,
-                            1,       // allow software resampling
-                            500000); // desired latency in microseconds (500ms)
-
-    if (rc < 0)
-    {
-        std::cerr << "Setting PCM parameters failed: " << snd_strerror(rc) << std::endl;
-        return 1;
-    }
-
-    // After calling snd_pcm_set_params, you can query the actual buffer size and period size set by ALSA
-    snd_pcm_get_params(capture_handle, &buffer_size, &period_size);
     std::vector<char> buffer(period_size * bytesPerSample);
+    std::vector<char> accumulatedBuffer;
 
-    // Prepare to use the capture handle
-    snd_pcm_prepare(capture_handle);
-    std::ofstream wavFile("output.wav", std::ios::binary);
-    std::vector<char> accumulatedBuffer; // Accumulator for audio data
-
-    while (accumulatedBuffer.size() < targetBytes)
+    while (running)
     {
         rc = snd_pcm_readi(capture_handle, buffer.data(), period_size);
         if (rc == -EPIPE)
@@ -162,20 +175,121 @@ int main()
 
             if (accumulatedBuffer.size() >= targetBytes)
             {
-                break; // Exit the loop once we have enough data
+                audioQueue.push(accumulatedBuffer);
+                accumulatedBuffer.clear();
             }
         }
     }
+}
 
-    int bitsPerSample = 32;
-    int dataSize = accumulatedBuffer.size();
-    writeWavHeader(wavFile, sampleRate, bitsPerSample, channels, dataSize);
-    wavFile.write(accumulatedBuffer.data(), dataSize);
-    wavFile.close();
-    sendData("output.wav");
+void handleAudioBuffer()
+{
+    while (running)
+    {
+        std::vector<char> dataChunk;
+        // Accumulate enough data to form a complete WAV file
+        while (dataChunk.size() < targetBytes)
+        {
+            std::vector<char> buffer = audioQueue.pop();
+            dataChunk.insert(dataChunk.end(), buffer.begin(), buffer.end());
+        }
 
-    // Delete the file after sending
-    std::filesystem::remove("output.wav");
+        // Process and send the accumulated data
+        if (!dataChunk.empty())
+        {
+            std::ofstream wavFile("output.wav", std::ios::binary);
+            int bitsPerSample = 32;
+            int dataSize = dataChunk.size();
+            writeWavHeader(wavFile, bitsPerSample, dataSize);
+            wavFile.write(dataChunk.data(), dataSize);
+            wavFile.close();
+
+            // Send the WAV file to the server
+            sendWav("output.wav");
+
+            // Delete the file after sending
+            std::filesystem::remove("output.wav");
+        }
+    }
+
+    // After exiting the loop, check if there's any remaining data to be processed
+    // This could be less than targetBytes but should still be sent
+    if (!audioQueue.empty())
+    {
+        std::vector<char> remainingData;
+        while (!audioQueue.empty())
+        {
+            std::vector<char> buffer = audioQueue.pop();
+            remainingData.insert(remainingData.end(), buffer.begin(), buffer.end());
+        }
+
+        if (!remainingData.empty())
+        {
+            std::ofstream wavFile("output_remaining.wav", std::ios::binary);
+            int bitsPerSample = 32;
+            int dataSize = remainingData.size();
+            writeWavHeader(wavFile, bitsPerSample, dataSize);
+            wavFile.write(remainingData.data(), dataSize);
+            wavFile.close();
+
+            // Send the remaining WAV file to the server
+            sendWav("output_remaining.wav");
+
+            // Delete the file after sending
+            std::filesystem::remove("output_remaining.wav");
+        }
+    }
+}
+
+int main()
+{
+    snd_pcm_t *capture_handle;
+    snd_pcm_format_t format = SND_PCM_FORMAT_S32_LE;
+
+    signal(SIGINT, signalHandler);
+
+    // Open PCM device for recording
+    rc = snd_pcm_open(&capture_handle, "plughw:0", SND_PCM_STREAM_CAPTURE, 0);
+    assert(rc >= 0);
+    if (rc < 0)
+    {
+        std::cerr << "Unable to open pcm device: " << snd_strerror(rc) << std::endl;
+        return 1;
+    }
+
+    // Set PCM parameters
+    snd_pcm_uframes_t buffer_size;
+    snd_pcm_uframes_t period_size;
+
+    rc = snd_pcm_set_params(capture_handle,
+                            format,
+                            SND_PCM_ACCESS_RW_INTERLEAVED,
+                            channels,
+                            sampleRate,
+                            1,       // allow software resampling
+                            500000); // desired latency
+
+    if (rc < 0)
+    {
+        std::cerr << "Setting PCM parameters failed: " << snd_strerror(rc) << std::endl;
+        return 1;
+    }
+
+    // After calling snd_pcm_set_params, you can query the actual buffer size and period size set by ALSA
+    snd_pcm_get_params(capture_handle, &buffer_size, &period_size);
+    std::vector<char> buffer(period_size * bytesPerSample);
+
+    // Prepare to use the capture handle
+    snd_pcm_prepare(capture_handle);
+
+    // Start the recording thread
+    std::thread recordingThread(recordAudio, capture_handle, period_size);
+
+    // Start the sending thread
+    std::thread sendingThread(handleAudioBuffer);
+
+    recordingThread.join();
+    sendingThread.join();
 
     // Stop PCM device and drop pending frames
     snd_pcm_drop(capture_handle);
