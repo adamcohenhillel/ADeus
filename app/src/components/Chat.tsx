@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
@@ -30,7 +30,7 @@ export default function Chat({
   const [conversationId, setConversationId] = useState(1);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
-
+  
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
       setWaitingForResponse(true);
@@ -49,6 +49,13 @@ export default function Chat({
 
       if (aiResponseError) throw aiResponseError;
 
+      const {data: updateConversationData, error: updateConversationError} = await supabaseClient
+        .from('conversations')
+        .update({ context: [...messages, userMessage, aiResponseData.msg] })
+        .eq('id', conversationId);
+
+      if (updateConversationError) throw updateConversationError;
+
       return aiResponseData;
     },
     onError: (error) => {
@@ -56,10 +63,9 @@ export default function Chat({
     },
     onSuccess: (aiResponse) => {
       setMessages(currentMessages => {
-        return [...currentMessages, aiResponse.msg];
+        return [...currentMessages, aiResponse.msg as Message];
       });
-
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      
       setWaitingForResponse(false);
 
       queryClient.invalidateQueries({
@@ -85,15 +91,10 @@ export default function Chat({
       }
       return data;
     },
-    onMutate: async () => {
-      setMessages([]);
-      setConversationId(0);
-    },
     onError: (error) => {
       toast.error(error.message || "Unknown error");
     },
     onSuccess: (data) => {
-      setMessages(data[0].context);
       setConversationId(data[0].id);
     },
   })
@@ -120,6 +121,12 @@ export default function Chat({
       setConversationId(getLastConversation.data[0].id);
     }
   }, [getLastConversation.data]);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <>
