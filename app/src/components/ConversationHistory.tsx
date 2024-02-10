@@ -87,10 +87,13 @@ export default function ConversationHistory({
                                     <div className="text-sm text-gray-500">Created: {formatDate(conversation.created_at)}</div>
                                 </div>
                                 <div className="flex flex-col justify-center items-center pl-10">
-                                    <ArrowRight size={20} onClick={() => {
-                                        setConversationId(conversation["id"]);
-                                        handleClose();
-                                    }}></ArrowRight>
+                                    <ArrowRight
+                                        size={20}
+                                        onClick={() => {
+                                            setConversationId(conversation["id"]);
+                                            handleClose();
+                                        }}
+                                    />
                                     <Trash className='mt-2' size={20} onClick={async () => { await removeConversation(conversation["id"]) }}></Trash>
                                 </div>
                             </motion.div>

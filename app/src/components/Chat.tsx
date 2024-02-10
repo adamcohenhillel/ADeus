@@ -15,7 +15,6 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import { get } from "http";
 
 export default function Chat({
   supabaseClient,
@@ -28,94 +27,48 @@ export default function Chat({
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState(0);
+  const [conversationId, setConversationId] = useState(1);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
 
-  const lastConversation = useQuery({
-    queryKey: ['conversations'],
-    queryFn: async () => {
-      const { data, error } = await supabaseClient
-        .from("conversations")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (error) {
-        throw error;
-      }
-      return data;
-    }
-  })
+  const sendMessageAndReceiveResponse = useMutation({
+    mutationFn: async (userMessage: Message) => {
+      setWaitingForResponse(true);
+      const { data: sendMessageData, error: sendMessageError } = await supabaseClient
+        .from('conversations')
+        .update({ context: [...messages, userMessage] })
+        .eq('id', conversationId);
 
-  const getConversationById = useQuery({
-    queryKey: ['conversations', conversationId],
-    queryFn: async () => {
-      const { data, error } = await supabaseClient
-        .from("conversations")
-        .select("*")
-        .eq("id", conversationId);
-      if (error) {
-        throw error;
-      }
-      return data;
-    }
-  })
+      if (sendMessageError) throw sendMessageError;
 
-  const sendMessage = useMutation({
-    mutationFn: async (newMessages: Message[]) => {
-      const { data, error } = await supabaseClient
-        .from("conversations")
-        .update({ context: newMessages })
-        .eq("id", conversationId);
-      if (error) {
-        throw error;
-      }
-      return data as unknown as Message[];
+      setMessages([...messages, userMessage]);
+
+      const { data: aiResponseData, error: aiResponseError } = await supabaseClient.functions.invoke("chat", {
+        body: { messageHistory: [...messages, userMessage] },
+      });
+
+      if (aiResponseError) throw aiResponseError;
+
+      return aiResponseData;
     },
-    onSuccess: (data) => {
-      setMessages(data);
+    onError: (error) => {
+      toast.error(error.message || "Unknown error");
     },
-  })
+    onSuccess: (aiResponse) => {
+      setMessages(currentMessages => {
+        return [...currentMessages, aiResponse.msg];
+      });
 
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      setWaitingForResponse(false);
 
+      queryClient.invalidateQueries({
+        queryKey: ['conversations', conversationId]
+      });
+    }
+  });
 
-  // const onSendMsgClick = async () => {
-  //   try {
-  //     let newMessages = [...messages, { role: "user", content: entryData }];
-  //     setMessages(newMessages);
-  //     setEntryData("");
-
-  //     setWaitingForResponse(true);
-  //     const { data: d2, error: e2 } = await supabaseClient
-  //       .from("conversations")
-  //       .update({ context: newMessages })
-  //       .eq("id", conversationId);
-
-  //     if (e2) {
-  //       toast.error(e2.message || e2.code || "Unknown error");
-  //     }
-
-  //     const { data, error } = await supabaseClient.functions.invoke("chat", {
-  //       body: { messageHistory: newMessages },
-  //     });
-  //     setWaitingForResponse(false);
-  //     if (error) {
-  //       throw error;
-  //     }
-  //     setMessages([...newMessages, data?.msg]);
-  //   } catch (error: any) {
-  //     console.error("ERROR", error);
-  //     toast.error(error.message || error.code || error.msg || "Unknown error");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (messages.length > 1) {
-  //     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  //   }
-  // }, [messages]);
-
-    const newConversation = useMutation({
+  const newConversation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabaseClient
         .from("conversations")
@@ -132,63 +85,41 @@ export default function Chat({
       }
       return data;
     },
+    onMutate: async () => {
+      setMessages([]);
+      setConversationId(0);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Unknown error");
+    },
     onSuccess: (data) => {
       setMessages(data[0].context);
       setConversationId(data[0].id);
     },
   })
-  // const newConversation = async () => {
-  //   try {
-  //     const { data, error } = await supabaseClient
-  //       .from("conversations")
-  //       .insert([
-  //         {
-  //           context: [
-  //             { role: "assistant", content: "Hey, how can I help you?" },
-  //           ],
-  //         },
-  //       ])
-  //       .select("*");
-  //     if (error) {
-  //       console.error("ERROR", error);
-  //     }
-  //     if (!data || data.length == 0) {
-  //       throw new Error("No data returned");
-  //     }
-  //     console.log("data", data);
-  //     setMessages(data[0].context);
-  //     setConversationId(data[0].id);
-  //   } catch (error: any) {
-  //     console.error("ERROR", error);
-  //     toast.error(error.message || error.code || error.msg || "Unknown error");
-  //   }
-  // };
 
-  // const fetchLastConversation = async (conversationId?: number) => {
-  //   try {
-  //     const { data, error } = await supabaseClient
-  //       .from("conversations")
-  //       .select("*")
-  //       .order("created_at", { ascending: false })
-  //       .filter("id", conversationId ? "eq" : "not.eq", conversationId ? conversationId : 0)
-  //       .limit(1);
+  const getLastConversation = useQuery({
+    queryKey: ['lastConversation', conversationId],
+    queryFn: async () => {
+      const { data, error } = await supabaseClient
+        .from("conversations")
+        .select("*")
+        .eq("id", conversationId)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (error) {
+        throw error;
+      }
+      return data;
+    }
+  })
 
-  //     if (!data || data.length == 0 || error) {
-  //       newConversation();
-  //     } else {
-  //       console.log("data", data);
-  //       setMessages(data[0].context);
-  //       setConversationId(data[0].id);
-  //     }
-  //   } catch (error: any) {
-  //     console.error("ERROR", error);
-  //     toast.error(error.message || error.code || error.msg || "Unknown error");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchLastConversation();
-  // }, []);
+  useEffect(() => {
+    if (getLastConversation.data) {
+      setMessages(getLastConversation.data[0].context);
+      setConversationId(getLastConversation.data[0].id);
+    }
+  }, [getLastConversation.data]);
 
   return (
     <>
@@ -222,17 +153,12 @@ export default function Chat({
             handleClose={() => {
               setShowConversationHistory(!showConversationHistory);
             }}
-            setConversationId={(id) => {
-              setConversationId(id);
-              getConversationById.refetch();
-              setMessages(getConversationById.data?.[0].context);
-              console.log("id", id);
-            }}
+            setConversationId={setConversationId}
           />
         ) : (
           <ChatLog
             messages={messages}
-            isLoading={lastConversation.isLoading || getConversationById.isLoading}
+            isLoading={getLastConversation.isLoading}
           />
         )}
       </div>
@@ -244,8 +170,10 @@ export default function Chat({
         setEntryData={setEntryData}
         waitingForResponse={waitingForResponse}
         sendMessage={() => {
-          const newMessages = [...messages, { role: "user", content: entryData }];
-          sendMessage.mutate(newMessages);
+          if (!entryData.trim()) return;
+          const userMessage = { role: "user", content: entryData.trim() };
+          sendMessageAndReceiveResponse.mutate(userMessage);
+          setEntryData("");
         }}
       />
     </>
