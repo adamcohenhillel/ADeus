@@ -45,5 +45,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+    <string>We require Bluetooth access to connect to nearby devices.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>We require Bluetooth access to connect to nearby devices.</string>
 </dict>
 </plist>
