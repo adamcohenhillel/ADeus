@@ -24,7 +24,7 @@ export default function ConversationHistory({
     
     const deleteConversation = useMutation({
         mutationFn: async (conversationId: number) => {
-            const allConversations = queryClient.getQueryData<Conversation[]>(['get-all-conversations']);
+            const allConversations = queryClient.getQueryData<Conversation[]>(['conversations']);
             const conversationFound = allConversations?.some((conversation) => conversation.id === conversationId);
 
             if (!conversationFound) {
@@ -47,13 +47,13 @@ export default function ConversationHistory({
         },
         onSettled: async () => {
             queryClient.invalidateQueries({
-                queryKey: ['get-all-conversations'],
+                queryKey: ['conversations'],
             });
         },
     });
 
     const getAllConversations = useQuery({
-        queryKey: ['get-all-conversations'],
+        queryKey: ['conversations'],
         queryFn: async () => {
             const { data, error } = await supabaseClient
                 .from("conversations")
