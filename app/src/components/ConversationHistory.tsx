@@ -3,7 +3,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Trash, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export interface Conversation {
     id: number;
@@ -19,6 +19,8 @@ export default function ConversationHistory({
     handleClose: () => void;
     setConversationId: (id: number) => void;
 }) {
+    const queryClient = useQueryClient();
+    
     const deleteConversation = useMutation({
         mutationFn: async (conversationId: number) => {
             const { error } = await supabaseClient
@@ -30,12 +32,14 @@ export default function ConversationHistory({
             }
         },
         onSettled: async () => {
-            await getAllConversations.refetch();
+            queryClient.invalidateQueries({
+                queryKey: ['get-all-conversations'],
+            });
         },
     });
 
     const getAllConversations = useQuery({
-        queryKey: ['conversations'],
+        queryKey: ['get-all-conversations'],
         queryFn: async () => {
             const { data, error } = await supabaseClient
                 .from("conversations")
