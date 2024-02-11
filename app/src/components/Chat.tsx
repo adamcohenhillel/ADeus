@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
 import LogoutButton from "./LogoutButton";
 import { Button } from "./ui/button";
