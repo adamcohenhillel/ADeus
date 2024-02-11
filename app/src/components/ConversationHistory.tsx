@@ -4,6 +4,7 @@ import { Trash, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 export interface Conversation {
     id: number;
@@ -23,6 +24,13 @@ export default function ConversationHistory({
     
     const deleteConversation = useMutation({
         mutationFn: async (conversationId: number) => {
+            const allConversations = queryClient.getQueryData<Conversation[]>(['get-all-conversations']);
+            const conversationFound = allConversations?.some((conversation) => conversation.id === conversationId);
+
+            if (!conversationFound) {
+                throw new Error("Not found");
+            }
+            
             const { error } = await supabaseClient
                 .from("conversations")
                 .delete()
@@ -30,6 +38,12 @@ export default function ConversationHistory({
             if (error) {
                 throw error;
             }
+        },
+        onSuccess: () => {
+            toast.success("Conversation deleted");
+        },
+        onError: (error) => {
+            toast.error(`Error deleting conversation: ${error.message}`);
         },
         onSettled: async () => {
             queryClient.invalidateQueries({
