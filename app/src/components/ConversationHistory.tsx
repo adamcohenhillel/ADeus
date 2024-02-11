@@ -3,6 +3,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Trash, ArrowRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "./ui/button";
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export interface Conversation {
     id: number;
@@ -18,44 +19,34 @@ export default function ConversationHistory({
     handleClose: () => void;
     setConversationId: (id: number) => void;
 }) {
-    const [conversations, setConversations] = useState<Conversation[]>([]);
-
-    const removeConversation = async (conversationId: number) => {
-        try {
+    const deleteConversation = useMutation({
+        mutationFn: async (conversationId: number) => {
             const { error } = await supabaseClient
                 .from("conversations")
                 .delete()
                 .eq("id", conversationId);
-        } catch (error: any) {
-            console.error("ERROR", error);
-        } finally {
+            if (error) {
+                throw error;
+            }
+        },
+        onSettled: async () => {
+            await getAllConversations.refetch();
+        },
+    });
+
+    const getAllConversations = useQuery({
+        queryKey: ['conversations'],
+        queryFn: async () => {
             const { data, error } = await supabaseClient
                 .from("conversations")
                 .select("id, created_at")
                 .order("created_at", { ascending: false });
-            if (data) {
-                setConversations(data);
+            if (error) {
+                throw error;
             }
-        }
-    }
-
-    useEffect(() => {
-        const fetchConversationList = async () => {
-            try {
-                const { data, error } = await supabaseClient
-                    .from("conversations")
-                    .select("id, created_at")
-                    .order("created_at", { ascending: false });
-                if (data) {
-                    setConversations(data);
-                }
-            } catch (error: any) {
-                console.error("ERROR", error);
-            }
-        };
-        
-        fetchConversationList();
-    }, [supabaseClient]);
+            return data;
+        },
+    });
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -72,9 +63,9 @@ export default function ConversationHistory({
             </Button>
 
             <AnimatePresence initial={false}>
-                {conversations.length > 0 ? (
+                {getAllConversations.data && getAllConversations.data.length > 0 ? (
                     <div className="space-y-4">
-                        {conversations.map((conversation) => (
+                        {getAllConversations.data.map((conversation) => (
                             <motion.div
                                 key={conversation.id}
                                 className="card flex bg-muted/20 rounded-xl px-4 py-3 mb-2 shadow-sm"
@@ -94,7 +85,11 @@ export default function ConversationHistory({
                                             handleClose();
                                         }}
                                     />
-                                    <Trash className='mt-2' size={20} onClick={async () => { await removeConversation(conversation["id"]) }}></Trash>
+                                    <Trash className='mt-2' size={20} onClick={
+                                        () => {
+                                            deleteConversation.mutate(conversation.id);
+                                        }
+                                    }></Trash>
                                 </div>
                             </motion.div>
                         ))}

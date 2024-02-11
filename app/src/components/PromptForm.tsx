@@ -15,12 +15,6 @@ export default function PromptForm({
   waitingForResponse: boolean;
   sendMessage: () => void;
 }) {
-  const handleSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    if (e.key === "Enter") {
-      sendMessage();
-    }
-  };
   return (
     <div className="fixed bottom-3 w-full flex items-center justify-center">
       <div
