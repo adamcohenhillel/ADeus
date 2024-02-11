@@ -67,12 +67,12 @@ export default function Chat({
         return [...currentMessages, aiResponse.msg as Message];
       });
       setWaitingForResponse(false);
-      
-
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['conversations', conversationId]
       });
-    }
+    },
   });
 
   const newConversation = useMutation({
