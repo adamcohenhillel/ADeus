@@ -27,7 +27,7 @@ export default function Chat({
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState(1);
+  const [conversationId, setConversationId] = useState<number>();
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
   
@@ -99,28 +99,45 @@ export default function Chat({
     },
   })
 
-  const getLastConversation = useQuery({
-    queryKey: ['lastConversation', conversationId],
+  const getConversation = useQuery({
+    queryKey: ['conversation', conversationId],
     queryFn: async () => {
-      const { data, error } = await supabaseClient
-        .from("conversations")
-        .select("*")
-        .eq("id", conversationId)
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (error) {
-        throw error;
+      if (conversationId === undefined) {
+        const { data, error } = await supabaseClient
+          .from('conversations')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(1);
+        if (error) {
+          throw error;
+        }
+        if (data && data.length === 0) {
+          newConversation.mutate();
+        }
+        if (data && data.length > 0) {
+          setConversationId(data[0].id);
+        }
+        return data;
+      } else {
+        const { data, error } = await supabaseClient
+          .from('conversations')
+          .select('*')
+          .eq('id', conversationId)
+          .single();
+        if (error) {
+          throw error;
+        }
+        return data;
       }
-      return data;
     }
   })
 
   useEffect(() => {
-    if (getLastConversation.data) {
-      setMessages(getLastConversation.data[0].context);
-      setConversationId(getLastConversation.data[0].id);
+    if (getConversation.data) {
+      const nextMessages = getConversation.data.context;
+      setMessages(nextMessages);
     }
-  }, [getLastConversation.data]);
+  }, [getConversation.data]);
 
   useEffect(() => {
     if (bottomRef.current) {
@@ -165,7 +182,7 @@ export default function Chat({
         ) : (
           <ChatLog
             messages={messages}
-            isLoading={getLastConversation.isLoading}
+            isLoading={getConversation.isLoading}
           />
         )}
       </div>
