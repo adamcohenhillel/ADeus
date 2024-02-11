@@ -27,35 +27,35 @@ export default function Chat({
 
   const [entryData, setEntryData] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [conversationId, setConversationId] = useState<number>();
+  const [conversationId, setConversationId] = useState<number | null>(null);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
   
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
-      setWaitingForResponse(true);
       const { data: sendMessageData, error: sendMessageError } = await supabaseClient
-        .from('conversations')
-        .update({ context: [...messages, userMessage] })
-        .eq('id', conversationId);
-
+      .from('conversations')
+      .update({ context: [...messages, userMessage] })
+      .eq('id', conversationId);
+      
       if (sendMessageError) throw sendMessageError;
-
+      
       setMessages([...messages, userMessage]);
+      setWaitingForResponse(true);
 
       const { data: aiResponseData, error: aiResponseError } = await supabaseClient.functions.invoke("chat", {
         body: { messageHistory: [...messages, userMessage] },
       });
 
       if (aiResponseError) throw aiResponseError;
-
+      
       const {data: updateConversationData, error: updateConversationError} = await supabaseClient
-        .from('conversations')
-        .update({ context: [...messages, userMessage, aiResponseData.msg] })
-        .eq('id', conversationId);
-
+      .from('conversations')
+      .update({ context: [...messages, userMessage, aiResponseData.msg] })
+      .eq('id', conversationId);
+      
       if (updateConversationError) throw updateConversationError;
-
+      
       return aiResponseData;
     },
     onError: (error) => {
@@ -65,8 +65,8 @@ export default function Chat({
       setMessages(currentMessages => {
         return [...currentMessages, aiResponse.msg as Message];
       });
-      
       setWaitingForResponse(false);
+      
 
       queryClient.invalidateQueries({
         queryKey: ['conversations', conversationId]
@@ -102,7 +102,7 @@ export default function Chat({
   const getConversation = useQuery({
     queryKey: ['conversation', conversationId],
     queryFn: async () => {
-      if (conversationId === undefined) {
+      if (conversationId === null) {
         const { data, error } = await supabaseClient
           .from('conversations')
           .select('*')
@@ -182,7 +182,7 @@ export default function Chat({
         ) : (
           <ChatLog
             messages={messages}
-            isLoading={getConversation.isLoading}
+            waitingForResponse={waitingForResponse}
           />
         )}
       </div>
