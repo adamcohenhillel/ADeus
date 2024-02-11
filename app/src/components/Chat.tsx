@@ -60,6 +60,7 @@ export default function Chat({
     },
     onError: (error) => {
       toast.error(error.message || "Unknown error");
+      setWaitingForResponse(false);
     },
     onSuccess: (aiResponse) => {
       setMessages(currentMessages => {
@@ -91,11 +92,17 @@ export default function Chat({
       }
       return data;
     },
+    onMutate: () => {
+      setWaitingForResponse(true);
+      setMessages([]);
+    },
     onError: (error) => {
       toast.error(error.message || "Unknown error");
+      setWaitingForResponse(false);
     },
     onSuccess: (data) => {
       setConversationId(data[0].id);
+      setWaitingForResponse(false);
     },
   })
 
@@ -119,6 +126,7 @@ export default function Chat({
         }
         return data;
       } else {
+        setMessages([]);
         const { data, error } = await supabaseClient
           .from('conversations')
           .select('*')
