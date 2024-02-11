@@ -2,26 +2,22 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 import ChatLog, { Message } from "./ChatLog";
 import LogoutButton from "./LogoutButton";
-import { Button } from "./ui/button";
-import { History } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import PromptForm from "./PromptForm";
 import { toast } from "sonner";
 import NewConversationButton from "./NewConversationButton";
-import ConversationHistory from "./ConversationHistory";
 import { NavMenu } from "./NavMenu";
 import {
   useQuery,
   useMutation,
-  useQueryClient,
 } from '@tanstack/react-query'
+import SideMenu from "./SideMenu";
 
 export default function Chat({
   supabaseClient,
 }: {
   supabaseClient: SupabaseClient;
 }) {
-  const queryClient = useQueryClient()
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -29,7 +25,6 @@ export default function Chat({
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
-  const [showConversationHistory, setShowConversationHistory] = useState(false);
   
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
@@ -151,7 +146,12 @@ export default function Chat({
   return (
     <>
       <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
-
+      <div className="fixed flex space-x-4 top-4 left-4">
+          <SideMenu
+            supabaseClient={supabaseClient}
+            setConversationId={setConversationId}
+          />
+      </div>
       <div className="fixed flex space-x-4 top-4 right-4">
         <NavMenu>
           <LogoutButton supabaseClient={supabaseClient} />
@@ -160,34 +160,15 @@ export default function Chat({
               newConversation.mutate();
             }}
           />
-          <Button
-            size={"icon"}
-            className="rounded-full bg-muted/20 text-muted-foreground hover:bg-muted/40"
-            onClick={() => {
-              setShowConversationHistory(!showConversationHistory);
-            }}
-          >
-            <History size={20} />
-          </Button>
           <ThemeToggle />
         </NavMenu>
       </div>
 
       <div className="p-8 mt-12 mb-32">
-        {showConversationHistory ? (
-          <ConversationHistory
-            supabaseClient={supabaseClient}
-            handleClose={() => {
-              setShowConversationHistory(!showConversationHistory);
-            }}
-            setConversationId={setConversationId}
-          />
-        ) : (
-          <ChatLog
-            messages={messages}
-            waitingForResponse={waitingForResponse}
-          />
-        )}
+        <ChatLog
+          messages={messages}
+          waitingForResponse={waitingForResponse}
+        />
       </div>
 
       <div ref={bottomRef} />
