@@ -4,66 +4,30 @@ import OpenAI, { toFile } from "https://deno.land/x/openai@v4.26.0/mod.ts";
 import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 
-function createWavHeader(dataLength, sampleRate, numChannels, bitDepth) {
-  const header = new ArrayBuffer(44);
-  const view = new DataView(header);
-
-  function writeString(view, offset, string) {
-    for (let i = 0; i < string.length; i++) {
-      view.setUint8(offset + i, string.charCodeAt(i));
-    }
-  }
-
-  function writeUint32(view, offset, value) {
-    view.setUint32(offset, value, true);
-  }
-
-  function writeUint16(view, offset, value) {
-    view.setUint16(offset, value, true);
-  }
-
-  writeString(view, 0, "RIFF"); // RIFF Header
-  writeUint32(view, 4, 36 + dataLength); // RIFF Chunk Size
-  writeString(view, 8, "WAVE"); // WAVE Header
-  writeString(view, 12, "fmt "); // FMT sub-chunk
-  writeUint32(view, 16, 16); // FMT sub-chunk size (16 for PCM)
-  writeUint16(view, 20, 1); // Audio Format (1 for PCM)
-  writeUint16(view, 22, numChannels); // Number of channels
-  writeUint32(view, 24, sampleRate); // Sample rate
-  writeUint32(view, 28, (sampleRate * numChannels * bitDepth) / 8); // Byte Rate
-  writeUint16(view, 32, (numChannels * bitDepth) / 8); // Block align
-  writeUint16(view, 34, bitDepth); // Bits per sample
-  writeString(view, 36, "data"); // "data" sub-chunk
-  writeUint32(view, 40, dataLength); // Data sub-chunk size
-
-  return new Uint8Array(header);
-}
-
-const processAudio = async (req) => {
+const processAudio = async (req: Request) => {
+  
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
-  const supabase = supabaseClient(req);
 
+  const supabase = supabaseClient(req);
   const openaiClient = new OpenAI({
     apiKey: Deno.env.get("OPENAI_API_KEY"),
   });
 
-  console.log("**** Code version 0.0.2 ****");
+  // Validate Content-Type
+  const contentType = req.headers.get("Content-Type") || "";
+  if (!contentType.includes("audio/wav") && !contentType.includes("audio/x-wav")) {
+    return new Response("Unsupported Media Type", { status: 415 });
+  }
 
-  // Read the binary data from the request body
-  const audioData = new Uint8Array(await req.arrayBuffer());
-  // Create WAV header
-  // Assuming 16000 Hz sample rate, 1 channel, and 32 bits per sample
-  const wavHeader = createWavHeader(audioData.length, 16000, 1, 32);
-  const wavFile = new Uint8Array(wavHeader.length + audioData.length);
-  wavFile.set(wavHeader, 0);
-  wavFile.set(audioData, wavHeader.length);
+  const arrayBuffer = await req.arrayBuffer();
 
-  let transcript;
-  let embeddings;
+  let transcript: string;
+  let embeddings: any;
   try {
     const filenameTimestamp = `adeus_wav_${Date.now()}.wav`;
+    const wavFile = await toFile(arrayBuffer, filenameTimestamp);
 
     // const { data, error } = await supabase.storage
     //   .from("test")
