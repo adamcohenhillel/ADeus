@@ -1,3 +1,8 @@
+---
+title: Home
+layout: home
+---
+
 ### Documentation
 
 Welcome, contributer! What you are doing here is truly amazing. Open source contributors are the unsung heroes of technology, the backbone of our modern, OPEN, world. so thank you for being here.
