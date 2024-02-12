@@ -10,8 +10,8 @@ on:
   push:
     branches:
       - "work-on-the-docs"
-    paths:
-      - "docs/**"
+    # paths:
+    #   - "docs/**"
 
   # Allows you to run this workflow manually from the Actions tab
 
@@ -44,9 +44,10 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
+        working-directory: docs
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
-        working-directory: docs
+        working-directory: ./docs
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
