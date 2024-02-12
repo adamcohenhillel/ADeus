@@ -1,5 +1,5 @@
 ---
-title: Setting up the backend (Supabase)
+title: Backend (Supabase)
 description: add description
 layout: default
 nav_order: 1
