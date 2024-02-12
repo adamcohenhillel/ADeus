@@ -55,11 +55,11 @@ A'ight, let's get this working for you!
 git clone https://github.com/adamcohenhillel/ADeus
 ```
 
-2. #### [Setup Supabase ↗](./docs/setup_supabase.md)
+2. #### [Setup Supabase ↗](https://adeus.ai/setup_supabase)
 
-3. #### [Setup App ↗](./docs/setup_app.md)
+3. #### [Setup App ↗](https://adeus.ai/setup_app)
 
-4. #### [Setup Hardware (Coral AI device) ↗](./docs/setup_coralai.md)
+4. #### [Setup Hardware (Coral AI device) ↗](https://adeus.ai/setup_coralai)
 
 - Don't have the hardware device yet? [Read the Docs here](https://docs.adeus.ai)
 
