@@ -43,7 +43,6 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
-        working-directory: docs
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         working-directory: ./docs
