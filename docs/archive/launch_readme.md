@@ -15,7 +15,7 @@ In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https:/
 - [Areas to Contribute](#areas-to-contribute)
 - [CTA for the Community](#cta-for-the-community)
 
-![ADeus v0.1](docs/images/adeus_01.jpeg)
+![ADeus v0.1](https://github.com/adamcohenhillel/ADeus/tree/main/docs/images/adeus_01.jpeg)
 
 > p.s. any contribution would be amazing, whether you know how to code, and want to jump straight in to the codebase, a hardware person who can help out, or just looking to support this project financially (can literally be $10) - please reach out to me on X/Twitter [@adamcohenhillel](https://twitter.com/adamcohenhillel)
 
@@ -32,7 +32,7 @@ Adeus consists of 3 parts:
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
 This will look something like:
-![ADeus diagram](docs/images/adeus_diagram.png)
+![ADeus diagram](https://github.com/adamcohenhillel/ADeus/tree/main/docs/images/adeus_diagram.png)
 
 ## Setup
 
@@ -69,7 +69,7 @@ First, to learn more about the device, it is good to check out the [official doc
 
 Here is quick video showing how to "connect" the hardware pieces together, and install the software:
 
-[![set up device video](docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
+[![set up device video](https://github.com/adamcohenhillel/ADeus/tree/main/docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
 
 In the root folder of this repository, run the following commands, (which will download the Coral AI Micro Dev dependencies to your computer - note that it might take a few minutes):
 
@@ -175,4 +175,4 @@ The pioneers of the personal computers, the internet, they all knew it - and tha
 
 Check out the Intro video:
 
-[![set up device video](docs/images/thumbnail_1.png)](https://youtu.be/4CqEC2yLGQU)
+[![set up device video](https://github.com/adamcohenhillel/ADeus/tree/main/docs/images/thumbnail_1.png)](https://youtu.be/4CqEC2yLGQU)
