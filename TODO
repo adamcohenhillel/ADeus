@@ -1,3 +1,6 @@
+- [ ] An easy setup script / deploy my own Ollama server to replace OpenAI [ticket #6](https://github.com/adamcohenhillel/AdDeus/issues/6)
+- [ ] Add How-to for Ollama setup ([ticket #9](https://github.com/adamcohenhillel/AdDeus/issues/9))
+
 ### Known Bugs:
 
 - [ ] Whisper tends to generate YouTube-like text when the audio is unclear, so you can get noise data in the database like "Thank you for watching", and "See you in the next video," even though it has nothing to do with the audio ([ticket #7](https://github.com/adamcohenhillel/AdDeus/issues/7))

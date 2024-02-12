@@ -1,3 +1,8 @@
+---
+title: How to start Contributing
+description: add description
+---
+
 ## Develop without the hardware device: Sound Recording With a Python Script
 
 Sometimes, when working on the frontend / backend of Adeus, you want an easier and faster feedback loop, one that does not require the use of the physical device. This is exactly what this guide is about.
