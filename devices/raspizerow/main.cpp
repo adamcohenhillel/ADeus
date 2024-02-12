@@ -4,17 +4,12 @@
 #include <queue>
 #include <vector>
 #include <iostream>
-#include <fstream>
 #include <alsa/asoundlib.h>
 #include <curl/curl.h>
-#include <filesystem>
-#include <cassert>
-#include <signal.h>
-#include <atomic>
 
 // Assuming 4 bytes per sample for S32_LE format and mono audio
 int bytesPerSample = 4;
-int channels = 1;
+short channels = 1;
 unsigned int sampleRate = 48000;
 int durationInSeconds = 60; // Duration you want to accumulate before sending
 int targetBytes = sampleRate * durationInSeconds * bytesPerSample * channels;
@@ -54,88 +49,6 @@ public:
 };
 SafeQueue<std::vector<char>> audioQueue;
 
-void sendWav(const std::string &filePath)
-{
-    namespace fs = std::filesystem;
-
-    CURL *curl;
-    CURLcode res;
-    const char *supabaseUrlEnv = getenv("SUPABASE_URL");
-    if (!supabaseUrlEnv)
-    {
-        std::cerr << "Environment variable SUPABASE_URL is not set." << std::endl;
-        return; // or handle the error as appropriate
-    }
-
-    std::string url = std::string(supabaseUrlEnv) + "/functions/v1/process-audio";
-    std::string authToken = getenv("AUTH_TOKEN");
-
-    // Use filesystem to get the file size
-    auto fileSize = fs::file_size(filePath);
-    if (fileSize == static_cast<uintmax_t>(-1))
-    {
-        std::cerr << "Could not determine file size: " << filePath << std::endl;
-        return;
-    }
-
-    // Initialize CURL
-    curl_global_init(CURL_GLOBAL_ALL);
-    curl = curl_easy_init();
-    if (curl)
-    {
-        struct curl_slist *headers = NULL;
-        headers = curl_slist_append(headers, ("Authorization: Bearer " + authToken).c_str());
-        headers = curl_slist_append(headers, "Content-Type: audio/wav");
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_POST, 1L);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(fileSize));
-
-        // Open file for reading in binary mode
-        FILE *fd = fopen(filePath.c_str(), "rb");
-        if (!fd)
-        {
-            std::cerr << "Failed to open file: " << filePath << std::endl;
-            curl_easy_cleanup(curl);
-            return;
-        }
-        curl_easy_setopt(curl, CURLOPT_READDATA, fd);
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Enable verbose for testing
-
-        res = curl_easy_perform(curl);
-        if (res != CURLE_OK)
-            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
-
-        // Cleanup
-        fclose(fd);
-        curl_slist_free_all(headers);
-        curl_easy_cleanup(curl);
-    }
-    curl_global_cleanup();
-}
-
-void writeWavHeader(std::ofstream &file, int bitsPerSample, int dataSize)
-{
-    file.write("RIFF", 4);
-    int chunkSize = 36 + dataSize;
-    file.write(reinterpret_cast<const char *>(&chunkSize), 4);
-    file.write("WAVE", 4);
-    file.write("fmt ", 4);
-    int subchunk1Size = 16; // PCM
-    file.write(reinterpret_cast<const char *>(&subchunk1Size), 4);
-    short audioFormat = 1; // PCM
-    file.write(reinterpret_cast<const char *>(&audioFormat), 2);
-    file.write(reinterpret_cast<const char *>(&channels), 2);
-    file.write(reinterpret_cast<const char *>(&sampleRate), 4);
-    int byteRate = sampleRate * channels * bitsPerSample / 8;
-    file.write(reinterpret_cast<const char *>(&byteRate), 4);
-    short blockAlign = channels * bitsPerSample / 8;
-    file.write(reinterpret_cast<const char *>(&blockAlign), 2);
-    file.write(reinterpret_cast<const char *>(&bitsPerSample), 2);
-    file.write("data", 4);
-    file.write(reinterpret_cast<const char *>(&dataSize), 4);
-}
-
 void recordAudio(snd_pcm_t *capture_handle, snd_pcm_uframes_t period_size)
 {
     std::vector<char> buffer(period_size * bytesPerSample);
@@ -173,6 +86,102 @@ void recordAudio(snd_pcm_t *capture_handle, snd_pcm_uframes_t period_size)
     }
 }
 
+void createWavHeader(std::vector<char> &header, int bitsPerSample, int dataSize )
+{
+    // "RIFF" chunk descriptor
+    header.insert(header.end(), {'R', 'I', 'F', 'F'});
+
+    // Chunk size: 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size)
+    int chunkSize = 36 + dataSize;
+    auto chunkSizeBytes = reinterpret_cast<const char *>(&chunkSize);
+    header.insert(header.end(), chunkSizeBytes, chunkSizeBytes + 4);
+
+    // Format
+    header.insert(header.end(), {'W', 'A', 'V', 'E'});
+
+    // "fmt " sub-chunk
+    header.insert(header.end(), {'f', 'm', 't', ' '});
+
+    // Sub-chunk 1 size (16 for PCM)
+    int subchunk1Size = 16;
+    auto subchunk1SizeBytes = reinterpret_cast<const char *>(&subchunk1Size);
+    header.insert(header.end(), subchunk1SizeBytes, subchunk1SizeBytes + 4);
+
+    // Audio format (PCM = 1)
+    short audioFormat = 1;
+    auto audioFormatBytes = reinterpret_cast<const char *>(&audioFormat);
+    header.insert(header.end(), audioFormatBytes, audioFormatBytes + 2);
+
+    // Number of channels
+    auto channelsBytes = reinterpret_cast<const char *>(&channels);
+    header.insert(header.end(), channelsBytes, channelsBytes + 2);
+
+    // Sample rate
+    auto sampleRateBytes = reinterpret_cast<const char *>(&sampleRate);
+    header.insert(header.end(), sampleRateBytes, sampleRateBytes + 4);
+
+    // Byte rate (SampleRate * NumChannels * BitsPerSample/8)
+    int byteRate = sampleRate * channels * bitsPerSample / 8;
+    auto byteRateBytes = reinterpret_cast<const char *>(&byteRate);
+    header.insert(header.end(), byteRateBytes, byteRateBytes + 4);
+
+    // Block align (NumChannels * BitsPerSample/8)
+    short blockAlign = channels * bitsPerSample / 8;
+    auto blockAlignBytes = reinterpret_cast<const char *>(&blockAlign);
+    header.insert(header.end(), blockAlignBytes, blockAlignBytes + 2);
+
+    // Bits per sample
+    auto bitsPerSampleBytes = reinterpret_cast<const char *>(&bitsPerSample);
+    header.insert(header.end(), bitsPerSampleBytes, bitsPerSampleBytes + 2);
+
+    // "data" sub-chunk
+    header.insert(header.end(), {'d', 'a', 't', 'a'});
+
+    // Sub-chunk 2 size (data size)
+    auto dataSizeBytes = reinterpret_cast<const char *>(&dataSize);
+    header.insert(header.end(), dataSizeBytes, dataSizeBytes + 4);
+}
+
+void sendWavBuffer(const std::vector<char> &buffer)
+{
+    CURL *curl;
+    CURLcode res;
+    const char *supabaseUrlEnv = getenv("SUPABASE_URL");
+    if (!supabaseUrlEnv)
+    {
+        std::cerr << "Environment variable SUPABASE_URL is not set." << std::endl;
+        return;
+    }
+
+    std::string url = std::string(supabaseUrlEnv) + "/functions/v1/process-audio";
+    std::string authToken = getenv("AUTH_TOKEN");
+
+    // Initialize CURL
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl = curl_easy_init();
+    if (curl)
+    {
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, ("Authorization: Bearer " + authToken).c_str());
+        headers = curl_slist_append(headers, "Content-Type: audio/wav");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(buffer.size()));
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, buffer.data());
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Enable verbose for testing
+
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+            std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+
+        // Cleanup
+        curl_slist_free_all(headers);
+        curl_easy_cleanup(curl);
+    }
+    curl_global_cleanup();
+}
+
 void handleAudioBuffer()
 {
     while (true)
@@ -188,18 +197,19 @@ void handleAudioBuffer()
         // Process and send the accumulated data
         if (!dataChunk.empty())
         {
-            std::ofstream wavFile("output.wav", std::ios::binary);
+            // Create the WAV header in memory
+            std::vector<char> wavHeader;
             int bitsPerSample = 32;
             int dataSize = dataChunk.size();
-            writeWavHeader(wavFile, bitsPerSample, dataSize);
-            wavFile.write(dataChunk.data(), dataSize);
-            wavFile.close();
+            createWavHeader(wavHeader, bitsPerSample, dataSize);
 
-            // Send the WAV file to the server
-            sendWav("output.wav");
+            // Combine the header and the data into a single buffer
+            std::vector<char> wavBuffer;
+            wavBuffer.reserve(wavHeader.size() + dataSize);
+            wavBuffer.insert(wavBuffer.end(), wavHeader.begin(), wavHeader.end());
+            wavBuffer.insert(wavBuffer.end(), dataChunk.begin(), dataChunk.end());
 
-            // Delete the file after sending
-            std::filesystem::remove("output.wav");
+            sendWavBuffer(wavBuffer);
         }
     }
 }
