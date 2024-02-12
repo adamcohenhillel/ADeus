@@ -1,6 +1,6 @@
 ---
-title: UI Components
+title: Setup
 layout: default
-nav_order: 3
 has_children: true
+nav_order: 2
 ---

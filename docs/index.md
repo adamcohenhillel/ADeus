@@ -1,6 +1,7 @@
 ---
 title: Home
 layout: default
+nav_order: 1
 ---
 
 ### Documentation
@@ -13,8 +14,8 @@ Welcome, contributer! What you are doing here is truly amazing. Open source cont
 
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
-  - [Set up Supabase](./how-to/setup_supabase.md)
-  - [Set up Web / Mobile App](./how-to/setup_app.md)
+  - [Set up Supabase](./setup/setup_supabase.md)
+  - [Set up Web / Mobile App](./setup/setup_app.md)
   - [Hardware (Coral AI)](#setup-hardware-coral-ai-device-↗)
 - [Resources](#resoucres)
 - [How to Contribute](#how-to-contribute)
