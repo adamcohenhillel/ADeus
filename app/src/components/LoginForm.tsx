@@ -41,7 +41,7 @@ export default function LoginForm() {
       } else {
         toast.success("Login successful");
         setSupabaseConfig(supabaseUrl, supabaseToken);
-        router.push("/");
+        router.reload();
       }
     } catch (error: any) {
       console.error("ERROR", error);
