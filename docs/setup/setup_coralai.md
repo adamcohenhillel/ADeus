@@ -1,8 +1,11 @@
 ---
-title: Setting up the CoralAI hardware device
+title: Hardware - CoralAI hardware device
 description: add description
 layout: default
+parent: Setup
 ---
+
+Setting up hardware
 
 #### Prerequisite: ($110)
 
@@ -19,7 +22,7 @@ First, to learn more about the device, it is good to check out the [official doc
 
 Here is quick video showing how to "connect" the hardware pieces together, and install the software:
 
-[![set up device video](docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
+[![set up device video](../images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
 
 In the root folder of this repository, run the following commands, (which will download the Coral AI Micro Dev dependencies to your computer - note that it might take a few minutes):
 

@@ -1,7 +1,8 @@
 ---
-title: Setting up the mobile / web app
+title: Web / Mobile app
 description: add description
 layout: default
+parent: Setup
 ---
 
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
@@ -25,7 +26,7 @@ npm run dev
 
 Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
 
-<img src="docs/images/login_screenshot.png" width="150">
+<img src="../images/login_screenshot.png" width="150">
 
 Enter the four required details, which you should've obtained in the Supabase setup: `Supabase URL`, `Supabase Anon API Key`, `email` and `password`.
 
