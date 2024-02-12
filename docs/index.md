@@ -4,9 +4,9 @@ layout: default
 nav_order: 1
 ---
 
-Welcome contributer,
+Welcome dear contributer,
 
-What you are doing here is truly amazing. Open-source contributors are the unsung heroes of technology, the backbone of our modern, OPEN, world. so thank you for being here.
+Open-source contributors, like yourself, are the unsung heroes of technology, the backbone of our modern, OPEN, world. so thank you for being here, and know that what you are doing is truly amazing.
 
 **Now, let's get started!**
 
