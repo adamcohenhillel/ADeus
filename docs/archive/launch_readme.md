@@ -2,7 +2,7 @@
 title: Launch Readme Version
 description: add description
 layout: default
-parent: Archive
+parent: __archive
 ---
 
 # ADeus: Open-Source AI Wearable Device

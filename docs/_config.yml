@@ -10,6 +10,10 @@ aux_links:
 aux_links_new_tab: true
 
 nav_external_links:
+  - title: Join Us on Discord
+    url: https://discord.gg/N5c6KXBgWW
+    opens_in_new_tab: true
+
   - title: Adeus on GitHub
     url: https://github.com/adamcohenhillel/ADeus
     opens_in_new_tab: true
