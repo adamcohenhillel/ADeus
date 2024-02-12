@@ -2,7 +2,6 @@
 title: How to start Contributing
 description: add description
 layout: default
-nav_order: 5
 ---
 
 ## Develop without the hardware device: Sound Recording With a Python Script

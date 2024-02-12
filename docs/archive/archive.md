@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Setup
-nav_order: 2
+title: Archive
+nav_order: 6
 has_children: true
 permalink: docs/setup
 ---

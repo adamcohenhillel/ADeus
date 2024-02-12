@@ -1,3 +1,9 @@
+---
+title: Launch Readme Version
+description: add description
+layout: default
+---
+
 # ADeus: Open-Source AI Wearable Device
 
 In the upcoming world of AI devices like [Tab](https://mytab.ai/), [Pin](https://hu.ma.ne/aipin), [Rewind](https://www.rewind.ai/pendant), that are with us all the time, **literally** listening to everything we say, and know much about us as our closest friends - it is crucial to be able to own this setup, to own our data, to have this completely open source, managed by the user itself.
