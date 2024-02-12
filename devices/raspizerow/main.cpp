@@ -12,9 +12,6 @@
 #include <signal.h>
 #include <atomic>
 
-// Used to handle Ctrl+C
-volatile std::atomic<bool> running(true);
-
 // Assuming 4 bytes per sample for S32_LE format and mono audio
 int bytesPerSample = 4;
 int channels = 1;
@@ -56,12 +53,6 @@ public:
     }
 };
 SafeQueue<std::vector<char>> audioQueue;
-
-// Used to handle Ctrl+C
-void signalHandler(int signum)
-{
-    running = false;
-}
 
 void sendWav(const std::string &filePath)
 {
@@ -150,7 +141,7 @@ void recordAudio(snd_pcm_t *capture_handle, snd_pcm_uframes_t period_size)
     std::vector<char> buffer(period_size * bytesPerSample);
     std::vector<char> accumulatedBuffer;
 
-    while (running)
+    while (true)
     {
         rc = snd_pcm_readi(capture_handle, buffer.data(), period_size);
         if (rc == -EPIPE)
@@ -184,10 +175,10 @@ void recordAudio(snd_pcm_t *capture_handle, snd_pcm_uframes_t period_size)
 
 void handleAudioBuffer()
 {
-    while (running)
+    while (true)
     {
         std::vector<char> dataChunk;
-        // Accumulate enough data to form a complete WAV file
+        // Accumulate our target bytes
         while (dataChunk.size() < targetBytes)
         {
             std::vector<char> buffer = audioQueue.pop();
@@ -211,42 +202,12 @@ void handleAudioBuffer()
             std::filesystem::remove("output.wav");
         }
     }
-
-    // After exiting the loop, check if there's any remaining data to be processed
-    // This could be less than targetBytes but should still be sent
-    if (!audioQueue.empty())
-    {
-        std::vector<char> remainingData;
-        while (!audioQueue.empty())
-        {
-            std::vector<char> buffer = audioQueue.pop();
-            remainingData.insert(remainingData.end(), buffer.begin(), buffer.end());
-        }
-
-        if (!remainingData.empty())
-        {
-            std::ofstream wavFile("output_remaining.wav", std::ios::binary);
-            int bitsPerSample = 32;
-            int dataSize = remainingData.size();
-            writeWavHeader(wavFile, bitsPerSample, dataSize);
-            wavFile.write(remainingData.data(), dataSize);
-            wavFile.close();
-
-            // Send the remaining WAV file to the server
-            sendWav("output_remaining.wav");
-
-            // Delete the file after sending
-            std::filesystem::remove("output_remaining.wav");
-        }
-    }
 }
 
 int main()
 {
     snd_pcm_t *capture_handle;
     snd_pcm_format_t format = SND_PCM_FORMAT_S32_LE;
-
-    signal(SIGINT, signalHandler);
 
     // Open PCM device for recording
     rc = snd_pcm_open(&capture_handle, "plughw:0", SND_PCM_STREAM_CAPTURE, 0);
