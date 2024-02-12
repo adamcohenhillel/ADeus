@@ -1,5 +1,5 @@
 ---
-title: How to start Contributing
+title: Develop without hardware device using a python script
 description: add description
 layout: default
 parent: How To
