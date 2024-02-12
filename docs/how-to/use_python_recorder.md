@@ -1,6 +1,7 @@
 ---
 title: How to start Contributing
 description: add description
+layout: home2
 ---
 
 ## Develop without the hardware device: Sound Recording With a Python Script

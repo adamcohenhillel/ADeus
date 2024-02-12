@@ -1,6 +1,7 @@
 ---
 title: Setting up the CoralAI hardware device
 description: add description
+layout: home
 ---
 
 #### Prerequisite: ($110)
