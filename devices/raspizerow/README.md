@@ -8,6 +8,7 @@ This guide provides step-by-step instructions for setting up a Raspberry Pi Zero
 - MicroSD card (8GB or larger recommended)
 - Internet connection
 - Access to a computer with an SD card reader
+- Clone https://github.com/adamcohenhillel/ADeus
 
 ## Installation Instructions
 
@@ -50,7 +51,9 @@ Download the Raspberry Pi OS Lite (64-bit) image from the following link:
 ### 5. Connect via SSH
 
 Open a terminal on your computer and connect to your Raspberry Pi using SSH:
-```ssh username@raspberrypi.local```
+```
+ssh username@raspberrypi.local
+```
 
 Replace `username` with the username you set up earlier. Accept the prompt and enter your password when asked.
 
@@ -59,17 +62,25 @@ Replace `username` with the username you set up earlier. Accept the prompt and e
 From a terminal on your computer (not connected to your
 Raspberry Pi), transfer the project folder to your Raspberry Pi:
 
-```scp -r /path/to/your/project/raspizerow username@raspberrypi:~/```
+```
+scp -r /path/to/your/project/raspizerow username@raspberrypi:~/
+```
 
 ### 7. Install Dependencies
 
 Navigate to the project directory and run the installation script:
 
-```cd raspizerow```
+```
+cd raspizerow
+```
 
-```chmod +x install.sh```
+```
+chmod +x install.sh
+```
 
-```./install.sh```
+```
+./install.sh
+```
 
 - Answer `yes` to "Auto load module at boot?"
 - Answer `no` to "REBOOT NOW?"
@@ -79,19 +90,30 @@ Enter the `SUPABASE_URL` and `AUTH_TOKEN` when prompted.
 ### 8. Reboot
 
 Reboot your Raspberry Pi:
-```sudo reboot```
+```
+sudo reboot
+```
 
 ### 9. Run the Application
 
 After the reboot, navigate back to the project directory, make the run script executable, and start the application:
 
-```cd raspizerow```
+```
+cd raspizerow
+```
 
-```chmod +x compile.sh```
+```
+chmod +x compile.sh
+```
 
-```./compile.sh```
+```
+./compile.sh
+```
 
-```gdb ./main``` # Optional: Start the application with GDB for debugging
+```
+gdb ./main 
+```
+Optional: Start the application with GDB for debugging
 
 Use `run` within gdb to start the application in debug mode.
 
