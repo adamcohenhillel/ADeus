@@ -36,11 +36,11 @@ Download the Raspberry Pi OS Lite (64-bit) image from the following link:
   - Add WiFi settings.
 - Write the image to the SD card.
 
-<img src="images/imagerMenu.png" width="200" alt="Home">
-<img src="images/osSelect.png" width="200" alt="Home">
+<img src="../images/imagerMenu.png" width="200" alt="Home">
+<img src="../images/osSelect.png" width="200" alt="Home">
 
-<img src="images/enableSettings.png" width="200" alt="Home">
-<img src="images/enableSSH.png" width="200" alt="Home">
+<img src="../images/enableSettings.png" width="200" alt="Home">
+<img src="../images/enableSSH.png" width="200" alt="Home">
 
 ### 4. Boot Raspberry Pi
 
@@ -51,6 +51,7 @@ Download the Raspberry Pi OS Lite (64-bit) image from the following link:
 ### 5. Connect via SSH
 
 Open a terminal on your computer and connect to your Raspberry Pi using SSH:
+
 ```
 ssh username@raspberrypi.local
 ```
@@ -90,6 +91,7 @@ Enter the `SUPABASE_URL` and `AUTH_TOKEN` when prompted.
 ### 8. Reboot
 
 Reboot your Raspberry Pi:
+
 ```
 sudo reboot
 ```
@@ -111,8 +113,9 @@ chmod +x compile.sh
 ```
 
 ```
-gdb ./main 
+gdb ./main
 ```
+
 Optional: Start the application with GDB for debugging
 
 Use `run` within gdb to start the application in debug mode.
