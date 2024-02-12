@@ -6,9 +6,9 @@ nav_order: 1
 
 Welcome dear contributer,
 
-Open-source contributors, like yourself, are the unsung heroes of technology, the backbone of our modern, OPEN, world. so thank you for being here, and know that what you are doing is truly amazing.
+Open-source contributors, like yourself, are the unsung heroes of technology, the backbone of our modern, OPEN, world.
 
-**Now, let's get started!**
+So, thank you for being here, and now, **let's get started!**
 
 ## Table of contents
 
