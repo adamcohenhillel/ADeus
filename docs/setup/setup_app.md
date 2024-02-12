@@ -1,5 +1,5 @@
 ---
-title: Web / Mobile app
+title: Web & Mobile App
 description: add description
 layout: default
 parent: Setup
