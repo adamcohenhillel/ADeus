@@ -2,7 +2,6 @@
 title: Setting up the CoralAI hardware device
 description: add description
 layout: default
-nav_order: 3
 ---
 
 #### Prerequisite: ($110)

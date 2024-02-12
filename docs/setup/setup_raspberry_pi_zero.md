@@ -2,7 +2,6 @@
 title: Raspberry Pi Zero W Setup Guide
 description: add description
 layout: default
-nav_order: 4
 ---
 
 # Raspberry Pi Zero W Setup Guide

@@ -2,7 +2,6 @@
 title: Setting up the mobile / web app
 description: add description
 layout: default
-nav_order: 2
 ---
 
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
