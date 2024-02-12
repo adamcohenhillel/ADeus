@@ -1,7 +1,8 @@
 ---
 title: Setting up the backend (Supabase)
 description: add description
-layout: home
+layout: default
+nav_order: 1
 ---
 
 Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
