@@ -65,4 +65,13 @@ git clone https://github.com/adamcohenhillel/ADeus
 
 ## How to Contribute
 
-[Read the docs](https://docs.adeus.ai)
+Adeus is open-source and we welcome contributions. If you're looking to contribute, please:
+
+- Fork the repository.
+- Create a new branch for your feature.
+- Add your feature or improvement.
+- Send a pull request.
+
+We appreciate your input!
+
+[Read the docs for more information](https://docs.adeus.ai)
