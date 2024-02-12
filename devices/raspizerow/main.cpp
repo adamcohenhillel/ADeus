@@ -4,13 +4,8 @@
 #include <queue>
 #include <vector>
 #include <iostream>
-#include <fstream>
 #include <alsa/asoundlib.h>
 #include <curl/curl.h>
-#include <filesystem>
-#include <cassert>
-#include <signal.h>
-#include <atomic>
 
 // Assuming 4 bytes per sample for S32_LE format and mono audio
 int bytesPerSample = 4;
@@ -155,7 +150,7 @@ void sendWavBuffer(const std::vector<char> &buffer)
     if (!supabaseUrlEnv)
     {
         std::cerr << "Environment variable SUPABASE_URL is not set." << std::endl;
-        return; // or handle the error as appropriate
+        return;
     }
 
     std::string url = std::string(supabaseUrlEnv) + "/functions/v1/process-audio";
@@ -173,8 +168,7 @@ void sendWavBuffer(const std::vector<char> &buffer)
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, static_cast<long>(buffer.size()));
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, buffer.data()); // Send buffer data directly
-
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, buffer.data());
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Enable verbose for testing
 
         res = curl_easy_perform(curl);
@@ -215,7 +209,6 @@ void handleAudioBuffer()
             wavBuffer.insert(wavBuffer.end(), wavHeader.begin(), wavHeader.end());
             wavBuffer.insert(wavBuffer.end(), dataChunk.begin(), dataChunk.end());
 
-            // Send the combined WAV buffer to the server
             sendWavBuffer(wavBuffer);
         }
     }
