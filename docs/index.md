@@ -16,11 +16,17 @@ nav_order: 1
 
 ---
 
+## Introduction
+
 Welcome dear contributer,
 
 Open-source contributors, like yourself, are the unsung heroes of technology, the backbone of our modern, OPEN, world.
 
 So, thank you for being here, and now, **let's get started!**
+
+---
+
+## How Adeus is Built
 
 First, let's understand how Adeus is built:
 
@@ -38,7 +44,9 @@ Adeus consists of 3 parts:
 
 Next: [Getting Started](https://docs.adeus.ai/getting_started.html)
 
-### How to Contribute
+---
+
+## How to Contribute
 
 Adeus is open-source and we welcome contributions. If you're looking to contribute, please:
 
@@ -49,7 +57,17 @@ Adeus is open-source and we welcome contributions. If you're looking to contribu
 
 We appreciate your input!
 
-### Extra Resources:
+---
+
+## Extra Resources:
 
 - [Adam going over the entire codebase on livestream](https://www.youtube.com/watch?v=NoKahoN7nYE)
 - [Adeus launch original Readme file](https://docs.adeus.ai/archive/launch_readme.html)
+
+---
+
+## Where to go Next>
+
+Psst
+
+---
