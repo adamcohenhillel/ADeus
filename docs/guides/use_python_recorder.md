@@ -2,7 +2,7 @@
 title: Develop without hardware device using a python script
 description: add description
 layout: default
-parent: How To
+parent: How to Guides
 ---
 
 ## Develop without the hardware device: Sound Recording With a Python Script

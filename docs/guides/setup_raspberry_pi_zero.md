@@ -2,7 +2,7 @@
 title: Raspberry Pi Zero W Setup Guide
 description: add description
 layout: default
-parent: Setup
+parent: How to Guides
 ---
 
 This guide provides step-by-step instructions for setting up a Raspberry Pi Zero W with the necessary software and configurations for development purposes.

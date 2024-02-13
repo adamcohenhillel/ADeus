@@ -2,7 +2,7 @@
 title: Hardware - CoralAI hardware device
 description: add description
 layout: default
-parent: Setup
+parent: _archive
 ---
 
 Setting up hardware
