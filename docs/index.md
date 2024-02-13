@@ -4,6 +4,8 @@ layout: default
 nav_order: 1
 ---
 
+# Adeus Documentation
+
 Welcome dear contributer,
 
 Open-source contributors, like yourself, are the unsung heroes of technology, the backbone of our modern, OPEN, world.

@@ -4,6 +4,8 @@ title: Getting Started (Set Up)
 nav_order: 2
 ---
 
+# Getting Started (Setup)
+
 {: .no_toc }
 
 A'ight, let's get this working for you!
