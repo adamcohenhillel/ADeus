@@ -7,10 +7,7 @@ import PromptForm from "./PromptForm";
 import { toast } from "sonner";
 import NewConversationButton from "./NewConversationButton";
 import { NavMenu } from "./NavMenu";
-import {
-  useQuery,
-  useMutation,
-} from '@tanstack/react-query'
+import { useQuery, useMutation } from "@tanstack/react-query";
 import SideMenu from "./SideMenu";
 
 export default function Chat({
@@ -25,32 +22,35 @@ export default function Chat({
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
-  
+
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
-      const { data: sendMessageData, error: sendMessageError } = await supabaseClient
-      .from('conversations')
-      .update({ context: [...messages, userMessage] })
-      .eq('id', conversationId);
-      
+      const { data: sendMessageData, error: sendMessageError } =
+        await supabaseClient
+          .from("conversations")
+          .update({ context: [...messages, userMessage] })
+          .eq("id", conversationId);
+
       if (sendMessageError) throw sendMessageError;
-      
+
       setMessages([...messages, userMessage]);
       setWaitingForResponse(true);
 
-      const { data: aiResponseData, error: aiResponseError } = await supabaseClient.functions.invoke("chat", {
-        body: { messageHistory: [...messages, userMessage] },
-      });
+      const { data: aiResponseData, error: aiResponseError } =
+        await supabaseClient.functions.invoke("chat", {
+          body: { messageHistory: [...messages, userMessage] },
+        });
 
       if (aiResponseError) throw aiResponseError;
-      
-      const {data: updateConversationData, error: updateConversationError} = await supabaseClient
-      .from('conversations')
-      .update({ context: [...messages, userMessage, aiResponseData.msg] })
-      .eq('id', conversationId);
-      
+
+      const { data: updateConversationData, error: updateConversationError } =
+        await supabaseClient
+          .from("conversations")
+          .update({ context: [...messages, userMessage, aiResponseData.msg] })
+          .eq("id", conversationId);
+
       if (updateConversationError) throw updateConversationError;
-      
+
       return aiResponseData;
     },
     onError: (error) => {
@@ -58,11 +58,12 @@ export default function Chat({
       setWaitingForResponse(false);
     },
     onSuccess: (aiResponse) => {
-      setMessages(currentMessages => {
+      setMessages((currentMessages) => {
         return [...currentMessages, aiResponse.msg as Message];
       });
+
       setWaitingForResponse(false);
-    }
+    },
   });
 
   const newConversation = useMutation({
@@ -94,16 +95,16 @@ export default function Chat({
       setConversationId(data[0].id);
       setWaitingForResponse(false);
     },
-  })
+  });
 
   const getConversation = useQuery({
-    queryKey: ['conversation', conversationId],
+    queryKey: ["conversation", conversationId],
     queryFn: async () => {
       if (conversationId === null) {
         const { data, error } = await supabaseClient
-          .from('conversations')
-          .select('*')
-          .order('created_at', { ascending: false })
+          .from("conversations")
+          .select("*")
+          .order("created_at", { ascending: false })
           .limit(1);
         if (error) {
           throw error;
@@ -118,17 +119,17 @@ export default function Chat({
       } else {
         setMessages([]);
         const { data, error } = await supabaseClient
-          .from('conversations')
-          .select('*')
-          .eq('id', conversationId)
+          .from("conversations")
+          .select("*")
+          .eq("id", conversationId)
           .single();
         if (error) {
           throw error;
         }
         return data;
       }
-    }
-  })
+    },
+  });
 
   useEffect(() => {
     if (getConversation.data) {
@@ -147,10 +148,10 @@ export default function Chat({
     <>
       <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
       <div className="fixed flex space-x-4 top-4 left-4">
-          <SideMenu
-            supabaseClient={supabaseClient}
-            setConversationId={setConversationId}
-          />
+        <SideMenu
+          supabaseClient={supabaseClient}
+          setConversationId={setConversationId}
+        />
       </div>
       <div className="fixed flex space-x-4 top-4 right-4">
         <NavMenu>
@@ -165,10 +166,7 @@ export default function Chat({
       </div>
 
       <div className="p-8 mt-12 mb-32">
-        <ChatLog
-          messages={messages}
-          waitingForResponse={waitingForResponse}
-        />
+        <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
       </div>
 
       <div ref={bottomRef} />
