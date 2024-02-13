@@ -23,7 +23,7 @@ A'ight, let's get this working for you!
 git clone https://github.com/adamcohenhillel/ADeus
 ```
 
-### 2. Backend (Supabase)
+## Backend (Supabase)
 
 Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
 
@@ -64,7 +64,8 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
 
-### Setup: Run with Ollama
+
+**Setup: Run with Ollama**
 
 How-to-Guide will be written here soon, but it should be fairly simple with [Ollama](https://ollama.ai/) serve and `ngrok http 11434`
 
@@ -72,7 +73,9 @@ How-to-Guide will be written here soon, but it should be fairly simple with [Oll
 brew install ngrok/ngrok/ngrok
 ```
 
-### 3. Web & Mobile App
+---
+
+## Web & Mobile App
 
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
 
@@ -103,7 +106,9 @@ And you should be able to start chatting!
 
 Now - let's configure our hardware device, so we could start provide crucial context to our personal AI!
 
-### 4. Hardware
+---
+
+## Hardware
 
 - [CoralAI device](https://docs.adeus.ai/archive/setup_coralai.html)
 - [Raspberry Pi Zero 2W](https://docs.adeus.ai/guides/setup_raspberry_pi_zero.html)
