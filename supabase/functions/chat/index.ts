@@ -5,25 +5,23 @@ import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 import { ApplicationError, UserError } from "../common/errors.ts";
 
-async function generateResponse(useOpenRouter, openaiClient, openRouterClient, modelId, messages) {
-  let completion;
-  if (useOpenRouter) {
-    // OpenRouter call
-    completion = await openRouterClient.chat.completions.create({
-      model: modelId, // Make sure modelId is correctly set for OpenRouter
-      messages: messages,
-    });
-    console.log("OpenRouter completion: ", completion);
-    return completion.choices[0].message; 
-  } else {
-    // OpenAI call
-    completion = await openaiClient.chat.completions.create({
-      model: "gpt-4-1106-preview", 
-      messages: messages,
-    });
-    console.log("OpenAI completion: ", completion);
-    return completion.choices[0].message; 
-  }
+async function generateResponse(
+  useOpenRouter,
+  openaiClient,
+  openRouterClient,
+  messages
+) {
+  const client = useOpenRouter ? openRouterClient : openaiClient;
+  const modelName = useOpenRouter
+    ? "nousresearch/nous-capybara-34b"
+    : "gpt-4-1106-preview";
+
+  const { choices } = await client.chat.completions.create({
+    model: modelName,
+    messages,
+  });
+  console.log("Completion: ", choices[0]);
+  return choices[0].message;
 }
 
 const chat = async (req) => {
@@ -42,22 +40,34 @@ const chat = async (req) => {
     throw new ApplicationError(
       "Unable to get auth user details in request data"
     );
-  const { messageHistory, useOpenRouter, modelId } = await req.json();
+  const requestBody = await req.json();
+  const { messageHistory, userMessage } = requestBody;
+
+  // Append userMessage to messageHistory if it exists
+  if (userMessage) {
+    messageHistory.push({ role: "user", content: userMessage });
+  }
+
   if (!messageHistory) throw new UserError("Missing query in request data");
 
-  //use this key for embeddings and for model generation
   const openaiClient = new OpenAI({
     apiKey: Deno.env.get("OPENAI_API_KEY"),
   });
 
-  const openRouterClient = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
-    apiKey: Deno.env.get("OPENROUTER_API_KEY") 
-  });
+  const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
+  const useOpenRouter = Boolean(openRouterApiKey); // Use OpenRouter if API key is available
+
+  let openRouterClient;
+  if (useOpenRouter) {
+    openRouterClient = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: openRouterApiKey,
+    });
+  }
 
   console.log("messageHistory: ", messageHistory);
 
-  // embed the last messageHistory message
+  // Embed the last messageHistory message using OpenAI's embeddings API
   const embeddingsResponse = await openaiClient.embeddings.create({
     model: "text-embedding-ada-002",
     input: messageHistory[messageHistory.length - 1].content,
@@ -65,12 +75,13 @@ const chat = async (req) => {
   const embeddings = embeddingsResponse.data[0].embedding;
   console.log("Embeddings:", embeddings);
 
+  // Retrieve records from Supabase based on embeddings similarity
   const { data: relevantRecords, error: recordsError } = await supabase.rpc(
     "match_records_embeddings_similarity",
     {
-      query_embedding: JSON.stringify(embeddings), // Pass the embedding you want to compare
-      match_threshold: 0.8, // Choose an appropriate threshold for your data
-      match_count: 10, // Choose the number of matches
+      query_embedding: JSON.stringify(embeddings),
+      match_threshold: 0.8,
+      match_count: 10,
     }
   );
 
@@ -79,7 +90,6 @@ const chat = async (req) => {
     throw new ApplicationError("Error getting records from Supabase");
   }
 
-  //the messages that are passed in for the prompt
   let messages = [
     {
       role: "system",
@@ -94,9 +104,13 @@ const chat = async (req) => {
   ];
   console.log("messages: ", messages);
 
-  //if UseOpenRouter = true generate with OpenRouter, if false generate with OpenAI
   try {
-    const responseMessage = await generateResponse(useOpenRouter, openaiClient, openRouterClient, modelId, messages);
+    const responseMessage = await generateResponse(
+      useOpenRouter,
+      openaiClient,
+      openRouterClient,
+      messages
+    );
 
     return new Response(
       JSON.stringify({
@@ -107,10 +121,10 @@ const chat = async (req) => {
         status: 200,
       }
     );
-    } catch (error) {
-      console.log("Error: ", error);
-      throw new ApplicationError("Error processing chat completion");
-    }
+  } catch (error) {
+    console.log("Error: ", error);
+    throw new ApplicationError("Error processing chat completion");
+  }
 
   return new Response(
     JSON.stringify({
