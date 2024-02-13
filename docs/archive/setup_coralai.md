@@ -1,9 +1,20 @@
 ---
-title: Hardware - CoralAI hardware device
+title: CoralAI Hardware Device
 description: add description
 layout: default
 parent: _archive
 ---
+
+# CoralAI Hardware Device
+
+{: .no_toc }
+
+## Table of contents
+
+{: .no_toc .text-delta }
+
+1. TOC
+   {:toc}
 
 Setting up hardware
 

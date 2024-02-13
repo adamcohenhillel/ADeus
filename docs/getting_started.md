@@ -95,3 +95,9 @@ Enter the four required details, which you should've obtained in the Supabase se
 And you should be able to start chatting!
 
 Now - let's configure our hardware device, so we could start provide crucial context to our personal AI!
+
+### 4. Hardware
+
+- [CoralAI device](https://docs.adeus.ai/archive/setup_coralai.html)
+- [Raspberry Pi Zero 2W](https://docs.adeus.ai/guides/setup_raspberry_pi_zero.html)
+- ESP32 soon
