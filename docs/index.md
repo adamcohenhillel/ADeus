@@ -6,21 +6,21 @@ nav_order: 1
 
 # Adeus Documentation
 
+{: .no_toc }
+
+## Table of contents
+
+{: .no_toc .text-delta }
+
+{:toc}
+
+---
+
 Welcome dear contributer,
 
 Open-source contributors, like yourself, are the unsung heroes of technology, the backbone of our modern, OPEN, world.
 
 So, thank you for being here, and now, **let's get started!**
-
-## Table of contents
-
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-  - [Set up Supabase](./setup/setup_supabase.md)
-  - [Set up Web / Mobile App](./setup/setup_app.md)
-  - [Hardware (Coral AI)](#setup-hardware-coral-ai-device-↗)
-- [Resources](#resoucres)
-- [How to Contribute](#how-to-contribute)
 
 First, let's understand how Adeus is built:
 
