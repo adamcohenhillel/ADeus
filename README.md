@@ -22,11 +22,9 @@ Adeus is a wearable device that captures what you say and hear in the real world
 
 - [Why Adeus?](#why-adeus)
 - [How Adeus is built](#how-adeus-is-built)
-- [Getting Started](#getting-started)
-  - [Supabase](#setup-supabase-↗)
-  - [Web / Mobile App](#setup-app-↗)
-  - [Hardware (Coral AI)](#setup-hardware-coral-ai-device-↗)
-- [How to Contribute](#how-to-contribute)
+- [Documentation](#documentation)
+  - [Getting Started](https://docs.adeus.ai/getting_started.html)
+  - [How to Contribute](https://docs.adeus.ai/#how-to-contribute)
 
 ## Why Adeus?
 
@@ -45,33 +43,7 @@ Adeus consists of 3 parts:
 
 ![ADeus diagram](docs/images/adeus_diagram.png)
 
-## Getting Started
+## Documentation:
 
-A'ight, let's get this working for you!
-
-1. Clone the repo:
-
-```bash
-git clone https://github.com/adamcohenhillel/ADeus
-```
-
-2. #### [Setup Supabase ↗](https://docs.adeus.ai/setup_supabase)
-
-3. #### [Setup App ↗](https://docs.adeus.ai/setup_app)
-
-4. #### [Setup Hardware (Coral AI device) ↗](https://docs.adeus.ai/setup/setup_coralai.html)
-
-- Don't have the hardware device yet? [Read the Docs here](https://docs.adeus.ai)
-
-## How to Contribute
-
-Adeus is open-source and we welcome contributions. If you're looking to contribute, please:
-
-- Fork the repository.
-- Create a new branch for your feature.
-- Add your feature or improvement.
-- Send a pull request.
-
-We appreciate your input!
-
-[Read the docs for more information](https://docs.adeus.ai)
+- [Getting Started Guide](https://docs.adeus.ai/getting_started.html#1-backend-supabase)
+- [How to Contribute?](https://docs.adeus.ai/#how-to-contribute)

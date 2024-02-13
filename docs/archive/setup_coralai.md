@@ -1,7 +1,22 @@
 ---
-title: Setting up the CoralAI hardware device
+title: CoralAI Hardware Device
 description: add description
+layout: default
+parent: _archive
 ---
+
+# CoralAI Hardware Device
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+Setting up hardware
 
 #### Prerequisite: ($110)
 
@@ -18,7 +33,7 @@ First, to learn more about the device, it is good to check out the [official doc
 
 Here is quick video showing how to "connect" the hardware pieces together, and install the software:
 
-[![set up device video](docs/images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
+[![set up device video](../images/thumbnail_2.png)](https://youtu.be/_2KRSlpnXrA)
 
 In the root folder of this repository, run the following commands, (which will download the Coral AI Micro Dev dependencies to your computer - note that it might take a few minutes):
 
@@ -60,7 +75,7 @@ cmake -B out -S .
 make -C out -j4
 ```
 
-And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth pairing is coming soon, see [ticket][https://github.com/adamcohenhillel/AdDeus/issues/8])
+And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth pairing is coming soon, see [ticket](https://github.com/adamcohenhillel/AdDeus/issues/8)
 
 ```bash
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"

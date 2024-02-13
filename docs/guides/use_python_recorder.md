@@ -1,10 +1,20 @@
 ---
-title: How to start Contributing
+title: Develop without hardware device using a python script
 description: add description
+layout: default
+parent: How to Guides
 ---
 
-## Develop without the hardware device: Sound Recording With a Python Script
+# Develop without hardware device using a python script
+{: .no_toc }
 
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
 Sometimes, when working on the frontend / backend of Adeus, you want an easier and faster feedback loop, one that does not require the use of the physical device. This is exactly what this guide is about.
 
 #### Setup:
