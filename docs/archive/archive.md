@@ -7,4 +7,4 @@ has_children: true
 
 # Archive
 
-{: .no_toc }
+<!-- {: .no_toc } -->

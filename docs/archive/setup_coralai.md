@@ -13,8 +13,7 @@ parent: _archive
 
 {: .no_toc .text-delta }
 
-1. TOC
-   {:toc}
+{:toc}
 
 Setting up hardware
 
