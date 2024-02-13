@@ -63,6 +63,7 @@ Adeus is open-source and we welcome contributions. If you're looking to contribu
 We appreciate your input!
 
 You can also check the [TODOs](https://github.com/adamcohenhillel/ADeus/blob/main/TODO.md) if you're looking for things you can do
+
 ---
 
 ## Extra Resources:
