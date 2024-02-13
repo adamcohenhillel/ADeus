@@ -6,7 +6,15 @@ parent: How to Guides
 ---
 
 # Raspberry Pi Zero W Setup Guide
+{: .no_toc }
 
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
 This guide provides step-by-step instructions for setting up a Raspberry Pi Zero W with the necessary software and configurations for development purposes.
 
 ## Prerequisites

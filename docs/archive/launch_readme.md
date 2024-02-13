@@ -6,15 +6,13 @@ parent: _archive
 ---
 
 # ADeus: Open-Source AI Wearable Device
-
 {: .no_toc }
 
 ## Table of contents
-
 {: .no_toc .text-delta }
 
 1. TOC
-   {:toc}
+{:toc}
 
 ---
 
