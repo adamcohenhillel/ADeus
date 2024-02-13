@@ -38,7 +38,8 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 10. Now when we have the CLI, we need to login with oour Supabase account, running `supabase login` - this should pop up a browser window, which should prompt you through the auth
 11. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`, and it will be under "reference id") - you can skip (enter) the database password, it's not needed.
 12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/../guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
-13. Lasly - if you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
+13. If you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
+14. If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run `supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>`.
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
 
