@@ -23,6 +23,12 @@ So, thank you for being here, and now, **let's get started!**
 
 ---
 
+## Why Adeus?
+
+In the upcoming world, Personal AI will become an integrated part of our daily lives, they will be with us all the time, and will know much about us as our closest friends - and therefore, with Adeus, we are making sure it is completely open-source, and that you can **own** you own data.
+
+--- 
+
 ## How Adeus is Built
 
 First, let's understand how Adeus is built:
@@ -63,8 +69,8 @@ We appreciate your input!
 
 ---
 
-## Where to go Next>
+## Where to go Next
 
-Psst
+-> [Getting Started](https://docs.adeus.ai/getting_started.html)
 
 ---

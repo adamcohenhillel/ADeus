@@ -22,11 +22,9 @@ Adeus is a wearable device that captures what you say and hear in the real world
 
 - [Why Adeus?](#why-adeus)
 - [How Adeus is built](#how-adeus-is-built)
-- [Getting Started](#getting-started)
-  - [Supabase](#setup-supabase-↗)
-  - [Web / Mobile App](#setup-app-↗)
-  - [Hardware (Coral AI)](#setup-hardware-coral-ai-device-↗)
-- [How to Contribute](#how-to-contribute)
+- [Next](#next)
+  - [Getting Started](https://docs.adeus.ai/getting_started.html)
+  - [How to Contribute](https://docs.adeus.ai/#how-to-contribute)
 
 ## Why Adeus?
 
