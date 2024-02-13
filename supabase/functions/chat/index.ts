@@ -41,12 +41,7 @@ const chat = async (req) => {
       "Unable to get auth user details in request data"
     );
   const requestBody = await req.json();
-  const { messageHistory, userMessage } = requestBody;
-
-  // Append userMessage to messageHistory if it exists
-  if (userMessage) {
-    messageHistory.push({ role: "user", content: userMessage });
-  }
+  const { messageHistory } = requestBody;
 
   if (!messageHistory) throw new UserError("Missing query in request data");
 
