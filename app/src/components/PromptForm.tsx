@@ -7,13 +7,13 @@ export default function PromptForm({
   entryData,
   setEntryData,
   waitingForResponse,
-  onSendMsgClick,
+  sendMessage,
 }: {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   entryData: string;
   setEntryData: React.Dispatch<React.SetStateAction<string>>;
   waitingForResponse: boolean;
-  onSendMsgClick: () => void;
+  sendMessage: () => void;
 }) {
   return (
     <div className="fixed bottom-3 w-full flex items-center justify-center">
@@ -42,7 +42,7 @@ export default function PromptForm({
           size={"icon"}
           className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 transition-colors ml-auto"
           disabled={waitingForResponse || entryData.length == 0}
-          onClick={() => onSendMsgClick()}
+          onClick={sendMessage}
         >
           <SendHorizontal size={20} />
         </Button>

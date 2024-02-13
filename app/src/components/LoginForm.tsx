@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useSupabaseConfig } from "@/utils/useSupabaseConfig";
 import { toast } from "sonner";
 
@@ -41,7 +41,7 @@ export default function LoginForm() {
       } else {
         toast.success("Login successful");
         setSupabaseConfig(supabaseUrl, supabaseToken);
-        router.push("/");
+        router.reload();
       }
     } catch (error: any) {
       console.error("ERROR", error);
