@@ -6,7 +6,15 @@ nav_order: 2
 
 {: .no_toc }
 
-### 1. Backend (Supabase)
+A'ight, let's get this working for you!
+
+1. Clone the repo:
+
+```bash
+git clone https://github.com/adamcohenhillel/ADeus
+```
+
+### 2. Backend (Supabase)
 
 Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
 
@@ -55,7 +63,7 @@ How-to-Guide will be written here soon, but it should be fairly simple with [Oll
 brew install ngrok/ngrok/ngrok
 ```
 
-### 2. Web & Mobile App
+### 3. Web & Mobile App
 
 Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
 

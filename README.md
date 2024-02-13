@@ -45,33 +45,7 @@ Adeus consists of 3 parts:
 
 ![ADeus diagram](docs/images/adeus_diagram.png)
 
-## Getting Started
+## Next:
 
-A'ight, let's get this working for you!
-
-1. Clone the repo:
-
-```bash
-git clone https://github.com/adamcohenhillel/ADeus
-```
-
-2. #### [Setup Supabase ↗](https://docs.adeus.ai/setup_supabase)
-
-3. #### [Setup App ↗](https://docs.adeus.ai/setup_app)
-
-4. #### [Setup Hardware (Coral AI device) ↗](https://docs.adeus.ai/setup/setup_coralai.html)
-
-- Don't have the hardware device yet? [Read the Docs here](https://docs.adeus.ai)
-
-## How to Contribute
-
-Adeus is open-source and we welcome contributions. If you're looking to contribute, please:
-
-- Fork the repository.
-- Create a new branch for your feature.
-- Add your feature or improvement.
-- Send a pull request.
-
-We appreciate your input!
-
-[Read the docs for more information](https://docs.adeus.ai)
+- [Getting Started Guide](https://docs.adeus.ai/getting_started.html#1-backend-supabase)
+- [How to Contribute?](https://docs.adeus.ai/#how-to-contribute)
