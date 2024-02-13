@@ -6,5 +6,3 @@ has_children: true
 ---
 
 # How to Guides
-
-{: .no_toc }

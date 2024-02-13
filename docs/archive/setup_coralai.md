@@ -13,7 +13,10 @@ parent: _archive
 
 {: .no_toc .text-delta }
 
-{:toc}
+1. TOC
+   {:toc}
+
+---
 
 Setting up hardware
 
@@ -74,7 +77,7 @@ cmake -B out -S .
 make -C out -j4
 ```
 
-And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth pairing is coming soon, see [ticket][https://github.com/adamcohenhillel/AdDeus/issues/8])
+And then, flash it to your device with WIFI_NAME and WIFI_PASSWORD: (Bluetooth pairing is coming soon, see [ticket](https://github.com/adamcohenhillel/AdDeus/issues/8)
 
 ```bash
 python3 coralmicro/scripts/flashtool.py --build_dir out --elf_path out/coralmicro-app --wifi_ssid "<WIFI_NAME>" --wifi_psk "<WIFI_PASSWORD>"

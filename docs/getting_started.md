@@ -8,6 +8,15 @@ nav_order: 2
 
 {: .no_toc }
 
+## Table of contents
+
+{: .no_toc .text-delta }
+
+1. TOC
+   {:toc}
+
+---
+
 A'ight, let's get this working for you!
 
 1. Clone the repo:
