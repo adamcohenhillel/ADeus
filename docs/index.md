@@ -34,8 +34,20 @@ Adeus consists of 3 parts:
    Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
-## Getting Started
-
-### Resources
+Next: [Getting Started](https://docs.adeus.ai/getting_started.html)
 
 ### How to Contribute
+
+Adeus is open-source and we welcome contributions. If you're looking to contribute, please:
+
+- Fork the repository.
+- Create a new branch for your feature.
+- Add your feature or improvement.
+- Send a pull request.
+
+We appreciate your input!
+
+### Extra Resources:
+
+- [Adam going over the entire codebase on livestream](https://www.youtube.com/watch?v=NoKahoN7nYE)
+- [Adeus launch original Readme file](https://docs.adeus.ai/archive/launch_readme.html)
