@@ -22,7 +22,7 @@ Adeus is a wearable device that captures what you say and hear in the real world
 
 - [Why Adeus?](#why-adeus)
 - [How Adeus is built](#how-adeus-is-built)
-- [Next](#next)
+- [Documentation](#documentation)
   - [Getting Started](https://docs.adeus.ai/getting_started.html)
   - [How to Contribute](https://docs.adeus.ai/#how-to-contribute)
 
@@ -43,7 +43,7 @@ Adeus consists of 3 parts:
 
 ![ADeus diagram](docs/images/adeus_diagram.png)
 
-## Next:
+## Documentation:
 
 - [Getting Started Guide](https://docs.adeus.ai/getting_started.html#1-backend-supabase)
 - [How to Contribute?](https://docs.adeus.ai/#how-to-contribute)
