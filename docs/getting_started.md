@@ -1,7 +1,29 @@
 ---
-title: Setting up the backend (Supabase)
-description: add description
+layout: default
+title: Getting Started (Setup)
+nav_order: 2
 ---
+
+# Getting Started (Setup)
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
+
+A'ight, let's get this working for you!
+
+1. Clone the repo:
+
+```bash
+git clone https://github.com/adamcohenhillel/ADeus
+```
+
+## Backend (Supabase)
 
 Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
 
@@ -43,10 +65,52 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
 
-### Setup: Run with Ollama
+
+**Setup: Run with Ollama**
 
 How-to-Guide will be written here soon, but it should be fairly simple with [Ollama](https://ollama.ai/) serve and `ngrok http 11434`
 
 ```
 brew install ngrok/ngrok/ngrok
 ```
+
+---
+
+## Web & Mobile App
+
+Now that you have a Supabase instance that is up and running, you can technically start chatting with your assistant, it just won't have any personal data it.
+
+To try it out, you can either use the deployed version of the web app here: [adeusai.com](https://adeusai.com) - which will ask you to connect to your own Supabase instance (it is only a frontend client).
+
+Or you can deploy the app yourself somewhere - the easiest is Vercel, or locally:
+
+from the root folder:
+
+```bash
+cd ./app
+```
+
+npm install and run:
+
+```bash
+npm i
+npm run dev
+```
+
+Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
+
+<img src="../images/login_screenshot.png" width="150">
+
+Enter the four required details, which you should've obtained in the Supabase setup: `Supabase URL`, `Supabase Anon API Key`, `email` and `password`.
+
+And you should be able to start chatting!
+
+Now - let's configure our hardware device, so we could start provide crucial context to our personal AI!
+
+---
+
+## Hardware
+
+- [CoralAI device](https://docs.adeus.ai/archive/setup_coralai.html)
+- [Raspberry Pi Zero 2W](https://docs.adeus.ai/guides/setup_raspberry_pi_zero.html)
+- ESP32 soon

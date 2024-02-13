@@ -1,0 +1,19 @@
+title: Adeus Documentation
+description: Open Source AI Wearable device
+theme: just-the-docs
+
+url: https://docs.adeus.ai
+
+aux_links:
+  Github: https://github.com/adamcohenhillel/ADeus
+
+aux_links_new_tab: true
+
+nav_external_links:
+  - title: Discord
+    url: https://discord.gg/N5c6KXBgWW
+    opens_in_new_tab: true
+
+  - title: GitHub
+    url: https://github.com/adamcohenhillel/ADeus
+    opens_in_new_tab: true
