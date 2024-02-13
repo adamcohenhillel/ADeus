@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Getting Started (Set Up)
+title: Getting Started (Setup)
 nav_order: 2
 ---
 

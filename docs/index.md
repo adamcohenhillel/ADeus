@@ -31,8 +31,6 @@ In the upcoming world, Personal AI will become an integrated part of our daily l
 
 ## How Adeus is Built
 
-First, let's understand how Adeus is built:
-
 Adeus consists of 3 parts:
 
 ![ADeus diagram](./images/adeus_diagram.png)
@@ -45,7 +43,11 @@ Adeus consists of 3 parts:
    Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
-Next: [Getting Started](https://docs.adeus.ai/getting_started.html)
+---
+
+## Where to go Next
+
+-> [Getting Started](https://docs.adeus.ai/getting_started.html)
 
 ---
 
@@ -60,6 +62,7 @@ Adeus is open-source and we welcome contributions. If you're looking to contribu
 
 We appreciate your input!
 
+You can also check the [TODOs](https://github.com/adamcohenhillel/ADeus/blob/main/TODO.md) if you're looking for things you can do
 ---
 
 ## Extra Resources:
@@ -69,8 +72,3 @@ We appreciate your input!
 
 ---
 
-## Where to go Next
-
--> [Getting Started](https://docs.adeus.ai/getting_started.html)
-
----
