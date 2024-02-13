@@ -59,7 +59,7 @@ git clone https://github.com/adamcohenhillel/ADeus
 
 3. #### [Setup App ↗](https://docs.adeus.ai/setup_app)
 
-4. #### [Setup Hardware (Coral AI device) ↗](https://docs.adeus.ai/setup_coralai)
+4. #### [Setup Hardware (Coral AI device) ↗](https://docs.adeus.ai/setup/setup_coralai.html)
 
 - Don't have the hardware device yet? [Read the Docs here](https://docs.adeus.ai)
 
