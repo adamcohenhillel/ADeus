@@ -17,7 +17,7 @@ parent: How to Guides
 ---
 Sometimes, when working on the frontend / backend of Adeus, you want an easier and faster feedback loop, one that does not require the use of the physical device. This is exactly what this guide is about.
 
-#### Setup:
+#### **Setup**:
 
 first, let's go to the script's folder:
 
@@ -27,6 +27,13 @@ cd scripts/python_recorder_client
 
 And now let's install it's requirements.
 The script requires PyAudio to capture audio from your microphone, which has different setup to each OS:
+
+Optional : Create a venv and activate before installing pip packages.
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 
 **Windows**
 
@@ -52,7 +59,7 @@ Now, we can install the rest of the requirements:
 pip install -r requirements.txt
 ```
 
-#### Run the script
+#### **Run the script**
 
 To run the script, you need to provide the --base-url (-u) and --token (-t) parameters, these are your Supabase (if you don't have these parameters, please go to the [setup tutorial](./index)).
 
@@ -76,12 +83,12 @@ python main.py --help
 Run:
 
 ```bash
-python3 -u <SUPABASE_URL> -t <SUPABASE_TOKEN>
+python main.py -u <SUPABASE_URL> -t <SUPABASE_TOKEN>
 ```
 
 And that is it, you should now be able to record things locally, and test the frontend / backend without a physical device!
 
-#### Important Notes
+#### **Important Notes**
 
 - Ensure your base_url and token are correct to successfully send recordings.
 - Adjust the sensitivity to your microphone setup to avoid missing recordings or record silance.
