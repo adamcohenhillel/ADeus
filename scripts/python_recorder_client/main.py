@@ -12,7 +12,7 @@ import argparse
 
 parser = argparse.ArgumentParser(
     description='Record audio and send it to a server.',
-    epilog='python recorder.py -s 60 -m 50.0 -u "https://{YOUR_ID}.supabase.co" -t "API_TOKEN" -r -v'
+    epilog='python main.py -s 60 -m 50.0 -u "https://{YOUR_ID}.supabase.co" -t "API_TOKEN" -r -v'
 )
 
 parser.add_argument('-u', '--base-url', type=str, required=True,
