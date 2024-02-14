@@ -56,7 +56,7 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 
 9. Install Supabase and set up the CLI. You should follow thier [guide here](https://supabase.com/../guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
    - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/../guides/cli/getting-started))
-   - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker dameon to run in the background for deploying supabase functions)
+   - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker daemon to run in the background for deploying supabase functions)
 10. Now when we have the CLI, we need to login with oour Supabase account, running `supabase login` - this should pop up a browser window, which should prompt you through the auth
 11. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`, and it will be under "reference id") - you can skip (enter) the database password, it's not needed.
 12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/../guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
