@@ -82,6 +82,7 @@ def store_sound(frames):
         response = requests.post(f'{get_base_url()}/functions/v1/process-audio', files=files, headers={
             'Authorization': f'Bearer {args.token}',
             'apikey': args.token,
+            'Content-Type': 'audio/wav,',
         }, timeout=540)
     logger.info(response.text)
 
