@@ -28,7 +28,7 @@ Adeus is a wearable device that captures what you say and hear in the real world
 
 ## Why Adeus?
 
-In the upcoming world, Personal AI will become an integrated part of our daily lives, they will be with us all the time, and will know much about us as our closest friends - and therefore, with Adeus, we are making sure it is completely open-source, and that you can **own** you own data.
+In the upcoming world, Personal AI will become an integrated part of our daily lives, they will be with us all the time, and will know much about us as our closest friends - and therefore, with Adeus, we are making sure it is completely open-source, and that you can **own** your own data.
 
 ## How Adeus is built
 
