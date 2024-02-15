@@ -69,7 +69,7 @@ Here's a brief overview of the script's parameters:
     -u: --base-url(required): The URL to which the recordings are sent.
     -t: --token(required): API token for server authentication.
     -s: --seconds: Duration of recording segments in seconds (default: 30).
-    -m: --sensitivity: Microphone sensitivity threshold (0.0 to 100.0, default: 35.0). Set to 0 for continuous recording.
+    -m: --sensitivity: Microphone sensitivity threshold (0.0 to 100.0, default: 0). Set to 0 for continuous recording.
     -l: --save: Save recordings locally.
     -v: --verbose: Enable verbose output for debugging.
 ```
@@ -91,5 +91,5 @@ And that is it, you should now be able to record things locally, and test the fr
 #### **Important Notes**
 
 - Ensure your base_url and token are correct to successfully send recordings.
-- Adjust the sensitivity to your microphone setup to avoid missing recordings or record silance.
+- Adjust the sensitivity to your microphone setup to avoid missing recordings or record silance. Too high will make the audio unable to be transcribed.
 - Use the save option if you want to keep local copies of the recordings (file names "recording{timestamp}.wav").
