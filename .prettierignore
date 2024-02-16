@@ -26,3 +26,4 @@ dist
 docs/
 *.yaml
 *.yml
+*.md
