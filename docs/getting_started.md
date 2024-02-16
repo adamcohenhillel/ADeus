@@ -65,11 +65,7 @@ If everything worked, we should now be able to start chatting with our personal 
 
 **Setup: Run with Ollama**
 
-How-to-Guide will be written here soon, but it should be fairly simple with [Ollama](https://ollama.ai/) serve and `ngrok http 11434`
-
-```
-brew install ngrok/ngrok/ngrok
-```
+Check under [How to guides](https://docs.adeus.ai/guides/guides.html)
 
 ---
 

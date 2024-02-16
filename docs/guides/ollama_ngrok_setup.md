@@ -23,7 +23,7 @@ If you would like to setup a local LLM server, you can use the following steps t
 ## Setup Ollama locally
 
 There are several ways to setup Ollama, the easiest way is to setup using docker but they support Linux and Mac installs and currently have a Windows preview as well!
-Check out [Ollama] (https://ollama.com) and on [Github](https://github.com/ollama/ollama) for the complete info.
+Check out [Ollama](https://ollama.com) and on [Github](https://github.com/ollama/ollama) for the complete info.
 
 
 1. Install the relevant package for Ollama based on your OS
@@ -67,7 +67,7 @@ To provide access to your supabase functions and your chat app, you would need t
 Let's do a quick setup for ngrok.
 
 
-1. Download and Install Ngrok. If you haven't already installed ngrok, download it from ngrok's [website] (https://ngrok.com/download) and follow the installation instructions for your operating system.
+1. Download and Install Ngrok. If you haven't already installed ngrok, download it from ngrok's [website](https://ngrok.com/download) and follow the installation instructions for your operating system.
 
 2. Sign-up on ngrok for your authtoken
 
