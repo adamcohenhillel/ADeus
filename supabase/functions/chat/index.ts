@@ -7,14 +7,26 @@ import { ApplicationError, UserError } from "../common/errors.ts";
 
 async function generateResponse(
   useOpenRouter,
+  useOllama,
   openaiClient,
   openRouterClient,
+  ollamaClient,
   messages
 ) {
-  const client = useOpenRouter ? openRouterClient : openaiClient;
-  const modelName = useOpenRouter
-    ? "nousresearch/nous-capybara-34b"
-    : "gpt-4-1106-preview";
+
+  let client;
+  let modelName;
+
+  if (useOpenRouter) {
+    client = openRouterClient;
+    modelName = "nousresearch/nous-capybara-34b";
+  } else if (useOllama) {
+    client = ollamaClient;
+    modelName = "mistral"; 
+  } else {
+    client = openaiClient;
+    modelName = "gpt-4-1106-preview";
+  }
 
   const { choices } = await client.chat.completions.create({
     model: modelName,
@@ -60,6 +72,17 @@ const chat = async (req) => {
     });
   }
 
+  const ollamaApiKey = Deno.env.get("OLLAMA_BASE_URL");
+  const useOllama = Boolean(ollamaApiKey); // Use Ollama if OLLAMA_BASE_URL is available
+
+  let ollamaClient;
+  if (useOllama) {
+    ollamaClient = new OpenAI({
+      baseURL: Deno.env.get("OLLAMA_BASE_URL"),
+      apiKey: "ollama"
+    });
+  }
+
   console.log("messageHistory: ", messageHistory);
 
   // Embed the last messageHistory message using OpenAI's embeddings API
@@ -88,7 +111,7 @@ const chat = async (req) => {
   let messages = [
     {
       role: "system",
-      content: `You are a helpful assistant, helping the user navigate through life. He is asking uoi questions, and you answer them with the best of your ability.
+      content: `You are a helpful assistant, helping the user navigate through life. He is asking you questions, and you answer them with the best of your ability.
       You have access to some of their records, to help you answer their question in a more personalized way.
 
       Records:
@@ -102,8 +125,10 @@ const chat = async (req) => {
   try {
     const responseMessage = await generateResponse(
       useOpenRouter,
+      useOllama,
       openaiClient,
       openRouterClient,
+      ollamaClient,
       messages
     );
 
