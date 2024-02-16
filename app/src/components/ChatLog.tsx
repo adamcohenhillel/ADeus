@@ -1,10 +1,10 @@
-import { AnimatePresence, motion } from "framer-motion";
-import ChatDots from "./ChatDots";
+import { AnimatePresence, motion } from 'framer-motion';
+import ChatDots from './ChatDots';
 
 export interface Message {
   role: string;
   content: string;
-};
+}
 
 export default function ChatLog({
   messages,
@@ -21,28 +21,28 @@ export default function ChatLog({
             <div
               key={index}
               className={
-                chat["role"] == "user"
-                  ? "w-full flex justify-end items-end"
-                  : ""
+                chat['role'] == 'user'
+                  ? 'flex w-full items-end justify-end'
+                  : ''
               }
             >
               <motion.div
                 className={
-                  chat["role"] == "user"
-                    ? "bg-primary rounded-xl px-4 py-3 mb-2 rounded-br-none shadow-sm w-fit"
-                    : "bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+                  chat['role'] == 'user'
+                    ? 'bg-primary mb-2 w-fit rounded-xl rounded-br-none px-4 py-3 shadow-sm'
+                    : 'bg-muted/20 mb-2 w-fit rounded-xl rounded-bl-none px-4 py-3 shadow-sm'
                 }
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 1 } }}
               >
-                <FormattedText message={chat["content"]} />
+                <FormattedText message={chat['content']} />
               </motion.div>
             </div>
           ))}
           {waitingForResponse ? (
             <motion.div
-              className="bg-muted/20 rounded-xl rounded-bl-none px-4 py-3 mb-2 shadow-sm w-fit"
+              className="bg-muted/20 mb-2 w-fit rounded-xl rounded-bl-none px-4 py-3 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, transition: { duration: 1 } }}
@@ -54,12 +54,12 @@ export default function ChatLog({
       ) : null}
     </AnimatePresence>
   );
-};
+}
 
 const FormattedText = ({ message }: { message: string }) => {
   return (
     <>
-      {message.split("\n").map((substring, index) => {
+      {message.split('\n').map((substring, index) => {
         return (
           <span key={index}>
             {substring}

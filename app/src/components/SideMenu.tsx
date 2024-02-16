@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerContent,
@@ -6,22 +6,26 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import { SupabaseClient } from "@supabase/supabase-js";
-import ConversationHistory from "./ConversationHistory";
-import { Sidebar } from "lucide-react";
+} from '@/components/ui/drawer';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { Sidebar } from 'lucide-react';
+import ConversationHistory from './ConversationHistory';
 
 export default function SideMenu({
-    supabaseClient,
-    setConversationId,
+  supabaseClient,
+  setConversationId,
 }: {
-    supabaseClient: SupabaseClient;
-    setConversationId: (id: number) => void;
+  supabaseClient: SupabaseClient;
+  setConversationId: (id: number) => void;
 }) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="ghost" size="icon" className="hover:bg-muted hover:text-muted-foreground">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hover:bg-muted hover:text-muted-foreground"
+        >
           <Sidebar />
         </Button>
       </DrawerTrigger>
@@ -39,5 +43,5 @@ export default function SideMenu({
         </div>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
