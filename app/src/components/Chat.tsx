@@ -1,14 +1,14 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
-import ChatLog, { Message } from "./ChatLog";
-import LogoutButton from "./LogoutButton";
-import { ThemeToggle } from "./ThemeToggle";
-import PromptForm from "./PromptForm";
-import { toast } from "sonner";
-import NewConversationButton from "./NewConversationButton";
-import { NavMenu } from "./NavMenu";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import SideMenu from "./SideMenu";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import ChatLog, { Message } from './ChatLog';
+import LogoutButton from './LogoutButton';
+import { NavMenu } from './NavMenu';
+import NewConversationButton from './NewConversationButton';
+import PromptForm from './PromptForm';
+import SideMenu from './SideMenu';
+import { ThemeToggle } from './ThemeToggle';
 
 export default function Chat({
   supabaseClient,
@@ -18,7 +18,7 @@ export default function Chat({
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const [entryData, setEntryData] = useState("");
+  const [entryData, setEntryData] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
@@ -27,9 +27,9 @@ export default function Chat({
     mutationFn: async (userMessage: Message) => {
       const { data: sendMessageData, error: sendMessageError } =
         await supabaseClient
-          .from("conversations")
+          .from('conversations')
           .update({ context: [...messages, userMessage] })
-          .eq("id", conversationId);
+          .eq('id', conversationId);
 
       if (sendMessageError) throw sendMessageError;
 
@@ -37,7 +37,7 @@ export default function Chat({
       setWaitingForResponse(true);
 
       const { data: aiResponseData, error: aiResponseError } =
-        await supabaseClient.functions.invoke("chat", {
+        await supabaseClient.functions.invoke('chat', {
           body: { messageHistory: [...messages, userMessage] },
         });
 
@@ -45,16 +45,16 @@ export default function Chat({
 
       const { data: updateConversationData, error: updateConversationError } =
         await supabaseClient
-          .from("conversations")
+          .from('conversations')
           .update({ context: [...messages, userMessage, aiResponseData.msg] })
-          .eq("id", conversationId);
+          .eq('id', conversationId);
 
       if (updateConversationError) throw updateConversationError;
 
       return aiResponseData;
     },
     onError: (error) => {
-      toast.error(error.message || "Unknown error");
+      toast.error(error.message || 'Unknown error');
       setWaitingForResponse(false);
     },
     onSuccess: (aiResponse) => {
@@ -69,15 +69,15 @@ export default function Chat({
   const newConversation = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabaseClient
-        .from("conversations")
+        .from('conversations')
         .insert([
           {
             context: [
-              { role: "assistant", content: "Hey, how can I help you?" },
+              { role: 'assistant', content: 'Hey, how can I help you?' },
             ],
           },
         ])
-        .select("*");
+        .select('*');
       if (error) {
         throw error;
       }
@@ -88,7 +88,7 @@ export default function Chat({
       setMessages([]);
     },
     onError: (error) => {
-      toast.error(error.message || "Unknown error");
+      toast.error(error.message || 'Unknown error');
       setWaitingForResponse(false);
     },
     onSuccess: (data) => {
@@ -98,13 +98,13 @@ export default function Chat({
   });
 
   const getConversation = useQuery({
-    queryKey: ["conversation", conversationId],
+    queryKey: ['conversation', conversationId],
     queryFn: async () => {
       if (conversationId === null) {
         const { data, error } = await supabaseClient
-          .from("conversations")
-          .select("*")
-          .order("created_at", { ascending: false })
+          .from('conversations')
+          .select('*')
+          .order('created_at', { ascending: false })
           .limit(1);
         if (error) {
           throw error;
@@ -119,9 +119,9 @@ export default function Chat({
       } else {
         setMessages([]);
         const { data, error } = await supabaseClient
-          .from("conversations")
-          .select("*")
-          .eq("id", conversationId)
+          .from('conversations')
+          .select('*')
+          .eq('id', conversationId)
           .single();
         if (error) {
           throw error;
@@ -140,20 +140,20 @@ export default function Chat({
 
   useEffect(() => {
     if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
   return (
     <>
-      <div className="h-24 bg-gradient-to-b from-background flex justify-between items-center fixed top-0 w-full"></div>
-      <div className="fixed flex space-x-4 top-4 left-4">
+      <div className="from-background fixed top-0 flex h-24 w-full items-center justify-between bg-gradient-to-b"></div>
+      <div className="fixed left-4 top-4 flex space-x-4">
         <SideMenu
           supabaseClient={supabaseClient}
           setConversationId={setConversationId}
         />
       </div>
-      <div className="fixed flex space-x-4 top-4 right-4">
+      <div className="fixed right-4 top-4 flex space-x-4">
         <NavMenu>
           <LogoutButton supabaseClient={supabaseClient} />
           <NewConversationButton
@@ -165,7 +165,7 @@ export default function Chat({
         </NavMenu>
       </div>
 
-      <div className="p-8 mt-12 mb-32">
+      <div className="mb-32 mt-12 p-8">
         <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
       </div>
 
@@ -177,9 +177,9 @@ export default function Chat({
         waitingForResponse={waitingForResponse}
         sendMessage={() => {
           if (!entryData.trim()) return;
-          const userMessage = { role: "user", content: entryData.trim() };
+          const userMessage = { role: 'user', content: entryData.trim() };
           sendMessageAndReceiveResponse.mutate(userMessage);
-          setEntryData("");
+          setEntryData('');
         }}
       />
     </>

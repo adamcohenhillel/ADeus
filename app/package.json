@@ -7,6 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format:check": "prettier --check .",
+    "format": "prettier --write . --list-different",
+    "check": "npm run lint && npm run format:check",
+    "fix": "npm run lint:fix && npm run format",
     "app": "npm run build && npx cap sync",
     "ios": "npm run app && npx cap open ios",
     "android": "npm run app && npx cap open android"

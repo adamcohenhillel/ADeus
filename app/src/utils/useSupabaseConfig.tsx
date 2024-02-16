@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { Preferences } from "@capacitor/preferences";
-import { AuthChangeEvent, Session, SupabaseClient, User, createClient } from "@supabase/supabase-js";
+import { Preferences } from '@capacitor/preferences';
+import { SupabaseClient, User, createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 
 export function useSupabaseConfig() {
-  const [supabaseUrl, setSupabaseUrl] = useState("");
-  const [supabaseToken, setSupabaseToken] = useState("");
+  const [supabaseUrl, setSupabaseUrl] = useState('');
+  const [supabaseToken, setSupabaseToken] = useState('');
 
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const supabaseUrlValue = await Preferences.get({ key: "supabaseUrl" });
+        const supabaseUrlValue = await Preferences.get({ key: 'supabaseUrl' });
         const supabaseTokenValue = await Preferences.get({
-          key: "supabaseToken",
+          key: 'supabaseToken',
         });
 
         if (supabaseUrlValue.value) {
@@ -35,11 +35,11 @@ export function useSupabaseConfig() {
   ) => {
     try {
       await Preferences.set({
-        key: "supabaseUrl",
+        key: 'supabaseUrl',
         value: JSON.stringify(newSupabaseUrl),
       });
       await Preferences.set({
-        key: "supabaseToken",
+        key: 'supabaseToken',
         value: JSON.stringify(newSupabaseToken),
       });
       setSupabaseUrl(newSupabaseUrl);
@@ -73,7 +73,7 @@ export function useSupabase() {
 
   useEffect(() => {
     if (!supabaseClient) return;
-    
+
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
@@ -87,4 +87,3 @@ export function useSupabase() {
 
   return { user, supabaseClient };
 }
-
