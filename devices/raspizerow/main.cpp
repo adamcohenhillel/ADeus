@@ -6,14 +6,22 @@
 #include <iostream>
 #include <alsa/asoundlib.h>
 #include <curl/curl.h>
+#include <fstream>
+#include "cxxopts.hpp"
+#include <chrono>
+#include <filesystem>  // C++17 feature
+
+#define DO_NOT_APPLY_GAIN 1.0
 
 // Assuming 4 bytes per sample for S32_LE format and mono audio
 int bytesPerSample = 4;
 short channels = 1;
-unsigned int sampleRate = 48000;
+unsigned int sampleRate = 44100;
 int durationInSeconds = 60; // Duration you want to accumulate before sending
 int targetBytes = sampleRate * durationInSeconds * bytesPerSample * channels;
 int rc;
+float audio_gain = DO_NOT_APPLY_GAIN;
+bool save_to_local_file = false;
 
 template <typename T>
 class SafeQueue
@@ -142,8 +150,35 @@ void createWavHeader(std::vector<char> &header, int bitsPerSample, int dataSize 
     header.insert(header.end(), dataSizeBytes, dataSizeBytes + 4);
 }
 
+void saveWavToFile(const std::vector<char> &buffer) {
+    // Generate a timestamp for the filename
+    auto now = std::chrono::system_clock::now();
+    auto timestamp = std::chrono::system_clock::to_time_t(now);
+
+    // Convert the timestamp to a string
+    std::string timestampStr = std::to_string(timestamp);
+
+    // Create the directory "data" if it doesn't exist
+    std::filesystem::create_directory("data");
+
+    // Construct the filename with the timestamp
+    std::string filename = "data/" + timestampStr + "_audio.wav";
+
+    // Write the buffer to the file
+    std::ofstream outfile(filename, std::ios::binary);
+    if (outfile.is_open()) {
+        outfile.write(buffer.data(), buffer.size());
+        outfile.close();
+    }
+}
+
 void sendWavBuffer(const std::vector<char> &buffer)
 {
+    if (save_to_local_file)
+    {
+        saveWavToFile(buffer);
+    }
+
     CURL *curl;
     CURLcode res;
     const char *supabaseUrlEnv = getenv("SUPABASE_URL");
@@ -194,6 +229,21 @@ void handleAudioBuffer()
             dataChunk.insert(dataChunk.end(), buffer.begin(), buffer.end());
         }
 
+        if (audio_gain != DO_NOT_APPLY_GAIN)
+        {
+            // Apply volume increase by scaling the audio samples
+            for (size_t i = 0; i < dataChunk.size(); i += 2) // Assuming 16-bit (2-byte) audio samples
+            {
+                // Convert the two bytes to a short (16-bit sample)
+                short sample = static_cast<short>((dataChunk[i + 1] << 8) | dataChunk[i]);
+                // Scale the sample by the volume factor
+                sample = static_cast<short>(std::min(std::max(-32768, static_cast<int>(audio_gain * sample)), 32767));
+                // Split the short back into two bytes
+                dataChunk[i] = sample & 0xFF;
+                dataChunk[i + 1] = (sample >> 8) & 0xFF;
+            }
+        }
+
         // Process and send the accumulated data
         if (!dataChunk.empty())
         {
@@ -214,8 +264,37 @@ void handleAudioBuffer()
     }
 }
 
-int main()
+void process_args(int argc, char* argv[]) {
+    cxxopts::Options options("main", " - command line options");
+
+    options.add_options()
+        ("h,help", "Print help")
+        ("s,save", "Save audio to local file")
+        ("g,gain", "Microphone gain (increase volume of audio)", cxxopts::value<float>())
+        ;
+
+        auto result = options.parse(argc, argv);
+
+        if (result.count("help")) {
+            std::cout << options.help() << std::endl;
+            exit;
+        }
+
+        if (result.count("save")) {
+            std::cout << "Saving audio to local file" << std::endl;
+            save_to_local_file = true;
+        }
+
+        if (result.count("gain")) {
+            float gain = result["gain"].as<float>();
+            std::cout << "Microphone gain: " << gain << std::endl;
+            audio_gain = gain;
+        }
+}
+
+int main(int argc, char* argv[])
 {
+    process_args(argc, argv);
     snd_pcm_t *capture_handle;
     snd_pcm_format_t format = SND_PCM_FORMAT_S32_LE;
 
