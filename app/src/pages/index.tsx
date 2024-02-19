@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 
 const SERVICE_ID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
 const CHARACTERISTIC_ID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+const SAMPLE_RATE = 44100;
+const FRAMES_PER_BUFFER = 512;
+const RECORD_SECONDS = 10;
 
 export default function Index() {
   const [devices, setDevices] = useState<ScanResult[]>([]);
@@ -60,6 +63,26 @@ export default function Index() {
     }
   }
 
+  async function sendAudioData(audioData: Uint8Array) {
+    const response = await fetch(
+      "https://bgkiorohiiofwtxnfvvo.supabase.co/functions/v1/process-audio",
+      {
+        method: "POST",
+        body: audioData.buffer, // Assuming audioData is a Uint8Array or similar binary data
+        headers: {
+          "Content-Type": "application/octet-stream",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("Response from the backend:", result);
+  }
+
   return (
     <div style={{ marginTop: 40 }}>
       <h1>Index</h1>
@@ -69,21 +92,26 @@ export default function Index() {
         <LoginForm />
       )} */}
       {devices.map((device, index) => {
-        if (device.uuids?.includes("4fafc201-1fb5-459e-8fcc-c5c9c331914b")) {
+        if (device.device.name?.includes("ESP32")) {
           return (
             <Button
               onClick={async () => {
                 await connect(device.device.deviceId);
-                const result = await BleClient.read(
-                  device.device.deviceId,
-                  SERVICE_ID,
-                  CHARACTERISTIC_ID
-                );
-                const decoder = new TextDecoder("utf-8");
-                const fullMessage = decoder.decode(result);
+                // let buffer: ArrayBuffer = new ArrayBuffer(441000 * 4);
+                // const combinedView = new DataView(buffer);
+                let buffer = new Uint8Array((32 * 441000 - 512) / 4);
 
-                setData(fullMessage);
-                setConnected(true);
+                for (let i = 0; i < 441000 * 4; ++i) {
+                  const result = await BleClient.read(
+                    device.device.deviceId,
+                    SERVICE_ID,
+                    CHARACTERISTIC_ID
+                  );
+
+                  buffer.set(new Uint8Array(result.buffer));
+                }
+
+                await sendAudioData(buffer);
               }}
               key={index}
             >
