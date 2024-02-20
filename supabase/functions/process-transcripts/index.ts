@@ -58,15 +58,14 @@ const processTranscripts = async (req: Request) => {
                 {
                     role: 'system',
                     content: `
-            These are transcripts contain information about your user. 
+            These transcripts contain information about your user. 
             Your task is to organize the information in a way that makes sense to you.
             Your response must be in json format with the three following keys: "corrected_version", "summary", "topics".
             `,
                 },
                 {
                     role: 'user',
-                    content: `${concatenatedTranscripts}\n\nGiven the information about the user,
-            a summary, and the topics discussed\n.
+                    content: `${concatenatedTranscripts}\n\nGiven the information about the user, provide a summary, and the topics discussed.\n
             *** Summary must be a brief overview of the transcript.\n\n
             *** Topics must be a list of topics that were discussed in the transcript, include topics not mentioned but that relate to the topics discussed.\n\n
              `,
@@ -138,8 +137,23 @@ const processTranscripts = async (req: Request) => {
             });
             const embeddings = embeddingsResponse.data[0].embedding;
             console.log('Embeddings:', embeddings);
+
+            const { data, error } = await supabase
+            .from('embeddings')
+            .insert({
+                embedding: embeddings, 
+                topics: metadata.topics,
+                raw_text: metadata.raw_text,
+                verbose_version: metadata.verbose_version,
+                summary: metadata.summary,
+            });
+
+        if (error) {
+            console.error('Error inserting record:', error);
+        }
         }
 
+    
         // Update the processed field for each record
         for (const record of data) {
             const { error: updateError } = await supabase
