@@ -4,15 +4,20 @@ import { corsHeaders } from '../common/cors.ts';
 import { supabaseClient } from '../common/supabaseClient.ts';
 
 const processTranscripts = async (req: Request) => {
-    try {
-        const supabase = supabaseClient(req);
-        const openaiClient = new OpenAI({
-            apiKey: Deno.env.get('OPENAI_API_KEY')!,
+
+    if (req.method !== "GET") {
+        return new Response("Method Not Allowed", { status: 405 });
+      }
+
+    const supabase = supabaseClient(req);
+    const openaiClient = new OpenAI({
+        apiKey: Deno.env.get('OPENAI_API_KEY')!,
         });
 
+    try {
         const { data, error } = await supabase
             .from('records')
-            .select('raw_text')
+            .select('raw_text, id')
             .eq('processed', false)
             .order('created_at', { ascending: true })
             .limit(5);
@@ -50,8 +55,6 @@ const processTranscripts = async (req: Request) => {
             );
         }
 
-        console.log(concatenatedTranscripts);
-
         const response = await openaiClient.chat.completions.create({
             model: 'gpt-4-0125-preview',
             messages: [
@@ -60,7 +63,7 @@ const processTranscripts = async (req: Request) => {
                     content: `
             These transcripts contain information about your user. 
             Your task is to organize the information in a way that makes sense to you.
-            Your response must be in json format with the three following keys: "corrected_version", "summary", "topics".
+            Your response must be in json format with the three following keys: "summary", "topics".
             `,
                 },
                 {
@@ -74,10 +77,10 @@ const processTranscripts = async (req: Request) => {
             response_format: { type: 'json_object' },
         });
 
+
         const responseData = JSON.parse(
-            response.data.choices[0].message.content
+            response.choices[0].message.content
         );
-        console.log('Response Data:', responseData);
 
         const { summary, topics } = responseData;
 
@@ -108,9 +111,8 @@ const processTranscripts = async (req: Request) => {
             });
 
             const responseData = JSON.parse(
-                response.data.choices[0].message.content
+                response.choices[0].message.content
             );
-            console.log('Response Data:', responseData);
 
             transcript_and_metadata[record.id] = {
                 raw_text: record.raw_text,
@@ -166,8 +168,22 @@ const processTranscripts = async (req: Request) => {
                     `Error updating record ${record.id}: ${updateError.message}`
                 );
         }
+        return new Response(JSON.stringify({ message: 'Transcripts processed successfully.' }), {
+            headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json',
+            },
+            status: 200,
+        });
     } catch (error) {
         console.error('Error processing transcripts:', error);
+        return new Response(JSON.stringify({ message: 'Error processing transcripts.' }), {
+            headers: {
+                ...corsHeaders,
+                'Content-Type': 'application/json',
+            },
+            status: 500,
+        });
     }
 };
 
