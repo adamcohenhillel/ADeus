@@ -306,10 +306,11 @@ void process_args(int argc, char *argv[])
 
     auto result = options.parse(argc, argv);
 
-        if (result.count("help")) {
-            std::cout << options.help() << std::endl;
-            exit(0);
-        }
+    if (result.count("help"))
+    {
+        std::cout << options.help() << std::endl;
+        exit;
+    }
 
     if (result.count("save"))
     {
