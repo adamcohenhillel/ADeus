@@ -1,18 +1,18 @@
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { useRouter } from 'next/navigation';
-import { useSupabaseConfig } from "@/utils/useSupabaseConfig";
-import { toast } from "sonner";
+import { useSupabaseConfig } from '@/utils/useSupabaseConfig';
+import { createClient } from '@supabase/supabase-js';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { Button } from './ui/button';
 
 export default function LoginForm() {
   const router = useRouter();
 
-  const [supabaseUrl, setSupabaseUrl] = useState("");
-  const [supabaseToken, setSupabaseToken] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [supabaseUrl, setSupabaseUrl] = useState('');
+  const [supabaseToken, setSupabaseToken] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
   const {
     supabaseUrl: savedUrl,
@@ -39,67 +39,67 @@ export default function LoginForm() {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("Login successful");
+        toast.success('Login successful');
         setSupabaseConfig(supabaseUrl, supabaseToken);
-        router.push("/");
+        router.reload();
       }
     } catch (error: any) {
-      console.error("ERROR", error);
-      toast.error(error.message || error.code || error.msg || "Unknown error");
+      console.error('ERROR', error);
+      toast.error(error.message || error.code || error.msg || 'Unknown error');
     }
   }
 
   return (
-    <div className="pt-safe mt-6 flex flex-col w-full p-8">
+    <div className="pt-safe mt-6 flex w-full flex-col p-8">
       <h1 className="pt-4 text-2xl font-bold">Login to ADeus</h1>
 
       <div>
         <div className="flex flex-wrap pt-4">
-          <label className="block  text-sm font-medium mb-1" htmlFor="text">
+          <label className="mb-1  block text-sm font-medium" htmlFor="text">
             Supabase URL
           </label>
           <input
             id="supabaseUrl"
-            placeholder={"Enter your Supabase URL"}
+            placeholder={'Enter your Supabase URL'}
             type="text"
             value={supabaseUrl}
             onChange={(e) => setSupabaseUrl(e.target.value)}
-            className="form-input w-full  h-10 border-2 rounded-md pl-2"
+            className="form-input h-10  w-full rounded-md border-2 pl-2"
             required
           />
         </div>
 
         <div className="flex flex-wrap pt-4">
-          <label className="block  text-sm font-medium mb-1" htmlFor="email">
+          <label className="mb-1  block text-sm font-medium" htmlFor="email">
             Supabase Token
           </label>
           <input
             id="supabaseToken"
-            placeholder={"Enter your Supabase token"}
+            placeholder={'Enter your Supabase token'}
             type="text"
             value={supabaseToken}
             onChange={(e) => setSupabaseToken(e.target.value)}
-            className="form-input w-full  h-10 border-2 rounded-md pl-2"
+            className="form-input h-10  w-full rounded-md border-2 pl-2"
             required
           />
         </div>
 
         <div className="flex flex-wrap pt-4">
-          <label className="block  text-sm font-medium mb-1" htmlFor="email">
+          <label className="mb-1  block text-sm font-medium" htmlFor="email">
             Email
           </label>
           <input
             id="email"
-            placeholder={"Enter your Email"}
+            placeholder={'Enter your Email'}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="form-input w-full  h-10 border-2 rounded-md pl-2"
+            className="form-input h-10  w-full rounded-md border-2 pl-2"
             required
           />
         </div>
         <div className="flex flex-wrap pt-4">
-          <label className="block text-sm font-medium mb-1" htmlFor="password">
+          <label className="mb-1 block text-sm font-medium" htmlFor="password">
             Password
           </label>
           <input
@@ -108,19 +108,19 @@ export default function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="form-input w-full  h-10 border-2 rounded-md pl-2"
+            className="form-input h-10  w-full rounded-md border-2 pl-2"
             required
           />
         </div>
 
-        <div className="flex flex-col items-center mt-6">
+        <div className="mt-6 flex flex-col items-center">
           <Button onClick={emailLogin} className="w-full font-bold">
             Login
           </Button>
         </div>
       </div>
-      <p className="mt-8 text-sm opacity-50 pb-6">
-        Don&apos;t have these details? Please check the setup guide{" "}
+      <p className="mt-8 pb-6 text-sm opacity-50">
+        Don&apos;t have these details? Please check the setup guide{' '}
         <Link className="underline" href="https://x.com/adamcohenhillel">
           here
         </Link>

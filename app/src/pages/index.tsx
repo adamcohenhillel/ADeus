@@ -1,29 +1,13 @@
-import React, { useState, useEffect } from "react";
-
-import { useSupabase } from "@/utils/useSupabaseConfig";
-import LoginForm from "@/components/LoginForm";
-import Chat from "@/components/Chat";
+import Chat from '@/components/Chat';
+import LoginForm from '@/components/LoginForm';
+import { useSupabase } from '@/utils/useSupabaseConfig';
 
 export default function Index() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
   const { user, supabaseClient } = useSupabase();
 
-  useEffect(() => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }, [user]);
+  if (!user || !supabaseClient) {
+    return <LoginForm />;
+  }
 
-  return (
-    <>
-      {loggedIn && user ? (
-        <Chat supabaseClient={supabaseClient} />
-      ) : (
-        <LoginForm />
-      )}
-    </>
-  );
+  return <Chat supabaseClient={supabaseClient} />;
 }

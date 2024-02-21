@@ -12,7 +12,7 @@ import argparse
 
 parser = argparse.ArgumentParser(
     description='Record audio and send it to a server.',
-    epilog='python recorder.py -s 60 -m 50.0 -u "https://{YOUR_ID}.supabase.co" -t "API_TOKEN" -r -v'
+    epilog='python main.py -s 60 -m 50.0 -u "https://{YOUR_ID}.supabase.co" -t "API_TOKEN" -r -v'
 )
 
 parser.add_argument('-u', '--base-url', type=str, required=True,
@@ -21,8 +21,8 @@ parser.add_argument('-t', '--token', type=str, required=True,
                     help="API token for authentication with the server.")
 parser.add_argument('-s', '--seconds', type=int, default=30,
                     help="Duration of each recording segment in seconds. (default 30)")
-parser.add_argument('-m', '--sensitivity', type=float, default=35.0,
-                    help="Microphone sensitivity threshold (0.0 to 100.0, default: 35.0).")
+parser.add_argument('-m', '--sensitivity', type=float, default=0.0,
+                    help="Microphone sensitivity threshold (0.0 to 100.0, default: 0).")
 parser.add_argument('-l', '--save', action='store_true', help="Save recordings locally.")
 parser.add_argument('-v', '--verbose', action='store_true',
                     help="Enable verbose output for debugging.")
@@ -69,7 +69,6 @@ def get_base_url():
 
 def store_sound(frames):
     logger.debug('Store and sending wav.')
-    # Save the recorded data as a WAV file
     filename = get_wav_filename()
     wf = wave.open(filename, 'wb')
     wf.setnchannels(CHANNELS)
@@ -78,11 +77,12 @@ def store_sound(frames):
     wf.writeframes(b''.join(frames))
     wf.close()
 
-    files = {'file': open(filename, 'rb')}
-    response = requests.post(f'{get_base_url()}/functions/v1/process-audio', files=files, headers={
-        'apikey': args.token,
-        'Content-Type': 'audio/wav,',
-    })
+    with open(filename, 'rb') as f:
+        files = {'file': (filename, f, 'audio/wav')}
+        response = requests.post(f'{get_base_url()}/functions/v1/process-audio', files=files, headers={
+            'Authorization': f'Bearer {args.token}',
+            'apikey': args.token,
+        }, timeout=540)
     logger.info(response.text)
 
 
