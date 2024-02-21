@@ -277,7 +277,7 @@ void process_args(int argc, char* argv[]) {
 
         if (result.count("help")) {
             std::cout << options.help() << std::endl;
-            exit;
+            exit(0);
         }
 
         if (result.count("save")) {
