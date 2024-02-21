@@ -44,7 +44,7 @@ Adeus consists of 3 parts:
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
 ## Sequence
-[TODOs](https://github.com/adamcohenhillel/ADeus/blob/main/docs/guides/sequence.md)
+[view sequence](https://github.com/adamcohenhillel/ADeus/blob/main/docs/guides/sequence.md)
 ---
 
 ## Where to go Next
