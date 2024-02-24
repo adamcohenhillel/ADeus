@@ -41,7 +41,7 @@ namespace coralmicro
 
     WavHeader(uint32_t sampleRate, uint16_t numChannels, uint32_t dataSize) : sample_rate(sampleRate), channels(numChannels), data_size(dataSize)
     {
-      bits_per_sample = 16; // Assuming 16 bits per sample
+      bits_per_sample = 32;
       byterate = sample_rate * channels * bits_per_sample / 8;
       block_align = channels * bits_per_sample / 8;
       overall_size = 36 + data_size;
