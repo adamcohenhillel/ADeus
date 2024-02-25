@@ -32,7 +32,7 @@ export default function SideMenu({
           <Sidebar />
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="w-[90vw] border-l-0">
         <div className="mx-2 flex w-full flex-col">
           <DrawerHeader className="px-0">
             <DrawerClose>
@@ -52,7 +52,7 @@ export default function SideMenu({
               supabaseClient={supabaseClient}
               setConversationId={setConversationId}
             />
-            <div className="from-background pointer-events-none sticky -bottom-1 h-1/4 bg-gradient-to-t" />
+            <div className="from-background pointer-events-none sticky -bottom-2 h-16 bg-gradient-to-t" />
           </div>
           <DrawerFooter className="flex px-0">
             <DrawerClose>

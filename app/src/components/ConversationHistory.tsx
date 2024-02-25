@@ -1,9 +1,9 @@
 import { range } from '@/utils/range';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Trash } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from './ui/button';
 import { DrawerClose } from './ui/drawer';
 import { Skeleton } from './ui/skeleton';
 
@@ -74,46 +74,76 @@ export default function ConversationHistory({
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   };
 
-  return (
-    <AnimatePresence initial={false}>
+  if (
+    !getAllConversations.data ||
+    (getAllConversations.data && getAllConversations.data.length <= 0)
+  ) {
+    return (
       <div className="mr-2 space-y-4">
-        {getAllConversations.data && getAllConversations.data.length > 0
-          ? getAllConversations.data.map((conversation) => (
-              <motion.div
-                key={conversation.id}
-                className="card bg-muted/20 mb-2 flex rounded-xl px-4 py-3 shadow-sm"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <div className="flex flex-col justify-between">
-                  <div>ID: {conversation.id}</div>
-                  <div className="text-sm text-gray-500">
-                    Created: {formatDate(conversation.created_at)}
-                  </div>
-                </div>
-                <div className="flex flex-col items-center justify-center pl-10">
-                  <DrawerClose>
-                    <ArrowRight
-                      size={20}
-                      onClick={() => setConversationId(conversation['id'])}
-                    />
-                  </DrawerClose>
-                  <Trash
-                    className="mt-2"
-                    size={20}
-                    onClick={() => deleteConversation.mutate(conversation.id)}
-                  />
-                </div>
-              </motion.div>
-            ))
-          : range(12).map((i) => (
-              <Skeleton
-                key={i}
-                className="card bg-muted/20 mb-2 flex gap-8 rounded-xl px-4 py-12 shadow-sm"
-              />
-            ))}
+        {range(12).map((i) => (
+          <Skeleton key={i} className="bg-muted/20 h-22 w-full rounded-xl" />
+        ))}
       </div>
-    </AnimatePresence>
+    );
+  }
+
+  return (
+    <div className="mr-2 space-y-2">
+      {getAllConversations.data.map((conversation) => {
+        return (
+          <ConversationHistoryItem
+            key={conversation.id}
+            conversation={conversation}
+            setConversationId={setConversationId}
+            deleteConversation={deleteConversation}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function ConversationHistoryItem({
+  conversation,
+  setConversationId,
+  deleteConversation,
+}: {
+  conversation: Conversation;
+  setConversationId: (id: number) => void;
+  deleteConversation: { mutate: (id: number) => void };
+}) {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  };
+
+  return (
+    <div key={conversation.id} className="bg-card flex rounded-xl px-4 py-3">
+      <div className="flex flex-col justify-evenly">
+        <div>Conversation ID: {conversation.id}</div>
+        <div className="text-sm text-gray-500">
+          Created: {formatDate(conversation.created_at)}
+        </div>
+      </div>
+      <div className="ml-auto flex flex-col gap-2">
+        <DrawerClose>
+          <Button
+            size={'icon'}
+            variant={'ghost'}
+            onClick={() => setConversationId(conversation['id'])}
+          >
+            <ArrowRight size={20} />
+          </Button>
+        </DrawerClose>
+
+        <Button
+          size={'icon'}
+          variant={'ghost'}
+          onClick={() => deleteConversation.mutate(conversation.id)}
+        >
+          <Trash size={20} />
+        </Button>
+      </div>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   MenubarRadioItem,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import { MessageCirclePlus } from 'lucide-react';
 import { useState } from 'react';
 
 export function NewConversationMenuBar({
@@ -23,8 +24,8 @@ export function NewConversationMenuBar({
   return (
     <Menubar>
       <MenubarMenu>
-        <MenubarTrigger>Model: {activeModel}</MenubarTrigger>
-        <MenubarContent className="mr-2 ">
+        <MenubarTrigger>{activeModel}</MenubarTrigger>
+        <MenubarContent className="mr-4">
           <MenubarRadioGroup value={activeModel}>
             <RadioItem value="openai" setActiveModel={handleModelChange} />
             <RadioItem value="gpt3" setActiveModel={handleModelChange} />
@@ -45,7 +46,7 @@ function RadioItem({
 }) {
   return (
     <MenubarRadioItem value={value} onClick={() => setActiveModel(value)}>
-      {value}
+      {value} <MessageCirclePlus className="ml-auto" size={14} />
     </MenubarRadioItem>
   );
 }
