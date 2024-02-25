@@ -4,7 +4,7 @@ import { multiParser } from 'https://deno.land/x/multiparser@0.114.0/mod.ts';
 import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 
-const transcribeAudio = async (req: Request) => {
+const processAudio = async (req: Request) => {
   
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
@@ -63,18 +63,6 @@ const transcribeAudio = async (req: Request) => {
     }
 
     console.log("Transcript:", transcript);
-  
-    const insertResponse = await supabase
-    .from("records")
-    .insert([{ raw_text: transcript, processed: false }]);
-
-    if (insertResponse.error) {
-      console.error("Error inserting record:", insertResponse.error);
-      return new Response(JSON.stringify({ message: "Error inserting record." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
-    }
 
     const { data: unprocessedRecords, error: fetchError } = await supabase
     .from('records')
@@ -90,7 +78,19 @@ const transcribeAudio = async (req: Request) => {
         status: 500,
       });
     }
+  
+    const insertResponse = await supabase
+    .from("records")
+    .insert([{ raw_text: transcript, processed: false }])
+    .select();
 
+    if (insertResponse.error) {
+      console.error("Error inserting record:", insertResponse.error);
+      return new Response(JSON.stringify({ message: "Error inserting record." }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
 
     const currentTranscript = {
       raw_text: transcript,
@@ -124,7 +124,7 @@ const transcribeAudio = async (req: Request) => {
             },
         ],
         response_format: { type: 'json_object' },
-          });
+      });
     
       const responseData = JSON.parse(response.choices[0].message.content);
 
@@ -134,7 +134,7 @@ const transcribeAudio = async (req: Request) => {
           const flattenedData: string = `Raw Text: ${record.raw_text}, This is an summary of the broader conversation so you have more context ${summary}, and Topics pertaining to the conversation ${topics}`;
           const embeddingsReponse = await openaiClient.embeddings.create({
             model: 'text-embedding-3-small',
-            inputs: flattenedData,
+            input: flattenedData,
           })
 
           const embeddings = embeddingsReponse.data[0].embedding;
@@ -172,4 +172,4 @@ const transcribeAudio = async (req: Request) => {
   );
 };
 
-serve(transcribeAudio);
+serve(processAudio);
