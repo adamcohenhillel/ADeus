@@ -176,9 +176,6 @@ void saveWavToFile(const std::vector<char> &buffer)
 
 void sendWavBuffer(const std::vector<char> &buffer)
 {
-
-    static int recordingCounter = 0;
-    const int recordingsThreshold = 5;
     if (save_to_local_file)
     {
         saveWavToFile(buffer);
@@ -193,7 +190,7 @@ void sendWavBuffer(const std::vector<char> &buffer)
         return;
     }
 
-    std::string url = std::string(supabaseUrlEnv) + "/functions/v1/transcribe-audio";
+    std::string url = std::string(supabaseUrlEnv) + "/functions/v1/process-audio";
     std::string authToken = getenv("AUTH_TOKEN");
 
     // Initialize CURL
@@ -219,35 +216,7 @@ void sendWavBuffer(const std::vector<char> &buffer)
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
-    recordingCounter++;
 
-    // Check if the counter has reached the threshold
-    if (recordingCounter >= recordingsThreshold)
-    {
-        // Reset the counter
-        recordingCounter = 0;
-
-        // Prepare for a GET request
-        std::string getUrl = std::string(supabaseUrlEnv) + "/functions/v1/process-transcripts";
-        curl = curl_easy_init();
-        if (curl)
-        {
-            struct curl_slist *headers = NULL;
-            headers = curl_slist_append(headers, ("Authorization: Bearer " + authToken).c_str());
-            curl_easy_setopt(curl, CURLOPT_URL, getUrl.c_str());
-            curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-            curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // Enable verbose for testing
-
-            res = curl_easy_perform(curl);
-            if (res != CURLE_OK)
-                std::cerr << "GET request failed: " << curl_easy_strerror(res) << std::endl;
-
-            // Cleanup
-            curl_slist_free_all(headers);
-            curl_easy_cleanup(curl);
-        }
-    }
     curl_global_cleanup();
 }
 
