@@ -3,12 +3,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import ChatLog, { Message } from './ChatLog';
-import LogoutButton from './LogoutButton';
-import { NavMenu } from './NavMenu';
-import NewConversationButton from './NewConversationButton';
+import { NewConversationMenuBar } from './NewConversationMenuBar';
 import PromptForm from './PromptForm';
 import SideMenu from './SideMenu';
-import { ThemeToggle } from './ThemeToggle';
 
 export default function Chat({
   supabaseClient,
@@ -117,7 +114,7 @@ export default function Chat({
         }
         return data;
       } else {
-        setMessages([]);
+        // setMessages([]);
         const { data, error } = await supabaseClient
           .from('conversations')
           .select('*')
@@ -147,22 +144,15 @@ export default function Chat({
   return (
     <>
       <div className="from-background fixed top-0 flex h-24 w-full items-center justify-between bg-gradient-to-b"></div>
-      <div className="fixed left-4 top-4 flex space-x-4">
+      <div className="fixed inset-0 flex p-4">
         <SideMenu
           supabaseClient={supabaseClient}
           setConversationId={setConversationId}
+          newConversation={newConversation}
         />
-      </div>
-      <div className="fixed right-4 top-4 flex space-x-4">
-        <NavMenu>
-          <LogoutButton supabaseClient={supabaseClient} />
-          <NewConversationButton
-            createNewConversation={() => {
-              newConversation.mutate();
-            }}
-          />
-          <ThemeToggle />
-        </NavMenu>
+        <div className="ml-auto">
+          <NewConversationMenuBar newConversation={newConversation} />
+        </div>
       </div>
 
       <div className="mb-32 mt-12 p-8">

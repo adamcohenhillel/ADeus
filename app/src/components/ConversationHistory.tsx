@@ -76,7 +76,7 @@ export default function ConversationHistory({
 
   return (
     <AnimatePresence initial={false}>
-      <div className="max-h-[80vh] space-y-4 overflow-auto pr-2">
+      <div className="mr-2 space-y-4">
         {getAllConversations.data && getAllConversations.data.length > 0
           ? getAllConversations.data.map((conversation) => (
               <motion.div
@@ -107,23 +107,13 @@ export default function ConversationHistory({
                 </div>
               </motion.div>
             ))
-          : range(6).map((i) => <ItemSkeleton key={i} />)}
+          : range(12).map((i) => (
+              <Skeleton
+                key={i}
+                className="card bg-muted/20 mb-2 flex gap-8 rounded-xl px-4 py-12 shadow-sm"
+              />
+            ))}
       </div>
     </AnimatePresence>
-  );
-}
-
-function ItemSkeleton() {
-  return (
-    <Skeleton className="card bg-muted/20 mb-2 flex gap-8 rounded-xl px-4 py-3 shadow-sm">
-      <div className="flex flex-col justify-between gap-2">
-        <Skeleton className="h-4 w-[20vw]" />
-        <Skeleton className="h-4 w-[20vw]" />
-      </div>
-      <div className="ml-auto flex flex-col items-center justify-center gap-2">
-        <Skeleton className="size-[20px]" />
-        <Skeleton className="size-[20px]" />
-      </div>
-    </Skeleton>
   );
 }
