@@ -3,7 +3,11 @@ import LoginForm from '@/components/LoginForm';
 import { useSupabase } from '@/utils/useSupabaseConfig';
 
 export default function Index() {
-  const { user, supabaseClient } = useSupabase();
+  const { user, supabaseClient, loading } = useSupabase();
+
+  if (loading) {
+    return null;
+  }
 
   if (!user || !supabaseClient) {
     return <LoginForm />;
