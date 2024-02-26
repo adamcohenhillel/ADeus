@@ -1,23 +1,20 @@
 import type { GetServerSidePropsContext } from 'next';
 
 import { createClient as createServerClient } from '@/utils/supabase/server-props';
-import { createClient } from '@/utils/supabase/component';
-import Chat from '@/components/Chat';
+import LoginForm from '@/components/LoginForm';
 
-export default function Index() {
-  const supabase = createClient();
-
-  return <Chat supabaseClient={supabase} />;
+export default function Login() {
+  return <LoginForm />;
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const supabase = createServerClient(context);
   const { data, error } = await supabase.auth.getUser();
 
-  if (error || !data) {
+  if (data.user && !error) {
     return {
       redirect: {
-        destination: '/login',
+        destination: '/',
         permanent: false,
       },
     };
