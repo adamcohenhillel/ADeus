@@ -1,4 +1,21 @@
 {
   "projectName": "ADeus",
-  "projectOwner": "kodjima33"
+  "projectOwner": "kodjima33",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "kodjima33",
+      "name": "Nik Shevchenko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43514161?v=4",
+      "profile": "https://github.com/kodjima33",
+      "contributions": [
+        "test"
+      ]
+    }
+  ]
 }
