@@ -1,5 +1,14 @@
 <div align="center">
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 # **Adeus**
 
 Open-Source AI Wearable Device, the future depends on it!
@@ -47,3 +56,4 @@ Adeus consists of 3 parts:
 
 - [Getting Started Guide](https://docs.adeus.ai/getting_started.html#1-backend-supabase)
 - [How to Contribute?](https://docs.adeus.ai/#how-to-contribute)
+
