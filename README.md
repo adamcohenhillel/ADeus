@@ -60,7 +60,11 @@ Adeus consists of 3 parts:
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/kodjima33"><img src="https://avatars.githubusercontent.com/u/43514161?v=4?s=100" width="100px;" alt="Nik Shevchenko"/><br /><sub><b>Nik Shevchenko</b></sub></a><br /><a href="#test-kodjima33" title="Tests">⚠️</a></td>
+
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/adamcohenhillel"><img src="https://avatars.githubusercontent.com/u/633840?v=4?s=100" width="100px;" alt="Adam Cohen Hillel"/><br /><sub><b>Adam Cohen Hillel</b></sub></a><br /><a href="#code-adamcohenhillel" title="Code">💻</a> <a href="#design-adamcohenhillel" title="Design">🎨</a></td>
+
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/troutowicz"><img src="https://avatars.githubusercontent.com/u/8117994?v=4?s=100" width="100px;" alt="Tim Routowicz"/><br /><sub><b>Tim Routowicz</b></sub></a><br /><a href="#code-troutowicz" title="Code">💻</a></td>
+
     </tr>
   </tbody>
 </table>
