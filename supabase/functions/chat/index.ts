@@ -83,22 +83,20 @@ const chat = async (req) => {
     });
   }
 
-  console.log("messageHistory: ", messageHistory);
 
   // Embed the last messageHistory message using OpenAI's embeddings API
   const embeddingsResponse = await openaiClient.embeddings.create({
-    model: "text-embedding-ada-002",
+    model: "text-embedding-3-small",
     input: messageHistory[messageHistory.length - 1].content,
   });
   const embeddings = embeddingsResponse.data[0].embedding;
-  console.log("Embeddings:", embeddings);
 
   // Retrieve records from Supabase based on embeddings similarity
   const { data: relevantRecords, error: recordsError } = await supabase.rpc(
     "match_records_embeddings_similarity",
     {
       query_embedding: JSON.stringify(embeddings),
-      match_threshold: 0.8,
+      match_threshold: 0.1,
       match_count: 10,
     }
   );
@@ -107,6 +105,7 @@ const chat = async (req) => {
     console.log("recordsError: ", recordsError);
     throw new ApplicationError("Error getting records from Supabase");
   }
+  console.log("relevantRecords: ", relevantRecords);
 
   let messages = [
     {
@@ -120,7 +119,6 @@ const chat = async (req) => {
     },
     ...messageHistory,
   ];
-  console.log("messages: ", messages);
 
   try {
     const responseMessage = await generateResponse(
