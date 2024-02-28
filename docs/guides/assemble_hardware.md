@@ -102,7 +102,8 @@ Along with your microphones you received multiple pin  wires.
 - Devide them into 2 groups of 3
 - connect these wires to your header pins on your microphone (colors don't matter) 
 
-**Now it's time to connect your microphone to Raspberry Pi. **
+**Now it's time to connect your microphone to Raspberry Pi.**
+
 Each pin is responsible for a specific task, which is why you need to follow a schema of connecting it correctly. If you make a mistake, something might not work as intended. 
 
 Here is the schema for your microphone
