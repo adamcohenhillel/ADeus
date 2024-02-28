@@ -34,6 +34,17 @@ interface Choice {
 // Current models available
 type ModelName = "nousresearch/nous-capybara-34b" | "mistral" | "gpt-4-0125-preview";
 
+
+const openaiClient = new OpenAI({
+  apiKey: Deno.env.get("OPENAI_API_KEY"),
+});
+const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
+const useOpenRouter = Boolean(openRouterApiKey); // Use OpenRouter if API key is available
+const ollamaApiKey = Deno.env.get("OLLAMA_BASE_URL");
+const useOllama = Boolean(ollamaApiKey); // Use Ollama if OLLAMA_BASE_URL is available
+let openRouterClient: ChatClient | null = null;
+let ollamaClient: ChatClient | null = null;
+
 async function generateResponse(
   useOpenRouter: boolean,
   useOllama: boolean,
@@ -68,16 +79,38 @@ async function generateResponse(
 async function getRelevantRecords(
   openaiClient: ChatClient,
   supabase: any, 
-  messageHistory: Message[]
+  msgData: any,
 ): Promise<Message[]> {
 
+  const messageHistory = msgData.messageHistory;
+  const timestamp = msgData.timestamp;
+
+  let lastMessage = [messageHistory[messageHistory.length - 1]];
+
+  const systemMessage = {
+    role: "system",
+    content: `Your objective is to determine the intent of the users message. Their requests can vary but will often be asking about their day, week, month and life. 
+    Use the current date time ${timestamp} to help you answer their questions. 
+    `,
+  };
+  
+  const optimnizedUserMsg = await generateResponse(
+    useOpenRouter,
+    useOllama,
+    openaiClient,
+    openRouterClient,
+    ollamaClient,
+    messages
+  );
+  console.log(timestamp);
   // Embed the last messageHistory message using OpenAI's embeddings API
   const embeddingsResponse = await openaiClient.embeddings.create({
     model: "text-embedding-3-small",
     input: messageHistory[messageHistory.length - 1].content,
   });
   const embeddings = embeddingsResponse.data[0].embedding;
-
+  
+  console.log(messageHistory[messageHistory.length - 1]);
   // Retrieve records from Supabase based on embeddings similarity
   const response = await supabase.rpc(
     "match_records_embeddings_similarity",
@@ -127,29 +160,17 @@ const chat = async (req: Request) => {
     );
 
   const requestBody = await req.json();
-  const { messageHistory } = requestBody;
+  const msgData = requestBody as { messageHistory: Message[]; timestamp: string };
 
-  if (!messageHistory) throw new UserError("Missing query in request data");
-
-  const openaiClient = new OpenAI({
-    apiKey: Deno.env.get("OPENAI_API_KEY"),
-  });
-
-  const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
-  const useOpenRouter = Boolean(openRouterApiKey); // Use OpenRouter if API key is available
-
-  let openRouterClient: ChatClient | null = null;
+  if (!msgData.messageHistory) throw new UserError("Missing query in request data");
+  
   if (useOpenRouter) {
     openRouterClient = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: openRouterApiKey,
     });
   }
-
-  const ollamaApiKey = Deno.env.get("OLLAMA_BASE_URL");
-  const useOllama = Boolean(ollamaApiKey); // Use Ollama if OLLAMA_BASE_URL is available
-
-  let ollamaClient: ChatClient | null = null;
+  
   if (useOllama) {
     ollamaClient = new OpenAI({
       baseURL: Deno.env.get("OLLAMA_BASE_URL"),
