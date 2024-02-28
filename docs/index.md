@@ -78,3 +78,9 @@ You can also check the [TODOs](https://github.com/adamcohenhillel/ADeus/blob/mai
 
 ---
 
+
+#### Made by the Community, with -❤️-:
+
+<a href="https://github.com/adamcohenhillel/ADeus/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=adamcohenhillel/ADeus" />
+</a>
