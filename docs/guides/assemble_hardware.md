@@ -119,9 +119,11 @@ In my example, I put everything in the default case of the Vilros Kit. It looks 
 - Power on the device to check if everything works (lights should blink)
   You can turn on/off the power on your Pi Sugar board (it has a small switch). Charging should also be done via Pi Sugar. If you charge the board itself, the battery will not be charged.
 - Put everything in the case
+
   ![IMG_0101](https://github.com/kodjima33/ADeus/assets/43514161/27af8e8f-63ce-4716-8c50-f9a07a573fd4)
 
 - put microphone+wires through the lid's hole outside (this way you'll ensure the best audio)
+  
    ![IMG_0102](https://github.com/kodjima33/ADeus/assets/43514161/9f60c6b4-0b2c-4e60-bb4a-8adeadb86542)
 
 - Take a scotch tape to attach the lid to the box. It wouldn't fit by default because of our battery
