@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.170.0/http/server.ts";
 import OpenAI, { toFile } from "https://deno.land/x/openai@v4.26.0/mod.ts";
-
+import { decodeBase64 } from "https://deno.land/std@0.217.0/encoding/base64.ts";
 import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 
@@ -49,13 +49,21 @@ const processAudio = async (req) => {
     apiKey: Deno.env.get("OPENAI_API_KEY"),
   });
 
+  const body = await req.json();
+  const { data } = body;
+  // console.log('json body', await req.json());
+
   console.log("**** Code version 0.0.2 ****");
+  const audioData = decodeBase64(data);
+  
 
   // Read the binary data from the request body
-  const audioData = new Uint8Array(await req.arrayBuffer());
+  // const audioData = new Uint8Array(await req.arrayBuffer());
+
+  // console.log("Audio data length:", audioData.length);
   // Create WAV header
   // Assuming 16000 Hz sample rate, 1 channel, and 32 bits per sample
-  const wavHeader = createWavHeader(audioData.length, 16000, 1, 32);
+  const wavHeader = createWavHeader(audioData.length, 8000, 1, 16);
   const wavFile = new Uint8Array(wavHeader.length + audioData.length);
   wavFile.set(wavHeader, 0);
   wavFile.set(audioData, wavHeader.length);
