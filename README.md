@@ -51,22 +51,4 @@ Adeus consists of 3 parts:
 - [Getting Started Guide](https://docs.adeus.ai/getting_started.html#1-backend-supabase)
 - [How to Contribute?](https://docs.adeus.ai/#how-to-contribute)
 
-## Top Contributors:
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kodjima33"><img src="https://avatars.githubusercontent.com/u/43514161?v=4?s=100" width="100px;" alt="Nik Shevchenko"/><br /><sub><b>Nik Shevchenko</b></sub></a><br /><a href="#test-kodjima33" title="Tests">⚠️</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/troutowicz"><img src="https://avatars.githubusercontent.com/u/8117994?v=4?s=100" width="100px;" alt="Tim Routowicz"/><br /><sub><b>Tim Routowicz</b></sub></a><br /><a href="#code-troutowicz" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-[![All Contributors](https://img.shields.io/github/all-contributors/adamcohenhillel/ADeus?color=ee8449&style=flat-square)](#contributors)
