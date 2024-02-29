@@ -1,14 +1,14 @@
 export default function ChatDots({ size }: { size?: string }) {
   return (
-    <div className="space-x-1 flex">
+    <div className="flex space-x-1">
       <div
-        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_100ms] ${size}`}
+        className={`bg-muted-foreground size-1 animate-[bounce_900ms_infinite_100ms] rounded-full p-1 ${size}`}
       ></div>
       <div
-        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_200ms] ${size}`}
+        className={`bg-muted-foreground size-1 animate-[bounce_900ms_infinite_200ms] rounded-full p-1 ${size}`}
       ></div>
       <div
-        className={`bg-muted-foreground p-1 w-1 h-1 rounded-full animate-[bounce_900ms_infinite_300ms] ${size}`}
+        className={`bg-muted-foreground size-1 animate-[bounce_900ms_infinite_300ms] rounded-full p-1 ${size}`}
       ></div>
     </div>
   );

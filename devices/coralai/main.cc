@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <memory>
+#include <vector>
+#include <cstdint>
 
 #include "libs/base/wifi.h"
 #include "libs/a71ch/a71ch.h"
@@ -19,6 +21,42 @@
 
 namespace coralmicro
 {
+
+  // WAV header structure
+  struct WavHeader
+  {
+    char riff[4] = {'R', 'I', 'F', 'F'};
+    uint32_t overall_size;
+    char wave[4] = {'W', 'A', 'V', 'E'};
+    char fmt_chunk_marker[4] = {'f', 'm', 't', ' '};
+    uint32_t length_of_fmt = 16;
+    uint16_t format_type = 1; // PCM
+    uint16_t channels;
+    uint32_t sample_rate;
+    uint32_t byterate;    // SampleRate * NumChannels * BitsPerSample/8
+    uint16_t block_align; // NumChannels * BitsPerSample/8
+    uint16_t bits_per_sample;
+    char data_chunk_header[4] = {'d', 'a', 't', 'a'};
+    uint32_t data_size;
+
+    WavHeader(uint32_t sampleRate, uint16_t numChannels, uint32_t dataSize) : sample_rate(sampleRate), channels(numChannels), data_size(dataSize)
+    {
+      bits_per_sample = 32;
+      byterate = sample_rate * channels * bits_per_sample / 8;
+      block_align = channels * bits_per_sample / 8;
+      overall_size = 36 + data_size;
+    }
+  };
+
+  // Function to create WAV header
+  std::vector<char> CreateWavHeader(uint32_t sampleRate, uint16_t numChannels, uint32_t dataSize)
+  {
+    WavHeader header(sampleRate, numChannels, dataSize);
+    std::vector<char> headerData(sizeof(header));
+    std::memcpy(headerData.data(), &header, sizeof(header));
+    return headerData;
+  }
+
   namespace
   {
     struct DnsCallbackArg
@@ -39,6 +77,11 @@ namespace coralmicro
 
     void SendAudioData(const std::vector<char> &data)
     {
+
+    auto header = CreateWavHeader(16000, 1, data.size());
+      std::vector<char> audioDataWithHeader;
+      audioDataWithHeader.insert(audioDataWithHeader.end(), header.begin(), header.end());
+      audioDataWithHeader.insert(audioDataWithHeader.end(), data.begin(), data.end());
       CURL *curl = curl_easy_init();
       if (curl)
       {
@@ -58,8 +101,8 @@ namespace coralmicro
 
         curl_easy_setopt(curl, CURLOPT_URL, full_url.c_str());
         curl_easy_setopt(curl, CURLOPT_CAINFO, "coralmicro/ca-certificates.crt");
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.data());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, data.size());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, audioDataWithHeader.data());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, audioDataWithHeader.size());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &bytes_curled);
 

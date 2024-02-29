@@ -1,37 +1,37 @@
-import React from "react";
-import { Button } from "./ui/button";
-import { SendHorizontal } from "lucide-react";
+import { SendHorizontal } from 'lucide-react';
+import React from 'react';
+import { Button } from './ui/button';
 
 export default function PromptForm({
   textareaRef,
   entryData,
   setEntryData,
   waitingForResponse,
-  onSendMsgClick,
+  sendMessage,
 }: {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   entryData: string;
   setEntryData: React.Dispatch<React.SetStateAction<string>>;
   waitingForResponse: boolean;
-  onSendMsgClick: () => void;
+  sendMessage: () => void;
 }) {
   return (
-    <div className="fixed bottom-3 w-full flex items-center justify-center">
+    <div className="fixed bottom-3 flex w-full items-center justify-center">
       <div
         style={{
           height: `${textareaRef.current?.scrollHeight}px`,
         }}
-        className="flex flex-col justify-center items-center w-10/12 relative max-h-[200px]"
+        className="relative flex max-h-[200px] w-10/12 flex-col items-center justify-center"
       >
         <textarea
           ref={textareaRef}
-          className="absolute bottom-0 left-0 p-2 w-full max-h-[200px] resize-none rounded-xl pl-[1rem] pr-[3rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background backdrop-blur-md bg-muted/20 py-4 placeholder-muted-foreground/40"
+          className="focus-visible:ring-ring ring-offset-background bg-muted/20 placeholder:text-muted-foreground/40 absolute bottom-0 left-0 max-h-[200px] w-full resize-none rounded-xl p-2 py-4 pl-[1rem] pr-[3rem] backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
           rows={1}
           value={entryData}
           onChange={(e) => {
             setEntryData(e.target.value);
             if (textareaRef.current) {
-              textareaRef.current.style.height = "auto";
+              textareaRef.current.style.height = 'auto';
               textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             }
           }}
@@ -39,10 +39,10 @@ export default function PromptForm({
           placeholder="What is on your mind?"
         ></textarea>
         <Button
-          size={"icon"}
-          className="relative right-2 bottom-0 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted/40 transition-colors ml-auto"
+          size={'icon'}
+          className="disabled:bg-muted/40 relative bottom-0 right-2 ml-auto rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           disabled={waitingForResponse || entryData.length == 0}
-          onClick={() => onSendMsgClick()}
+          onClick={sendMessage}
         >
           <SendHorizontal size={20} />
         </Button>

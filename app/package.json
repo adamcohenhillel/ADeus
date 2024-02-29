@@ -7,6 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format:check": "prettier --check .",
+    "format": "prettier --write . --list-different",
+    "check": "npm run lint && npm run format:check",
+    "fix": "npm run lint:fix && npm run format",
     "app": "npm run build && npx cap sync",
     "ios": "npm run app && npx cap open ios",
     "android": "npm run app && npx cap open android"
@@ -17,12 +22,14 @@
     "@capacitor/core": "^5.6.0",
     "@capacitor/ios": "^5.6.0",
     "@capacitor/preferences": "^5.0.7",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-slot": "^1.0.2",
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/auth-helpers-react": "^0.4.2",
     "@supabase/supabase-js": "^2.39.3",
+    "@tanstack/react-query": "^5.18.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.3",
@@ -33,7 +40,8 @@
     "react-dom": "^18",
     "sonner": "^1.4.0",
     "tailwind-merge": "^2.2.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^0.9.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^5.6.0",
@@ -43,7 +51,12 @@
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-tailwindcss": "^3.14.2",
     "postcss": "^8",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
