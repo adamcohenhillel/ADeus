@@ -7,11 +7,11 @@ import { ApplicationError, UserError } from "../common/errors.ts";
 interface ChatClient {
   chat: {
     completions: {
-      create: (params: { model: string; messages: Message[] }) => Promise<{ choices: Choice[] }>;
+      create: (params: { model: string; messages: Message[]; stream?: boolean }) => AsyncIterable<{ choices: Choice[] }>;
     };
   };
   embeddings: {
-    create: (params: { model: string; input: string }) => Promise<{ data: any[] }>; // Adjust the return type according to your actual data structure
+    create: (params: { model: string; input: string }) => Promise<{ data: any[] }>;
   };
 }
 
@@ -27,7 +27,9 @@ interface Message {
 }
 
 interface Choice {
-  message: string;
+  delta: {
+    content: string;
+  };
 }
 
 // Current models available
@@ -39,12 +41,11 @@ const openaiClient = new OpenAI({
 const useOpenRouter = Boolean(Deno.env.get("OPENROUTER_API_KEY")); // Use OpenRouter if API key is available
 const useOllama = Boolean(Deno.env.get("OLLAMA_BASE_URL")); // Use Ollama if OLLAMA_BASE_URL is available
 
-async function generateResponse(
+async function* generateResponse(
   useOpenRouter: boolean,
   useOllama: boolean,
   messages: Message[]
 ) {
-
   let client: ChatClient;
   let modelName: ModelName;
 
@@ -65,12 +66,15 @@ async function generateResponse(
     modelName = "gpt-4-0125-preview";
   }
 
-  const { choices } = await client.chat.completions.create({
+  const completion = await client.chat.completions.create({
     model: modelName,
     messages,
+    stream: true,
   });
-  console.log("Completion: ", choices[0]);
-  return choices[0].message;
+
+  for await (const chunk of completion) {
+    yield chunk.choices[0].delta.content;
+  }
 }
 
 async function getRelevantRecords(
@@ -94,17 +98,19 @@ async function getRelevantRecords(
   const optimnizedUserMsg = await generateResponse(
     useOpenRouter,
     useOllama,
-    messages
-  );
+    lastMessage
+   );
   console.log(timestamp);
   // Embed the last messageHistory message using OpenAI's embeddings API
   const embeddingsResponse = await openaiClient.embeddings.create({
     model: "text-embedding-3-small",
     input: messageHistory[messageHistory.length - 1].content,
   });
+
   const embeddings = embeddingsResponse.data[0].embedding;
   
   console.log(messageHistory[messageHistory.length - 1]);
+
   // Retrieve records from Supabase based on embeddings similarity
   const response = await supabase.rpc(
     "match_records_embeddings_similarity",
@@ -146,14 +152,7 @@ const chat = async (req: Request) => {
     throw new ApplicationError("Missing supabase auth token");
   
   const supabase = supabaseClient(req, supabaseAuthToken);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user)
-    throw new ApplicationError(
-      "Unable to get auth user details in request data"
-    );
+  console.log("Supabase: ", supabase.auth);
 
   const requestBody = await req.json();
   const msgData = requestBody as { messageHistory: Message[]; timestamp: string };
@@ -176,21 +175,33 @@ const chat = async (req: Request) => {
   ];
 
   try {
-    const responseMessage = await generateResponse(
-      useOpenRouter,
-      useOllama,
-      messages
-    );
-
-    return new Response(
-      JSON.stringify({
-        msg: responseMessage,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          const responseMessageGenerator = generateResponse(
+            useOpenRouter,
+            useOllama,
+            messages
+          );
+  
+          for await (const chunk of responseMessageGenerator) {
+            console.log("Chunk from AI:", chunk);
+            // Wrap the chunk in a JSON object
+            const jsonResponse = JSON.stringify({ message: chunk }) + "\n";
+            const encodedChunk = new TextEncoder().encode(jsonResponse);
+            controller.enqueue(encodedChunk);
+          }
+          controller.close();
+        } catch (error) {
+          console.error("Stream error:", error);
+          controller.error(error);
+        }
       }
-    );
+    });
+  
+    return new Response(stream, {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.log("Error: ", error);
     throw new ApplicationError("Error processing chat completion");
