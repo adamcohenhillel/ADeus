@@ -35,6 +35,7 @@ interface Choice {
 // Current models available
 type ModelName = "nousresearch/nous-capybara-34b" | "mistral" | "gpt-4-0125-preview";
 
+
 const openaiClient = new OpenAI({
   apiKey: Deno.env.get("OPENAI_API_KEY"),
 });
@@ -152,7 +153,6 @@ const chat = async (req: Request) => {
     throw new ApplicationError("Missing supabase auth token");
   
   const supabase = supabaseClient(req, supabaseAuthToken);
-  console.log("Supabase: ", supabase.auth);
 
   const requestBody = await req.json();
   const msgData = requestBody as { messageHistory: Message[]; timestamp: string };
@@ -185,9 +185,7 @@ const chat = async (req: Request) => {
           );
   
           for await (const chunk of responseMessageGenerator) {
-            console.log("Chunk from AI:", chunk);
-            // Wrap the chunk in a JSON object
-            const jsonResponse = JSON.stringify({ message: chunk }) + "\n";
+            const jsonResponse = JSON.stringify({ token: chunk }) + "\n";
             const encodedChunk = new TextEncoder().encode(jsonResponse);
             controller.enqueue(encodedChunk);
           }
