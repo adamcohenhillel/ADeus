@@ -9,6 +9,7 @@ import NewConversationButton from './NewConversationButton';
 import PromptForm from './PromptForm';
 import SideMenu from './SideMenu';
 import { ThemeToggle } from './ThemeToggle';
+import { useSupabaseConfig } from '../utils/useSupabaseConfig';
 
 export default function Chat({
   supabaseClient,
@@ -23,6 +24,8 @@ export default function Chat({
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
 
+  const { supabaseUrl, supabaseToken } = useSupabaseConfig();
+  
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
       const { data: sendMessageData, error: sendMessageError } =
@@ -30,38 +33,54 @@ export default function Chat({
           .from('conversations')
           .update({ context: [...messages, userMessage] })
           .eq('id', conversationId);
-
+  
       if (sendMessageError) throw sendMessageError;
-
+  
       setMessages([...messages, userMessage]);
       setWaitingForResponse(true);
-
-      const { data: aiResponseData, error: aiResponseError } =
-        await supabaseClient.functions.invoke('chat', {
-          body: { messageHistory: [...messages, userMessage] },
-        });
-
-      if (aiResponseError) throw aiResponseError;
-
-      const { data: updateConversationData, error: updateConversationError } =
-        await supabaseClient
-          .from('conversations')
-          .update({ context: [...messages, userMessage, aiResponseData.msg] })
-          .eq('id', conversationId);
-
-      if (updateConversationError) throw updateConversationError;
-
-      return aiResponseData;
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Unknown error');
-      setWaitingForResponse(false);
-    },
-    onSuccess: (aiResponse) => {
-      setMessages((currentMessages) => {
-        return [...currentMessages, aiResponse.msg as Message];
+  
+      // Invoke the function and get the response as a ReadableStream
+      const url = `${supabaseUrl}/functions/v1/chat`;
+      const headers = {
+        'Authorization': `Bearer ${supabaseToken}`,
+        'Content-Type': 'application/json',
+      };
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          messageHistory: [...messages, userMessage],
+          timestamp: new Date().toISOString(),
+        }),
       });
 
+      console.log('Response from chat function:', response);
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      if (response.body) {
+        const reader = response.body.getReader();
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunks = new TextDecoder().decode(value).split('\n').filter(Boolean);
+            for (const chunk of chunks) {
+              if (chunk) {
+                const aiResponseData = JSON.parse(chunk);
+                console.log('Chunk from AI:', aiResponseData);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Stream reading failed', error);
+        } finally {
+          reader.releaseLock();
+        }
+      }
       setWaitingForResponse(false);
     },
   });
