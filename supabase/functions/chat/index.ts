@@ -4,7 +4,6 @@ import { corsHeaders } from "../common/cors.ts";
 import { supabaseClient } from "../common/supabaseClient.ts";
 import { ApplicationError, UserError } from "../common/errors.ts";
 
-
 interface ChatClient {
   chat: {
     completions: {
@@ -34,35 +33,33 @@ interface Choice {
 // Current models available
 type ModelName = "nousresearch/nous-capybara-34b" | "mistral" | "gpt-4-0125-preview";
 
-
 const openaiClient = new OpenAI({
   apiKey: Deno.env.get("OPENAI_API_KEY"),
 });
-const openRouterApiKey = Deno.env.get("OPENROUTER_API_KEY");
-const useOpenRouter = Boolean(openRouterApiKey); // Use OpenRouter if API key is available
-const ollamaApiKey = Deno.env.get("OLLAMA_BASE_URL");
-const useOllama = Boolean(ollamaApiKey); // Use Ollama if OLLAMA_BASE_URL is available
-let openRouterClient: ChatClient | null = null;
-let ollamaClient: ChatClient | null = null;
+const useOpenRouter = Boolean(Deno.env.get("OPENROUTER_API_KEY")); // Use OpenRouter if API key is available
+const useOllama = Boolean(Deno.env.get("OLLAMA_BASE_URL")); // Use Ollama if OLLAMA_BASE_URL is available
 
 async function generateResponse(
   useOpenRouter: boolean,
   useOllama: boolean,
-  openaiClient: ChatClient,
-  openRouterClient: ChatClient | null,
-  ollamaClient: ChatClient | null,
   messages: Message[]
 ) {
 
   let client: ChatClient;
   let modelName: ModelName;
 
-  if (useOpenRouter && openRouterClient !== null) {
-    client = openRouterClient;
+  if (useOpenRouter) {
+    client = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: Deno.env.get("OPENROUTER_API_KEY"),
+    });
     modelName = "nousresearch/nous-capybara-34b";
-  } else if (useOllama && ollamaClient !== null) {
-    client = ollamaClient;
-    modelName = "mistral";
+  } else if (useOllama) {
+    client = new OpenAI({
+      baseURL: Deno.env.get("OLLAMA_BASE_URL"),
+      apiKey: "ollama"
+    });
+    modelName = "mistral"; 
   } else {
     client = openaiClient;
     modelName = "gpt-4-0125-preview";
@@ -97,9 +94,6 @@ async function getRelevantRecords(
   const optimnizedUserMsg = await generateResponse(
     useOpenRouter,
     useOllama,
-    openaiClient,
-    openRouterClient,
-    ollamaClient,
     messages
   );
   console.log(timestamp);
@@ -141,9 +135,11 @@ async function getRelevantRecords(
 }
 
 const chat = async (req: Request) => {
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+
   const supabaseAuthToken = req.headers.get("Authorization") ?? "";
 
   if (!supabaseAuthToken)
@@ -163,20 +159,6 @@ const chat = async (req: Request) => {
   const msgData = requestBody as { messageHistory: Message[]; timestamp: string };
 
   if (!msgData.messageHistory) throw new UserError("Missing query in request data");
-  
-  if (useOpenRouter) {
-    openRouterClient = new OpenAI({
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: openRouterApiKey,
-    });
-  }
-  
-  if (useOllama) {
-    ollamaClient = new OpenAI({
-      baseURL: Deno.env.get("OLLAMA_BASE_URL"),
-      apiKey: "ollama"
-    });
-  }
 
   const relevantRecords = await getRelevantRecords(openaiClient, supabase, messageHistory)
 
@@ -197,9 +179,6 @@ const chat = async (req: Request) => {
     const responseMessage = await generateResponse(
       useOpenRouter,
       useOllama,
-      openaiClient,
-      openRouterClient,
-      ollamaClient,
       messages
     );
 
@@ -216,16 +195,6 @@ const chat = async (req: Request) => {
     console.log("Error: ", error);
     throw new ApplicationError("Error processing chat completion");
   }
-
-  return new Response(
-    JSON.stringify({
-      msg: { role: "assistant", content: "Hello from Deno Deploy!" },
-    }),
-    {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    }
-  );
 };
 
 serve(chat);
