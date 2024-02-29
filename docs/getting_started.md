@@ -34,17 +34,17 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 1. Go to [supabase.co](https://supabase.co), create your account if you don't have one already
 2. Click "New Project", give it a name, and make sure to note the database password you are given
 
-   <img src="../images/supabase_new_prpject.png" width="100">
+   <img src="./images/supabase_new_prpject.png" width="100">
 
 3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
 
-   <img src="../images/supabase_creds.png" width="200">
+   <img src="./images/supabase_creds.png" width="200">
 
-4. Now, go to the authentication tab on the right navbar (<img src="../images/supabase_auth.png" width="100">), note that it can take a few moments for Supabase to finish setup the project
+4. Now, go to the authentication tab on the right navbar (<img src="./images/supabase_auth.png" width="100">), note that it can take a few moments for Supabase to finish setup the project
 
 5. There, you will see the "user management" UI. Click "Add User" -> "Add new user", fill an email and password, and make sure to check the "auto-confirm" option.
 
-   <img src="../images/supabase_new_user.png" width="200">
+   <img src="./images/supabase_new_user.png" width="200">
 
 6. By now, you should have 4 things: `email` & `password` for your supabase user, and the `Supabase URL` and `API Anon Key`.
 
@@ -92,7 +92,7 @@ npm run dev
 
 Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
 
-<img src="../images/login_screenshot.png" width="150">
+<img src="./images/login_screenshot.png" width="150">
 
 Enter the four required details, which you should've obtained in the Supabase setup: `Supabase URL`, `Supabase Anon API Key`, `email` and `password`.
 
