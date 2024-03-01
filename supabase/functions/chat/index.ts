@@ -22,7 +22,7 @@ async function generateResponse(
     modelName = "nousresearch/nous-capybara-34b";
   } else if (useOllama) {
     client = ollamaClient;
-    modelName = "mistral"; 
+    modelName = "mistral";
   } else {
     client = openaiClient;
     modelName = "gpt-4-1106-preview";
@@ -110,8 +110,9 @@ const chat = async (req) => {
   let messages = [
     {
       role: "system",
-      content: `You are a helpful assistant, helping the user navigate through life. He is asking you questions, and you answer them with the best of your ability.
-      You have access to some of their records, to help you answer their question in a more personalized way.
+      content: `You are a helpful assistant, helping the user navigate through life. The user is asking you questions, and you answer them with the best of your ability.
+You have access to some of their records, to help you answer their question in a more personalized way.
+
 
       Records:
       ${relevantRecords.map((r) => r.raw_text).join("\n")}
