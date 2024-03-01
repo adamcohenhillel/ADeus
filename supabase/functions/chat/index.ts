@@ -185,7 +185,7 @@ const chat = async (req: Request) => {
           );
   
           for await (const chunk of responseMessageGenerator) {
-            const jsonResponse = JSON.stringify({ token: chunk }) + "\n";
+            const jsonResponse = JSON.stringify({ message: chunk }) + "\n";
             const encodedChunk = new TextEncoder().encode(jsonResponse);
             controller.enqueue(encodedChunk);
           }
