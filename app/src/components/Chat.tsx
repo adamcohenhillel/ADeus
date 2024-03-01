@@ -28,13 +28,6 @@ export default function Chat({
   
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
-      const { data: sendMessageData, error: sendMessageError } =
-        await supabaseClient
-          .from('conversations')
-          .update({ context: [...messages, userMessage] })
-          .eq('id', conversationId);
-  
-      if (sendMessageError) throw sendMessageError;
   
       setMessages([...messages, userMessage]);
       setWaitingForResponse(true);
@@ -53,8 +46,6 @@ export default function Chat({
           timestamp: new Date().toISOString(),
         }),
       });
-
-      console.log('Response from chat function:', response);
   
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -64,19 +55,49 @@ export default function Chat({
         const reader = response.body.getReader();
 
         try {
+          let completeResponse = '';
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const chunks = new TextDecoder().decode(value).split('\n').filter(Boolean);
+            const chunks = new TextDecoder().decode(value).split('\n');
             for (const chunk of chunks) {
               if (chunk) {
-                const aiResponseData = JSON.parse(chunk);
-                console.log('Chunk from AI:', aiResponseData);
+                const aiResponse = JSON.parse(chunk);
+                if (aiResponse.message) {
+                  
+                  completeResponse += aiResponse.message;
+                  setMessages((prevMessages) => {
+                    const updatedMessages = [...prevMessages];
+                    const lastMessageIndex = updatedMessages.length - 1;
+                    if (lastMessageIndex >= 0 && updatedMessages[lastMessageIndex].role === 'assistant') {
+                      // If the last message is from the assistant, update its content
+                      updatedMessages[lastMessageIndex] = {
+                        ...updatedMessages[lastMessageIndex],
+                        content: updatedMessages[lastMessageIndex].content + aiResponse.message,
+                      };
+                    } else {
+                      // Otherwise, add a new message from the assistant
+                      updatedMessages.push({ role: 'assistant', content: aiResponse.message });
+                    }
+                    return updatedMessages;
+                  });
+                }
               }
+            }
+            setWaitingForResponse(false);
+
+            const updatedContext = [...messages, userMessage, { role: 'assistant', content: completeResponse }];
+            const updateResponse = await supabaseClient
+            .from('conversations')
+            .update({ context: updatedContext })
+            .eq('id', conversationId);
+            if (updateResponse.error) {
+              throw updateResponse.error;
             }
           }
         } catch (error) {
           console.error('Stream reading failed', error);
+          setWaitingForResponse(false);
         } finally {
           reader.releaseLock();
         }
