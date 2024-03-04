@@ -84,7 +84,6 @@ export default function Chat({
                 }
               }
             }
-            setWaitingForResponse(false);
 
             const updatedContext = [...messages, userMessage, { role: 'assistant', content: completeResponse }];
             const updateResponse = await supabaseClient
