@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
 
-import { useSupabase, useSupabaseConfig } from "@/utils/useSupabaseConfig";
-import LoginForm from "@/components/LoginForm";
-import Chat from "@/components/Chat";
-import { CapacitorHttp, HttpResponse } from "@capacitor/core";
-import { useRouter } from "next/router";
-import {
-  BleClient,
-  ScanResult,
-  numberToUUID,
-} from "@capacitor-community/bluetooth-le";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
+import { useSupabase, useSupabaseConfig } from '@/utils/useSupabaseConfig';
+import { BleClient, ScanResult } from '@capacitor-community/bluetooth-le';
+import { CapacitorHttp, HttpResponse } from '@capacitor/core';
+import { useRouter } from 'next/router';
 
 // const SERVICE_ID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
 // const CHARACTERISTIC_ID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
@@ -24,7 +18,7 @@ export default function Index() {
 
   const connect = async (deviceId: string) => {
     const device = await BleClient.requestDevice({
-      services: ["4fafc201-1fb5-459e-8fcc-c5c9c331914b"],
+      services: ['4fafc201-1fb5-459e-8fcc-c5c9c331914b'],
     });
     await BleClient.connect(device.deviceId);
 
@@ -62,7 +56,7 @@ export default function Index() {
 
       setTimeout(async () => {
         await BleClient.stopLEScan();
-        console.log("stopped scanning");
+        console.log('stopped scanning');
       }, 5000);
     } catch (error) {
       console.error(error);
@@ -70,12 +64,12 @@ export default function Index() {
   }
 
   async function sendAudioData(audioData: Uint8Array) {
-    const data = Buffer.from(audioData).toString("base64");
+    const data = Buffer.from(audioData).toString('base64');
 
     const options = {
-      url: supabaseUrl + "/functions/v1/process-audio",
+      url: 'https://bgkiorohiiofwtxnfvvo.supabase.co/functions/v1/process-audio',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       data: { data: data },
     };
@@ -87,7 +81,7 @@ export default function Index() {
     }
 
     const result = await response.data;
-    console.log("Response from the backend:", result);
+    console.log('Response from the backend:', result);
   }
 
   return (
@@ -99,21 +93,21 @@ export default function Index() {
         <LoginForm />
       )} */}
       {devices.map((device, index) => {
-        if (device.device.name?.includes("ESP32")) {
+        if (device.device.name?.includes('ESP32')) {
           return (
             <Button
               onClick={async () => {
                 const deviceId = await connect(device.device.deviceId);
 
-                let bufferSize = 2000000;
+                let bufferSize = 100000;
                 let buffer = new Uint8Array(bufferSize);
 
                 let count = 0;
 
                 const result = await BleClient.startNotifications(
                   deviceId,
-                  "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
-                  "beb5483e-36e1-4688-b7f5-ea07361b26a8",
+                  '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+                  'beb5483e-36e1-4688-b7f5-ea07361b26a8',
                   async (value) => {
                     for (let i = 0; i < value.byteLength; i++) {
                       buffer[count] = value.getUint8(i);
@@ -130,7 +124,7 @@ export default function Index() {
               }}
               key={index}
             >
-              <h1>Device: {device.device.name + ""}</h1>
+              <h1>Device: {device.device.name + ''}</h1>
               <p>UUID: {device.uuids}</p>
             </Button>
           );

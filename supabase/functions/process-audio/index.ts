@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.170.0/http/server.ts";
 import OpenAI, { toFile } from "https://deno.land/x/openai@v4.26.0/mod.ts";
 import { decodeBase64 } from "https://deno.land/std@0.217.0/encoding/base64.ts";
-import { corsHeaders } from "../common/cors";
-import { supabaseClient } from "../common/supabaseClient";
+import { corsHeaders } from "../common/cors.ts";
+import { supabaseClient } from "../common/supabaseClient.ts";
 import { multiParser } from 'https://deno.land/x/multiparser@0.114.0/mod.ts';
 
 
@@ -77,6 +77,7 @@ const processAudio = async (req: Request) => {
       const { data } = await req.json();
       const audioData = decodeBase64(data);
 
+      console.log('Audio data:', audioData.length);
       // 1 Channel, 8000 sample rate, 16 bit depth
       const wavHeader = createWavHeader(audioData.length, 8000, 1, 16);
       const wavBytes = new Uint8Array(wavHeader.length + audioData.length);
