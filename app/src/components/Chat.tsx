@@ -2,6 +2,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { useSupabaseConfig } from '../utils/useSupabaseConfig';
 import ChatLog, { Message } from './ChatLog';
 import LogoutButton from './LogoutButton';
 import { NavMenu } from './NavMenu';
@@ -9,7 +10,6 @@ import NewConversationButton from './NewConversationButton';
 import PromptForm from './PromptForm';
 import SideMenu from './SideMenu';
 import { ThemeToggle } from './ThemeToggle';
-import { useSupabaseConfig } from '../utils/useSupabaseConfig';
 
 export default function Chat({
   supabaseClient,
@@ -26,17 +26,16 @@ export default function Chat({
   const [isStreaming, setIsStreaming] = useState(false);
 
   const { supabaseUrl, supabaseToken } = useSupabaseConfig();
-  
+
   const sendMessageAndReceiveResponse = useMutation({
     mutationFn: async (userMessage: Message) => {
-  
       setMessages([...messages, userMessage]);
       setWaitingForResponse(true);
-  
+
       // Invoke the function and get the response as a ReadableStream
       const url = `${supabaseUrl}/functions/v1/chat`;
       const headers = {
-        'Authorization': `Bearer ${supabaseToken}`,
+        Authorization: `Bearer ${supabaseToken}`,
         'Content-Type': 'application/json',
       };
       const response = await fetch(url, {
@@ -47,11 +46,11 @@ export default function Chat({
           timestamp: new Date().toISOString(),
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      
+
       if (response.body) {
         const reader = response.body.getReader();
         setWaitingForResponse(false);
@@ -67,20 +66,27 @@ export default function Chat({
               if (chunk) {
                 const aiResponse = JSON.parse(chunk);
                 if (aiResponse.message) {
-                  
                   completeResponse += aiResponse.message;
                   setMessages((prevMessages) => {
                     const updatedMessages = [...prevMessages];
-                    const lastMessageIndex = updatedMessages.length - 1; 
-                    if (lastMessageIndex >= 0 && updatedMessages[lastMessageIndex].role === 'assistant') {
+                    const lastMessageIndex = updatedMessages.length - 1;
+                    if (
+                      lastMessageIndex >= 0 &&
+                      updatedMessages[lastMessageIndex].role === 'assistant'
+                    ) {
                       // If the last message is from the assistant, update its content
                       updatedMessages[lastMessageIndex] = {
                         ...updatedMessages[lastMessageIndex],
-                        content: updatedMessages[lastMessageIndex].content + aiResponse.message,
+                        content:
+                          updatedMessages[lastMessageIndex].content +
+                          aiResponse.message,
                       };
                     } else {
                       // Otherwise, add a new message from the assistant
-                      updatedMessages.push({ role: 'assistant', content: aiResponse.message });
+                      updatedMessages.push({
+                        role: 'assistant',
+                        content: aiResponse.message,
+                      });
                     }
                     return updatedMessages;
                   });
@@ -88,11 +94,15 @@ export default function Chat({
               }
             }
 
-            const updatedContext = [...messages, userMessage, { role: 'assistant', content: completeResponse }];
+            const updatedContext = [
+              ...messages,
+              userMessage,
+              { role: 'assistant', content: completeResponse },
+            ];
             const updateResponse = await supabaseClient
-            .from('conversations')
-            .update({ context: updatedContext })
-            .eq('id', conversationId);
+              .from('conversations')
+              .update({ context: updatedContext })
+              .eq('id', conversationId);
             if (updateResponse.error) {
               throw updateResponse.error;
             }
@@ -216,7 +226,7 @@ export default function Chat({
         textareaRef={textareaRef}
         entryData={entryData}
         setEntryData={setEntryData}
-        isStreaming={isStreaming}
+        isDisabled={isStreaming || waitingForResponse}
         sendMessage={() => {
           if (!entryData.trim()) return;
           const userMessage = { role: 'user', content: entryData.trim() };

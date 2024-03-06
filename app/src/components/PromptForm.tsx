@@ -6,13 +6,13 @@ export default function PromptForm({
   textareaRef,
   entryData,
   setEntryData,
-  isStreaming,
+  isDisabled,
   sendMessage,
 }: {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   entryData: string;
   setEntryData: React.Dispatch<React.SetStateAction<string>>;
-  isStreaming: boolean;
+  isDisabled: boolean;
   sendMessage: () => void;
 }) {
   return (
@@ -35,13 +35,13 @@ export default function PromptForm({
               textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             }
           }}
-          disabled={isStreaming}
+          disabled={isDisabled}
           placeholder="What is on your mind?"
         ></textarea>
         <Button
           size={'icon'}
           className="disabled:bg-muted/40 relative bottom-0 right-2 ml-auto rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={isStreaming || entryData.length == 0}
+          disabled={isDisabled || entryData.length === 0}
           onClick={sendMessage}
         >
           <SendHorizontal size={20} />
