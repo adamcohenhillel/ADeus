@@ -45,7 +45,6 @@ We recommend soldering a battery first.
 <img src="../images/esp32-c3-mic.png" width="400" alt="ESP32 C3 Bat Scheme">
 
 
-
 ## Installation Instructions
 
 ### 1. Install ESP-IDF
