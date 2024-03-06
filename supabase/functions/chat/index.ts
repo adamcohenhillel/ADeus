@@ -65,7 +65,7 @@ async function generateResponse(
   return choices[0].message;
 }
 
-async function prepareChatMessagesWithEmbeddingRecords(
+async function getRelevantRecords(
   openaiClient: ChatClient,
   supabase: any, 
   messageHistory: Message[]
@@ -103,20 +103,8 @@ async function prepareChatMessagesWithEmbeddingRecords(
   
   console.log("relevantRecords: ", response.data);
 
-  let messages = [
-    {
-      role: "system",
-      content: `You are a helpful assistant, helping the user navigate through life. He is asking you questions, and you answer them with the best of your ability.
-      You have access to some of their records, to help you answer their question in a more personalized way.
-
-      Records:
-      ${relevantRecords.map((record) => record.raw_text).join("\n")}
-        `,
-    },
-    ...messageHistory,
-  ];
-
-  return messages;
+  return relevantRecords;
+  
 }
 
 const chat = async (req: Request) => {
@@ -169,7 +157,20 @@ const chat = async (req: Request) => {
     });
   }
 
-  const messages = await prepareChatMessagesWithEmbeddingRecords(openaiClient, supabase, messageHistory)
+  const relevantRecords = await getRelevantRecords(openaiClient, supabase, messageHistory)
+
+  let messages = [
+    {
+      role: "system",
+      content: `You are a helpful assistant, helping the user navigate through life. He is asking you questions, and you answer them with the best of your ability.
+      You have access to some of their records, to help you answer their question in a more personalized way.
+
+      Records:
+      ${relevantRecords.map((record) => record.raw_text).join("\n")}
+        `,
+    },
+    ...messageHistory,
+  ];
 
   try {
     const responseMessage = await generateResponse(
