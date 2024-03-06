@@ -81,13 +81,10 @@ async function* generateResponse(
 async function getRelevantRecords(
   openaiClient: ChatClient,
   supabase: any, 
-  msgData: any,
+  messageHistory: Message[],
 ): Promise<Message[]> {
 
-  const messageHistory = msgData.messageHistory;
-  const timestamp = msgData.timestamp;
-
-  console.log(timestamp);
+  
   // Embed the last messageHistory message using OpenAI's embeddings API
   const embeddingsResponse = await openaiClient.embeddings.create({
     model: "text-embedding-3-small",
@@ -144,6 +141,7 @@ const chat = async (req: Request) => {
   const msgData = requestBody as { messageHistory: Message[]; timestamp: string };
 
   if (!msgData.messageHistory) throw new UserError("Missing query in request data");
+  const messageHistory = msgData.messageHistory;
 
   const relevantRecords = await getRelevantRecords(openaiClient, supabase, messageHistory)
 
