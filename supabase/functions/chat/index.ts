@@ -87,20 +87,6 @@ async function getRelevantRecords(
   const messageHistory = msgData.messageHistory;
   const timestamp = msgData.timestamp;
 
-  let lastMessage = [messageHistory[messageHistory.length - 1]];
-
-  const systemMessage = {
-    role: "system",
-    content: `Your objective is to determine the intent of the users message. Their requests can vary but will often be asking about their day, week, month and life. 
-    Use the current date time ${timestamp} to help you answer their questions. 
-    `,
-  };
-  
-  const optimnizedUserMsg = await generateResponse(
-    useOpenRouter,
-    useOllama,
-    lastMessage
-   );
   console.log(timestamp);
   // Embed the last messageHistory message using OpenAI's embeddings API
   const embeddingsResponse = await openaiClient.embeddings.create({
