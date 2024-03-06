@@ -23,6 +23,7 @@ export default function Chat({
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [waitingForResponse, setWaitingForResponse] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   const { supabaseUrl, supabaseToken } = useSupabaseConfig();
   
@@ -53,6 +54,8 @@ export default function Chat({
       
       if (response.body) {
         const reader = response.body.getReader();
+        setWaitingForResponse(false);
+        setIsStreaming(true);
 
         try {
           let completeResponse = '';
@@ -68,7 +71,7 @@ export default function Chat({
                   completeResponse += aiResponse.message;
                   setMessages((prevMessages) => {
                     const updatedMessages = [...prevMessages];
-                    const lastMessageIndex = updatedMessages.length - 1;
+                    const lastMessageIndex = updatedMessages.length - 1; 
                     if (lastMessageIndex >= 0 && updatedMessages[lastMessageIndex].role === 'assistant') {
                       // If the last message is from the assistant, update its content
                       updatedMessages[lastMessageIndex] = {
@@ -96,12 +99,13 @@ export default function Chat({
           }
         } catch (error) {
           console.error('Stream reading failed', error);
+          setIsStreaming(false);
           setWaitingForResponse(false);
         } finally {
           reader.releaseLock();
         }
       }
-      setWaitingForResponse(false);
+      setIsStreaming(false);
     },
   });
 
@@ -212,7 +216,7 @@ export default function Chat({
         textareaRef={textareaRef}
         entryData={entryData}
         setEntryData={setEntryData}
-        waitingForResponse={waitingForResponse}
+        isStreaming={isStreaming}
         sendMessage={() => {
           if (!entryData.trim()) return;
           const userMessage = { role: 'user', content: entryData.trim() };
