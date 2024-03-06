@@ -70,7 +70,7 @@ export default function Index() {
     console.log('Sending audio data to the backend:', data);
 
     const options = {
-      url: 'https://bgkiorohiiofwtxnfvvo.supabase.co/functions/v1/process-audio',
+      url: '',
       headers: {
         'Content-Type': 'application/json',
       },

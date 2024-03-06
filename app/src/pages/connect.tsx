@@ -66,8 +66,12 @@ export default function Index() {
   async function sendAudioData(audioData: Uint8Array) {
     const data = Buffer.from(audioData).toString('base64');
 
+    if (!supabaseUrl) {
+      throw new Error('Supabase URL is not defined');
+    }
+
     const options = {
-      url: 'https://bgkiorohiiofwtxnfvvo.supabase.co/functions/v1/process-audio',
+      url: supabaseUrl + '/functions/v1/process-audio',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -99,7 +103,7 @@ export default function Index() {
               onClick={async () => {
                 const deviceId = await connect(device.device.deviceId);
 
-                let bufferSize = 100000;
+                let bufferSize = 500000;
                 let buffer = new Uint8Array(bufferSize);
 
                 let count = 0;
