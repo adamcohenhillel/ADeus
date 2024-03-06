@@ -70,4 +70,4 @@ vendor/
 
 venv/
 
-/build
+**/build
