@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 
+import LogoutButton from '@/components/LogoutButton';
+import { NavMenu } from '@/components/NavMenu';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
 import { useSupabase, useSupabaseConfig } from '@/utils/useSupabaseConfig';
 import { BleClient, ScanResult } from '@capacitor-community/bluetooth-le';
 import { CapacitorHttp, HttpResponse } from '@capacitor/core';
+import { Files } from 'lucide-react';
 import { useRouter } from 'next/router';
 
 // const SERVICE_ID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
@@ -89,54 +93,62 @@ export default function Index() {
   }
 
   return (
-    <div style={{ marginTop: 40 }}>
-      <h1>Index</h1>
-      {/* {loggedIn && user ? (
-        <Chat supabaseClient={supabaseClient} />
-      ) : (
-        <LoginForm />
-      )} */}
-      {devices.map((device, index) => {
-        if (device.device.name?.includes('ESP32')) {
-          return (
-            <Button
-              onClick={async () => {
-                const deviceId = await connect(device.device.deviceId);
+    <>
+      <div className="from-background fixed top-0 flex h-24 w-full items-center justify-between bg-gradient-to-b"></div>
+      <div className="fixed right-4 top-4 flex space-x-4">
+        <NavMenu>
+          <Button
+            size={'icon'}
+            className="bg-muted/20 text-muted-foreground hover:bg-muted/40 rounded-full"
+            onClick={() => router.push('/')}
+          >
+            <Files size={20} />
+          </Button>
+          <ThemeToggle />
+          <LogoutButton supabaseClient={supabaseClient!} />
+        </NavMenu>
+      </div>
+      <div className="mt-40">
+        {devices.map((device, index) => {
+          if (device.device.name?.includes('ESP32')) {
+            return (
+              <Button
+                onClick={async () => {
+                  const deviceId = await connect(device.device.deviceId);
 
-                let bufferSize = 500000;
-                let buffer = new Uint8Array(bufferSize);
+                  let bufferSize = 500000;
+                  let buffer = new Uint8Array(bufferSize);
 
-                let count = 0;
+                  let count = 0;
 
-                const result = await BleClient.startNotifications(
-                  deviceId,
-                  '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
-                  'beb5483e-36e1-4688-b7f5-ea07361b26a8',
-                  async (value) => {
-                    for (let i = 0; i < value.byteLength; i++) {
-                      buffer[count] = value.getUint8(i);
-                      count++;
-                      if (count === bufferSize) {
-                        await sendAudioData(buffer);
-                        count = 0;
+                  const result = await BleClient.startNotifications(
+                    deviceId,
+                    '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+                    'beb5483e-36e1-4688-b7f5-ea07361b26a8',
+                    async (value) => {
+                      for (let i = 0; i < value.byteLength; i++) {
+                        buffer[count] = value.getUint8(i);
+                        count++;
+                        if (count === bufferSize) {
+                          await sendAudioData(buffer);
+                          count = 0;
+                        }
                       }
                     }
-                  }
-                );
+                  );
 
-                await sendAudioData(buffer);
-              }}
-              key={index}
-            >
-              <h1>Device: {device.device.name + ''}</h1>
-              <p>UUID: {device.uuids}</p>
-            </Button>
-          );
-        }
-      })}
-      {connected && <h1>status: connected</h1>}
-      {data && <h1>data: {data}</h1>}
-      <Button onClick={scan}>Scan Again</Button>
-    </div>
+                  await sendAudioData(buffer);
+                }}
+                key={index}
+              >
+                <h1>Device: {device.device.name + ''}</h1>
+                <p>UUID: {device.uuids}</p>
+              </Button>
+            );
+          }
+        })}
+        <Button onClick={scan}>Scan Again</Button>
+      </div>
+    </>
   );
 }

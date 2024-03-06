@@ -159,7 +159,11 @@ export default function Chat({
       </div>
       <div className="fixed right-4 top-4 flex space-x-4">
         <NavMenu>
-          <LogoutButton supabaseClient={supabaseClient} />
+          <NewConversationButton
+            createNewConversation={() => {
+              newConversation.mutate();
+            }}
+          />
           <Button
             size={'icon'}
             className="bg-muted/20 text-muted-foreground hover:bg-muted/40 rounded-full"
@@ -167,11 +171,7 @@ export default function Chat({
           >
             <Bluetooth size={20} />
           </Button>
-          <NewConversationButton
-            createNewConversation={() => {
-              newConversation.mutate();
-            }}
-          />
+          <LogoutButton supabaseClient={supabaseClient} />
           <ThemeToggle />
         </NavMenu>
       </div>
