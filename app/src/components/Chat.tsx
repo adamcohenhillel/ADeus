@@ -121,7 +121,6 @@ export default function Chat({
         }
         return data;
       } else {
-        setMessages([]);
         const { data, error } = await supabaseClient
           .from('conversations')
           .select('*')

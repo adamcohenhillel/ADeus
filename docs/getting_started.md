@@ -34,29 +34,29 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 1. Go to [supabase.co](https://supabase.co), create your account if you don't have one already
 2. Click "New Project", give it a name, and make sure to note the database password you are given
 
-   <img src="../images/supabase_new_prpject.png" width="100">
+   <img src="./images/supabase_new_prpject.png" width="100">
 
 3. Once the project is created, you should get the `anon public` API Key, and the `Project URL`, copy them both, as we will need them in a bit.
 
-   <img src="../images/supabase_creds.png" width="200">
+   <img src="./images/supabase_creds.png" width="200">
 
-4. Now, go to the authentication tab on the right navbar (<img src="../images/supabase_auth.png" width="100">), note that it can take a few moments for Supabase to finish setup the project
+4. Now, go to the authentication tab on the right navbar (<img src="./images/supabase_auth.png" width="100">), note that it can take a few moments for Supabase to finish setup the project
 
 5. There, you will see the "user management" UI. Click "Add User" -> "Add new user", fill an email and password, and make sure to check the "auto-confirm" option.
 
-   <img src="../images/supabase_new_user.png" width="200">
+   <img src="./images/supabase_new_user.png" width="200">
 
 6. By now, you should have 4 things: `email` & `password` for your supabase user, and the `Supabase URL` and `API Anon Key`.
 
 7. If so, go to your terminal, and cd to the supabase folder: `cd ./supabase`
 
-8. Install Supabase and set up the CLI. You should follow thier [guide here](https://supabase.com/../guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
-   - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/../guides/cli/getting-started))
+8. Install Supabase and set up the CLI. You should follow thier [guide here](https://supabase.com/docs/guides/cli/getting-started?platform=macos#installing-the-supabase-cli), but in short:
+   - run `brew install supabase/tap/supabase` to install the CLI (or [check other options](https://supabase.com/docs/guides/cli/getting-started))
    - Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) on your computer (we won't use it, we just need docker daemon to run in the background for deploying supabase functions)
 9. Now when we have the CLI, we need to login with our Supabase account, running `supabase login` - this should pop up a browser window, which should prompt you through the auth
 10. And link our Supabase CLI to a specific project, our newly created one, by running `supabase link --project-ref <your-project-id>` (you can check what the project id is from the Supabase web UI, or by running `supabase projects list`, and it will be under "reference id") - you can skip (enter) the database password, it's not needed.
 11. Now we need to apply the Adeus DB schema on our newly created, and empty database. We can do this by simply run: `supabase db push`. We can verify it worked by going to the Supabase project -> Tables -> and see that new tables were created.
-12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/../guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
+12. Now let's deploy our functions! ([see guide for more details](https://supabase.com/docs/guides/functions/deploy)) `supabase functions deploy --no-verify-jwt` (see [issue re:security](https://github.com/adamcohenhillel/AdDeus/issues/3))
 13. If you're planning to first use OpenAI as your Foundation model provider, then you'd need to also run the following command, to make sure the functions have everything they need to run properly: `supabase secrets set OPENAI_API_KEY=<your-openai-api-key>` (Ollama setup guide is coming out soon)
 14. If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run `supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>`.
 
@@ -92,7 +92,7 @@ npm run dev
 
 Once you have an app instance up and running, head to its address `your-app-address.com/`, and you should see the screen:
 
-<img src="../images/login_screenshot.png" width="150">
+<img src="./images/login_screenshot.png" width="150">
 
 Enter the four required details, which you should've obtained in the Supabase setup: `Supabase URL`, `Supabase Anon API Key`, `email` and `password`.
 
