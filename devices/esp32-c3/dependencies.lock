@@ -1,0 +1,117 @@
+dependencies:
+  chmorgan/esp-libhelix-mp3:
+    component_hash: cbb76089dc2c5749f7b470e2e70aedc44c9da519e04eb9a67d4c7ec275229e53
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.3
+  espressif/cbor:
+    component_hash: 440f4ee4504841cc9b4f3a8ef755776a612ac9dace355514c68b999868f990ff
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 0.6.0~1
+  espressif/esp-dsp:
+    component_hash: 46498b4973097cac29cfc6a692abef44375ffb7b00b73b3f354124efc626a154
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.4.10
+  espressif/esp-zboss-lib:
+    component_hash: a9e17babb2d43edc4bb6bc320f88560860122ac97e8fd72d7d5d9b3cd1578607
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.1
+  espressif/esp-zigbee-lib:
+    component_hash: a1a23f47316d2d44b1573459c8cf547da7f2c8ea987154ad8d28235db69f1481
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.1
+  espressif/esp_diag_data_store:
+    component_hash: 8849195251dbb8a2d7268335277cfa310cef36e4ac1e90cd59ad3be4269a30d7
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.1
+  espressif/esp_diagnostics:
+    component_hash: fe19f5ee7f0145f406d36a4d5310e4ae0c6ee1afa47f2681ada8a2ea8582d390
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.2
+  espressif/esp_insights:
+    component_hash: 2472a19de98a8b991baeeac7209765b70ce14ec2b1435dbed3abd020dd0f7227
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.1
+  espressif/esp_rainmaker:
+    component_hash: 232425d1c9b9dbdaa5c109b3e359fba0e6956e35fcf22725f07ed7e4389e1191
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.0
+  espressif/esp_schedule:
+    component_hash: 2cbc7e2584f523d10fbfb4ecb7d25c07fa7d7757ab23d7a127494b1a58131ffe
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.0
+  espressif/esp_secure_cert_mgr:
+    component_hash: a20007d67e65a000670ab77e45d7554c943eb8dcb0abeada0a57dd9adac3a703
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 2.4.1
+  espressif/jsmn:
+    component_hash: d80350c41bbaa827c98a25b6072df00884e72f54885996fab4a4f0aebce6b6c3
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.0
+  espressif/json_generator:
+    component_hash: 45033e1c199b13f1c8c1b544fb7d4e2df6a8e3071ebdcb1b22582b61a7974ff2
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.1.2
+  espressif/json_parser:
+    component_hash: d74b81729ad06ec11ff5eb5b1b0d7df1d00e6027fc11471f4b139c70dcf1b1e4
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.0.3
+  espressif/mdns:
+    component_hash: d6665090cf41eb399c184aab6f34234251a773e052fb53ca044dcb576264c646
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.2.1
+  espressif/qrcode:
+    component_hash: 3b493771bc5d6ad30cbf87c25bf784aada8a08c941504355b55d6b75518ed7bc
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 0.1.0~2
+  espressif/rmaker_common:
+    component_hash: 021c02465e4996dd3292db36ea47b5e3122e7e2d3514797735a96bc12598b44f
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.4.5
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.1.2
+  joltwallet/littlefs:
+    component_hash: 03a21848de65d85a1f914dd6fb9dea5e75e794989d70d185a007e27c3046bb92
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 1.14.1
+manifest_hash: 84a72f99bd35e36c30205cb29810146868a5d1ed843e9421c3418bc6781b1981
+target: esp32c3
+version: 1.0.0

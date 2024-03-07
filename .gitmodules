@@ -1,3 +1,6 @@
 [submodule "devices/coralai/coralmicro"]
 	path = devices/coralai/coralmicro
 	url = https://github.com/google-coral/coralmicro
+[submodule "devices/esp32-c3/components/arduino"]
+	path = devices/esp32-c3/components/arduino
+	url = https://github.com/espressif/arduino-esp32.git
