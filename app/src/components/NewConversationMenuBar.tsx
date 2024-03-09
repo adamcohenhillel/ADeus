@@ -8,13 +8,15 @@ import {
 } from '@/components/ui/menubar';
 import { MessageCirclePlus } from 'lucide-react';
 import { useState } from 'react';
+import { useModelContext } from './ModelProvider';
 
 export function NewConversationMenuBar({
   newConversation,
 }: {
   newConversation: { mutate: () => void };
 }) {
-  const [activeModel, setActiveModel] = useState('openai');
+  const { model, toggleModel } = useModelContext();
+  const [activeModel, setActiveModel] = useState(model);
 
   const handleModelChange = (value: string) => {
     setActiveModel(value);
@@ -28,8 +30,8 @@ export function NewConversationMenuBar({
         <MenubarContent className="mr-4">
           <MenubarRadioGroup value={activeModel}>
             <RadioItem value="openai" setActiveModel={handleModelChange} />
-            <RadioItem value="gpt3" setActiveModel={handleModelChange} />
-            <RadioItem value="gpt4" setActiveModel={handleModelChange} />
+            <RadioItem value="openrouter" setActiveModel={handleModelChange} />
+            <RadioItem value="ollama" setActiveModel={handleModelChange} />
           </MenubarRadioGroup>
         </MenubarContent>
       </MenubarMenu>
