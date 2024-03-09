@@ -54,7 +54,11 @@ export default function Index() {
 
       await BleClient.requestLEScan({}, (result: ScanResult) => {
         setDevices((prev) => {
-          return [...prev, result];
+          if (result.localName === 'ADeus') {
+            return [...prev, result];
+          } else {
+            return prev;
+          }
         });
       });
 
@@ -110,42 +114,53 @@ export default function Index() {
       </div>
       <div className="mt-40">
         {devices.map((device, index) => {
-          if (device.device.name?.includes('ESP32')) {
-            return (
-              <Button
-                onClick={async () => {
-                  const deviceId = await connect(device.device.deviceId);
+          return (
+            <Button
+              onClick={async () => {
+                const deviceId = await connect(device.device.deviceId);
 
-                  let bufferSize = 500000;
-                  let buffer = new Uint8Array(bufferSize);
+                let count = 0;
+                let activeBufferIndex = 0;
 
-                  let count = 0;
+                let bufferSize = 250000;
+                const buffers = [
+                  new Uint8Array(bufferSize),
+                  new Uint8Array(bufferSize),
+                ];
+                const processBuffer = async (buffer: Uint8Array) => {
+                  await sendAudioData(buffer);
+                };
+                const swapBuffers = () => {
+                  console.log(count);
+                  processBuffer(buffers[activeBufferIndex]);
+                  activeBufferIndex = 1 - activeBufferIndex; // Switch between 0 and 1
+                  count = 0; // Reset count for the new active buffer
+                };
 
-                  const result = await BleClient.startNotifications(
-                    deviceId,
-                    '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
-                    'beb5483e-36e1-4688-b7f5-ea07361b26a8',
-                    async (value) => {
-                      for (let i = 0; i < value.byteLength; i++) {
-                        buffer[count] = value.getUint8(i);
-                        count++;
-                        if (count === bufferSize) {
-                          await sendAudioData(buffer);
-                          count = 0;
-                        }
+                const result = await BleClient.startNotifications(
+                  deviceId,
+                  '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+                  'beb5483e-36e1-4688-b7f5-ea07361b26a8',
+                  async (value) => {
+                    for (let i = 0; i < value.byteLength; i++) {
+                      const byte = value.getUint8(i);
+                      buffers[activeBufferIndex][count] = byte;
+                      count++;
+                      if (count >= bufferSize) {
+                        swapBuffers();
                       }
                     }
-                  );
+                  }
+                );
 
-                  await sendAudioData(buffer);
-                }}
-                key={index}
-              >
-                <h1>Device: {device.device.name + ''}</h1>
-                <p>UUID: {device.uuids}</p>
-              </Button>
-            );
-          }
+                // await sendAudioData(buffer);
+              }}
+              key={index}
+            >
+              <h1>Device: {device.device.name + ''}</h1>
+              <p>UUID: {device.uuids}</p>
+            </Button>
+          );
         })}
         <Button onClick={scan}>Scan Again</Button>
       </div>
