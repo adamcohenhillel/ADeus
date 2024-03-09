@@ -47,3 +47,11 @@ Adeus consists of 3 parts:
 
 - [Getting Started Guide](https://docs.adeus.ai/getting_started.html#1-backend-supabase)
 - [How to Contribute?](https://docs.adeus.ai/#how-to-contribute)
+
+
+
+#### Made by the Community, with -❤️-:
+
+<a href="https://github.com/adamcohenhillel/ADeus/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=adamcohenhillel/ADeus" />
+</a>

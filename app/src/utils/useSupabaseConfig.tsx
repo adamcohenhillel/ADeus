@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 export function useSupabaseConfig() {
   const [supabaseUrl, setSupabaseUrl] = useState('');
   const [supabaseToken, setSupabaseToken] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchConfig() {
@@ -23,6 +24,8 @@ export function useSupabaseConfig() {
       } catch (error) {
         // Handle any error that might occur during fetching
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -50,11 +53,11 @@ export function useSupabaseConfig() {
     }
   };
 
-  return { supabaseUrl, supabaseToken, setSupabaseConfig };
+  return { supabaseUrl, supabaseToken, setSupabaseConfig, loading };
 }
 
 export function useSupabaseClient() {
-  const { supabaseUrl, supabaseToken } = useSupabaseConfig();
+  const { supabaseUrl, supabaseToken, loading } = useSupabaseConfig();
   const [supabaseClient, setSupabaseClient] = useState<SupabaseClient>();
 
   useEffect(() => {
@@ -64,11 +67,11 @@ export function useSupabaseClient() {
     }
   }, [supabaseUrl, supabaseToken]);
 
-  return supabaseClient;
+  return { supabaseClient, loading };
 }
 
 export function useSupabase() {
-  const supabaseClient = useSupabaseClient();
+  const { supabaseClient, loading } = useSupabaseClient();
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -85,5 +88,5 @@ export function useSupabase() {
     };
   }, [supabaseClient]);
 
-  return { user, supabaseClient };
+  return { user, supabaseClient, loading };
 }

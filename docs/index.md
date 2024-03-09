@@ -39,45 +39,15 @@ Adeus consists of 3 parts:
    an interface that lets the user to interact with their assistant and data via chat.
 
 2. **Hardware device (Currently Coral AI, but soon a Rasberry-Pi Zero W worth $15):** this will be the wearable that will record everything, and send it to the backend to be processed
-3. **Supabase :** Our backend, and datavase, where we will process and store data, and interact with LLMs.
+3. **Supabase :** Our backend, and database, where we will process and store data, and interact with LLMs.
    Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
-## Simplified Sequence
-```mermaid
-sequenceDiagram
-    participant user as User
-    participant device as device/raspi
-    participant chatbot as chatbot/phone
-box lightGreen supabase
-    participant supabase as supabase
-end
-box lightBlue openai
-    participant whisper as whisper
-    participant embeddings as embeddings
-    participant GPT as GPT
-end
+**Sequence:**
+<a href="https://github.com/adamcohenhillel/ADeus/blob/main/docs/guides/sequence.md">
+   <img src="./images/mermaid.png">
+</a>
 
-    title ADeus
-
-    user ->> device: speech
-    device ->> supabase: audio
-    supabase ->> whisper: audio
-    whisper ->> supabase: text(transcribed)
-    supabase ->> embeddings: text
-    embeddings -->> supabase: embeddings
-    supabase -->> supabase: store to db
-
-    user ->> chatbot: text(conversation)
-    chatbot ->> supabase: text(conversation)
-    supabase ->> embeddings: text(conversation)
-    embeddings -->> supabase: embeddings
-    supabase -->> supabase: db query(embeddings match)
-    supabase -->> GPT: prompt, text(conversation), matched db embeddings
-    GPT -->> supabase: response
-    supabase -->> chatbot: response
-    chatbot -->> user: response
-```
 ---
 
 ## Where to go Next
@@ -108,3 +78,9 @@ You can also check the [TODOs](https://github.com/adamcohenhillel/ADeus/blob/mai
 
 ---
 
+
+#### Made by the Community, with -❤️-:
+
+<a href="https://github.com/adamcohenhillel/ADeus/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=adamcohenhillel/ADeus" />
+</a>

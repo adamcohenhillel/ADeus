@@ -9,7 +9,7 @@
 #include <fstream>
 #include "cxxopts.hpp"
 #include <chrono>
-#include <filesystem>  // C++17 feature
+#include <filesystem> // C++17 feature
 
 #define DO_NOT_APPLY_GAIN 1.0
 
@@ -94,7 +94,7 @@ void recordAudio(snd_pcm_t *capture_handle, snd_pcm_uframes_t period_size)
     }
 }
 
-void createWavHeader(std::vector<char> &header, int bitsPerSample, int dataSize )
+void createWavHeader(std::vector<char> &header, int bitsPerSample, int dataSize)
 {
     // "RIFF" chunk descriptor
     header.insert(header.end(), {'R', 'I', 'F', 'F'});
@@ -150,7 +150,8 @@ void createWavHeader(std::vector<char> &header, int bitsPerSample, int dataSize 
     header.insert(header.end(), dataSizeBytes, dataSizeBytes + 4);
 }
 
-void saveWavToFile(const std::vector<char> &buffer) {
+void saveWavToFile(const std::vector<char> &buffer)
+{
     // Generate a timestamp for the filename
     auto now = std::chrono::system_clock::now();
     auto timestamp = std::chrono::system_clock::to_time_t(now);
@@ -166,7 +167,8 @@ void saveWavToFile(const std::vector<char> &buffer) {
 
     // Write the buffer to the file
     std::ofstream outfile(filename, std::ios::binary);
-    if (outfile.is_open()) {
+    if (outfile.is_open())
+    {
         outfile.write(buffer.data(), buffer.size());
         outfile.close();
     }
@@ -214,6 +216,7 @@ void sendWavBuffer(const std::vector<char> &buffer)
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
+
     curl_global_cleanup();
 }
 
@@ -264,35 +267,35 @@ void handleAudioBuffer()
     }
 }
 
-void process_args(int argc, char* argv[]) {
+void process_args(int argc, char *argv[])
+{
     cxxopts::Options options("main", " - command line options");
 
-    options.add_options()
-        ("h,help", "Print help")
-        ("s,save", "Save audio to local file")
-        ("g,gain", "Microphone gain (increase volume of audio)", cxxopts::value<float>())
-        ;
+    options.add_options()("h,help", "Print help")("s,save", "Save audio to local file")("g,gain", "Microphone gain (increase volume of audio)", cxxopts::value<float>());
 
-        auto result = options.parse(argc, argv);
+    auto result = options.parse(argc, argv);
 
-        if (result.count("help")) {
-            std::cout << options.help() << std::endl;
-            exit(0);
-        }
+    if (result.count("help"))
+    {
+        std::cout << options.help() << std::endl;
+        exit(0);
+    }
 
-        if (result.count("save")) {
-            std::cout << "Saving audio to local file" << std::endl;
-            save_to_local_file = true;
-        }
+    if (result.count("save"))
+    {
+        std::cout << "Saving audio to local file" << std::endl;
+        save_to_local_file = true;
+    }
 
-        if (result.count("gain")) {
-            float gain = result["gain"].as<float>();
-            std::cout << "Microphone gain: " << gain << std::endl;
-            audio_gain = gain;
-        }
+    if (result.count("gain"))
+    {
+        float gain = result["gain"].as<float>();
+        std::cout << "Microphone gain: " << gain << std::endl;
+        audio_gain = gain;
+    }
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     process_args(argc, argv);
     snd_pcm_t *capture_handle;
