@@ -1,9 +1,11 @@
+import { Label } from '@radix-ui/react-menubar';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useSupabaseConfig } from '../utils/useSupabaseConfig';
 import ChatLog, { Message } from './ChatLog';
+import { useModelContext } from './ModelProvider';
 import { NewConversationMenuBar } from './NewConversationMenuBar';
 import PromptForm from './PromptForm';
 import SideMenu from './SideMenu';
@@ -13,6 +15,7 @@ export default function Chat({
 }: {
   supabaseClient: SupabaseClient;
 }) {
+  const { model } = useModelContext();
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -203,6 +206,11 @@ export default function Chat({
           newConversation={newConversation}
         />
         <div className="ml-auto">
+          <Label>Conversation ID: {conversationId}</Label>
+          <Label>
+            Model from context:
+            {model ? model : 'No model selected'}
+          </Label>
           <NewConversationMenuBar newConversation={newConversation} />
         </div>
       </div>

@@ -20,6 +20,7 @@ export function NewConversationMenuBar({
 
   const handleModelChange = (value: string) => {
     setActiveModel(value);
+    toggleModel(value);
     newConversation.mutate();
   };
 
