@@ -15,6 +15,15 @@ export default function PromptForm({
   isDisabled: boolean;
   sendMessage: () => void;
 }) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (entryData.trim() !== '') {
+        sendMessage();
+      }
+    }
+  };
+
   return (
     <div className="fixed bottom-3 flex w-full items-center justify-center">
       <div
@@ -35,6 +44,7 @@ export default function PromptForm({
               textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             }
           }}
+          onKeyDown={handleKeyDown}
           disabled={isDisabled}
           placeholder="What is on your mind?"
         ></textarea>
