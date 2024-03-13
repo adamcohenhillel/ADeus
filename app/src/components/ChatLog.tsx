@@ -1,10 +1,31 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import ChatDots from './ChatDots';
+import MarkdownIt from 'markdown-it';
+import tm from 'markdown-it-texmath';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css'; // You can choose other styles as well
+import 'katex/dist/katex.min.css';
 
 export interface Message {
   role: string;
   content: string;
 }
+
+const md = new MarkdownIt({
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return '<pre class="code-block"><code>' +
+               hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+               '</code></pre>';
+      } catch (__) {}
+    }
+    return '<pre class="code-block"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+  }
+});
+
+// Use markdown-it-texmath with KaTeX
+md.use(tm, { engine: require('katex'), delimiters: 'dollars', katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } });
 
 export default function ChatLog({
   messages,
@@ -13,6 +34,11 @@ export default function ChatLog({
   messages: Message[];
   waitingForResponse: boolean;
 }) {
+  const renderMessageContent = (content: string) => {
+    const html = md.render(content);
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  };
+
   return (
     <AnimatePresence initial={false}>
       {messages ? (
@@ -36,7 +62,7 @@ export default function ChatLog({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 1 } }}
               >
-                <FormattedText message={chat['content']} />
+                {renderMessageContent(chat['content'])}
               </motion.div>
             </div>
           ))}
@@ -55,18 +81,3 @@ export default function ChatLog({
     </AnimatePresence>
   );
 }
-
-const FormattedText = ({ message }: { message: string }) => {
-  return (
-    <>
-      {message.split('\n').map((substring, index) => {
-        return (
-          <span key={index}>
-            {substring}
-            <br />
-          </span>
-        );
-      })}
-    </>
-  );
-};

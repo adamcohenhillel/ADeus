@@ -58,3 +58,90 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* General styling for the chat log */
+.ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* Styling for chat messages */
+.chat-message {
+  background-color: #f4f4f8;
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  max-width: 80%;
+}
+
+/* Styling for user messages */
+.chat-message.user {
+  background-color: #e0f7fa;
+  align-self: flex-end;
+}
+
+/* Styling for assistant messages */
+.chat-message.assistant {
+  background-color: #f1f8e9;
+}
+
+/* General styling for KaTeX-rendered LaTeX */
+.katex {
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+/* Increase spacing around KaTeX elements */
+.katex .base {
+  margin-bottom: 0.5em;
+}
+
+.katex .mfrac {
+  margin: 0 2px;
+}
+
+/* Styling for code blocks */
+.code-block {
+  background-color: #282c34;
+  color: #abb2bf;
+  border-radius: 4px;
+  padding: 10px;
+  overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Styling for headers */
+h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.4em;
+}
+
+h3 {
+  font-size: 1.3em;
+}
+
+/* Styling for tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
