@@ -3,7 +3,7 @@ import ChatDots from './ChatDots';
 import MarkdownIt from 'markdown-it';
 import tm from 'markdown-it-texmath';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css'; // You can choose other styles as well
+import 'highlight.js/styles/atom-one-dark.css'; // You can choose other styles as well
 import 'katex/dist/katex.min.css';
 
 export interface Message {
@@ -15,14 +15,27 @@ const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
+        const highlightedCode = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
+        // Replace the default class with a custom class
+        const modifiedCode = highlightedCode.replace(/<span class="hljs-strong">/g, '<span class="hljs-strong-custom">');
         return '<pre class="code-block"><code>' +
-               hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+               modifiedCode +
                '</code></pre>';
       } catch (__) {}
     }
-    return '<pre class="code-block"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
   }
 });
+
+// Add a custom CSS rule for the modified class
+const customCss = document.createElement('style');
+customCss.innerHTML = `
+.hljs-strong-custom {
+  color: white;
+  font-weight: normal;
+}
+`;
+document.head.appendChild(customCss);
+
 
 // Use markdown-it-texmath with KaTeX
 md.use(tm, { engine: require('katex'), delimiters: 'dollars', katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } });
