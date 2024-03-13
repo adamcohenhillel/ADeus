@@ -27,15 +27,16 @@ const md = new MarkdownIt({
 });
 
 // Add a custom CSS rule for the modified class
-const customCss = document.createElement('style');
-customCss.innerHTML = `
-.hljs-strong-custom {
-  color: white;
-  font-weight: normal;
+if (typeof document !== 'undefined') {
+  const customCss = document.createElement('style');
+  customCss.innerHTML = `
+    .hljs-strong-custom {
+      color: white;
+      font-weight: normal;
+    }
+  `;
+  document.head.appendChild(customCss);
 }
-`;
-document.head.appendChild(customCss);
-
 
 // Use markdown-it-texmath with KaTeX
 md.use(tm, { engine: require('katex'), delimiters: 'dollars', katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } });
