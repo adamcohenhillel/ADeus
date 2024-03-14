@@ -60,11 +60,12 @@ export default function ChatLog({
             ],
           })
         }
+        className="chat-log prose" // Add the custom class here
         dangerouslySetInnerHTML={{ __html: html }}
       />
     );
   };
-
+  
   return (
     <AnimatePresence initial={false}>
       {messages ? (
