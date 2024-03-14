@@ -60,7 +60,7 @@ export default function ChatLog({
             ],
           })
         }
-        className="chat-log prose" // Add the custom class here
+        className="chat-log prose"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     );
