@@ -59,32 +59,6 @@
   }
 }
 
-/* General styling for the chat log */
-.ol {
-  list-style: none;
-  padding: 0;
-}
-
-/* Styling for chat messages */
-.chat-message {
-  background-color: #f4f4f8;
-  border-radius: 10px;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  max-width: 80%;
-}
-
-/* Styling for user messages */
-.chat-message.user {
-  background-color: #e0f7fa;
-  align-self: flex-end;
-}
-
-/* Styling for assistant messages */
-.chat-message.assistant {
-  background-color: #f1f8e9;
-}
-
 /* General styling for KaTeX-rendered LaTeX */
 .katex {
   font-size: 1.1em;
