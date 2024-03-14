@@ -115,7 +115,7 @@
   margin-bottom: 10px;
 }
 
-/* Styling for headers */
+/* Styling for headers, text, lists */
 h1, h2, h3, h4, h5, h6 {
   margin: 1em 0 0.5em;
   font-weight: bold;
@@ -131,6 +131,31 @@ h2 {
 
 h3 {
   font-size: 1.3em;
+}
+
+p {
+  margin-bottom: .5em;
+  margin-top: .5em;
+}
+
+ol {
+  margin-bottom: 1.5em;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+ul {
+  margin-bottom: 1.5em;
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 1em;
+}
+
+li::marker {
+  font-weight: bold;
 }
 
 /* Styling for tables */

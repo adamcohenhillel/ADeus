@@ -151,6 +151,12 @@ const chat = async (req: Request) => {
       content: `You are a helpful assistant, helping the user navigate through life. He is asking you questions, and you answer them with the best of your ability.
       You have access to some of their records, to help you answer their question in a more personalized way.
 
+      IMPORTANT: Always wrap latex in $ tags for inline, and $$ for block. 
+      Examples: (XX^T) will not render like this. Must be $XX^T$
+      More examples: (\\sigma_i) will not render like this, must be ($\\sigma$)
+      Additionally: When you are meaning to write a variable name, don't write (X), use latex, Ex. ($X$). Otherwise it will not display to the user properly.
+
+
       Records:
       ${relevantRecords.map((record) => record.raw_text).join("\n")}
         `,

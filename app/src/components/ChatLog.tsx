@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import ChatDots from './ChatDots';
 import MarkdownIt from 'markdown-it';
-import tm from 'markdown-it-texmath';
 import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css'; // You can choose other styles as well
+import 'highlight.js/styles/atom-one-dark.css';
+import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import renderMathInElement from 'katex/contrib/auto-render';
 
 export interface Message {
   role: string;
@@ -16,17 +17,16 @@ const md = new MarkdownIt({
     if (lang && hljs.getLanguage(lang)) {
       try {
         const highlightedCode = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
-        // Replace the default class with a custom class
         const modifiedCode = highlightedCode.replace(/<span class="hljs-strong">/g, '<span class="hljs-strong-custom">');
-        return '<pre class="code-block"><code>' +
-               modifiedCode +
-               '</code></pre>';
+        return '<pre class="code-block"><code>' + modifiedCode + '</code></pre>';
       } catch (__) {}
     }
-  }
+  },
+  html: true,
+  xhtmlOut: true,
+  typographer: true,
 });
 
-// Add a custom CSS rule for the modified class
 if (typeof document !== 'undefined') {
   const customCss = document.createElement('style');
   customCss.innerHTML = `
@@ -38,9 +38,6 @@ if (typeof document !== 'undefined') {
   document.head.appendChild(customCss);
 }
 
-// Use markdown-it-texmath with KaTeX
-md.use(tm, { engine: require('katex'), delimiters: 'dollars', katexOptions: { macros: { "\\RR": "\\mathbb{R}" } } });
-
 export default function ChatLog({
   messages,
   waitingForResponse,
@@ -50,7 +47,14 @@ export default function ChatLog({
 }) {
   const renderMessageContent = (content: string) => {
     const html = md.render(content);
-    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+    return <div ref={(el) => el && renderMathInElement(el, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false },
+        { left: '\\(', right: '\\)', display: true },
+        { left: '\\[', right: '\\]', display: false },
+      ],
+    })} dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
   return (
@@ -61,14 +65,14 @@ export default function ChatLog({
             <div
               key={index}
               className={
-                chat['role'] == 'user'
+                chat['role'] === 'user'
                   ? 'flex w-full items-end justify-end'
                   : ''
               }
             >
               <motion.div
                 className={
-                  chat['role'] == 'user'
+                  chat['role'] === 'user'
                     ? 'bg-primary mb-2 w-fit rounded-xl rounded-br-none px-4 py-3 shadow-sm'
                     : 'bg-muted/20 mb-2 w-fit rounded-xl rounded-bl-none px-4 py-3 shadow-sm'
                 }
