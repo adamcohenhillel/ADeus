@@ -13,7 +13,7 @@ export interface Message {
 }
 
 const md = new MarkdownIt({
-  highlight: function (str, lang) {
+  highlight: function (str, lang, attrs) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         const highlightedCode = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
@@ -21,6 +21,7 @@ const md = new MarkdownIt({
         return '<pre class="code-block"><code>' + modifiedCode + '</code></pre>';
       } catch (__) {}
     }
+    return '';
   },
   html: true,
   xhtmlOut: true,
@@ -47,14 +48,22 @@ export default function ChatLog({
 }) {
   const renderMessageContent = (content: string) => {
     const html = md.render(content);
-    return <div ref={(el) => el && renderMathInElement(el, {
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\(', right: '\\)', display: true },
-        { left: '\\[', right: '\\]', display: false },
-      ],
-    })} dangerouslySetInnerHTML={{ __html: html }} />;
+    return (
+      <div
+        ref={(el) =>
+          el &&
+          renderMathInElement(el, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false },
+              { left: '\\(', right: '\\)', display: true },
+              { left: '\\[', right: '\\]', display: false },
+            ],
+          })
+        }
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
   };
 
   return (
