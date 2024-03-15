@@ -1,10 +1,12 @@
+import { cn } from '@/utils/cnHelper';
 import { AnimatePresence, motion } from 'framer-motion';
-import ChatDots from './ChatDots';
-import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
-import 'katex/dist/katex.min.css';
 import renderMathInElement from 'katex/contrib/auto-render';
+import 'katex/dist/katex.min.css';
+import MarkdownIt from 'markdown-it';
+import ChatDots from './ChatDots';
+import Prose from './Prose';
 
 export interface Message {
   role: string;
@@ -15,9 +17,15 @@ const md = new MarkdownIt({
   highlight: function (str, lang, attrs) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        const highlightedCode = hljs.highlight(str, { language: lang, ignoreIllegals: true }).value;
-        const modifiedCode = highlightedCode.replace(/<span class="hljs-strong">/g, '<span class="hljs-strong-custom">');
-        return '<pre class="code-block"><code>' + modifiedCode + '</code></pre>';
+        const highlightedCode = hljs.highlight(str, {
+          language: lang,
+          ignoreIllegals: true,
+        }).value;
+        const modifiedCode = highlightedCode.replace(
+          /<span class="hljs-strong">/g,
+          '<span class="hljs-strong-custom">'
+        );
+        return modifiedCode;
       } catch (__) {}
     }
     return '';
@@ -60,12 +68,11 @@ export default function ChatLog({
             ],
           })
         }
-        className="chat-log prose"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     );
   };
-  
+
   return (
     <AnimatePresence initial={false}>
       {messages ? (
@@ -80,16 +87,17 @@ export default function ChatLog({
               }
             >
               <motion.div
-                className={
+                className={cn(
+                  'mb-2 rounded-xl px-4 py-1 shadow-sm md:w-fit',
                   chat['role'] === 'user'
-                    ? 'bg-primary mb-2 w-fit rounded-xl rounded-br-none px-4 py-3 shadow-sm'
-                    : 'bg-muted/20 mb-2 w-fit rounded-xl rounded-bl-none px-4 py-3 shadow-sm'
-                }
+                    ? 'bg-primary rounded-br-none'
+                    : 'bg-muted/20 rounded-bl-none'
+                )}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 1 } }}
               >
-                {renderMessageContent(chat['content'])}
+                <Prose>{renderMessageContent(chat['content'])}</Prose>
               </motion.div>
             </div>
           ))}

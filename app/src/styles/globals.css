@@ -59,39 +59,6 @@
   }
 }
 
-/* Chat log styling */
-.chat-log h1 {
-  @apply mt-4 mb-2 font-bold text-3xl;
-}
-
-.chat-log h2 {
-  @apply mt-4 mb-2 font-bold text-2xl;
-}
-
-.chat-log h3 {
-  @apply mt-4 mb-2 font-bold text-xl;
-}
-
-.chat-log h4, .chat-log h5, .chat-log h6 {
-  @apply mt-4 mb-2 font-bold;
-}
-
-.chat-log p {
-  @apply mt-2 mb-2;
-}
-
-.chat-log ol {
-  @apply mb-6 pl-5 list-decimal;
-}
-
-.chat-log ul {
-  @apply mb-6 pl-5 list-disc;
-}
-
-.chat-log li {
-  @apply mb-4;
-}
-
 /* General styling for KaTeX-rendered LaTeX */
 .katex {
   font-size: 1.1em;
@@ -105,62 +72,4 @@
 
 .katex .mfrac {
   margin: 0 2px;
-}
-
-/* Styling for code blocks */
-.code-block {
-  background-color: #000; /* Solid black background */
-  color: #f8f8f2; /* Lighter text color for better contrast */
-  border-radius: 6px; /* Slightly larger border radius for a softer look */
-  padding: 12px; /* Slightly more padding for better spacing */
-  overflow-x: auto; /* Ensures horizontal scrolling for long lines of code */
-  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace; /* Modern monospace font */
-  font-size: 0.95em; /* Slightly smaller font size for a more compact look */
-  line-height: 1.4; /* Improved line spacing for readability */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-
-/* Styling for tables */
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border-radius: 6px;
-  overflow: hidden; /* Ensures the rounded corners are applied to the table */
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  background-color: #f2f2f2;
-  color: #000; /* White bold header/label text */
-  font-weight: bold;
-  border-bottom: 2px solid #ddd; /* Adds a slightly darker border under the header */
-}
-
-/* Apply rounded corners to the first and last header cells */
-th:first-child {
-  border-top-left-radius: 6px;
-}
-
-th:last-child {
-  border-top-right-radius: 6px;
-}
-
-/* Apply rounded corners to the first and last cells in the last row */
-tr:last-child td:first-child {
-  border-bottom-left-radius: 6px;
-}
-
-tr:last-child td:last-child {
-  border-bottom-right-radius: 6px;
 }
