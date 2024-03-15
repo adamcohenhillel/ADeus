@@ -217,7 +217,7 @@ export default function Chat({
         </NavMenu>
       </div>
 
-      <div className="mb-32 mt-12 p-8">
+      <div className="mb-32 mt-12 p-4 md:p-8">
         <ChatLog messages={messages} waitingForResponse={waitingForResponse} />
       </div>
 
