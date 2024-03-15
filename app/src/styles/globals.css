@@ -58,3 +58,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* General styling for KaTeX-rendered LaTeX */
+.katex {
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+/* Increase spacing around KaTeX elements */
+.katex .base {
+  margin-bottom: 0.5em;
+}
+
+.katex .mfrac {
+  margin: 0 2px;
+}
