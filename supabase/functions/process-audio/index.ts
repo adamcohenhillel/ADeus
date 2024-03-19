@@ -108,6 +108,7 @@ const processAudio = async (req: Request) => {
       (transcriptLowered.includes("thank") &&
         transcriptLowered.includes("watch"))
     ) {
+      console.log("no transcript found");
       return new Response(JSON.stringify({ message: "No transcript found." }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,

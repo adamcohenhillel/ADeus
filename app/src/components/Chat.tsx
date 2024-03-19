@@ -1,6 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Bluetooth } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -164,11 +165,13 @@ export default function Chat({
             }}
           />
           <Button
+            asChild
             size={'icon'}
             className="bg-muted/20 text-muted-foreground hover:bg-muted/40 rounded-full"
-            onClick={() => router.push('/connect')}
           >
-            <Bluetooth size={20} />
+            <Link href="/connect">
+              <Bluetooth size={20} />
+            </Link>
           </Button>
           <LogoutButton supabaseClient={supabaseClient} />
           <ThemeToggle />
