@@ -106,4 +106,4 @@ Now - let's configure our hardware device, so we could start provide crucial con
 
 - [CoralAI device](https://docs.adeus.ai/archive/setup_coralai.html)
 - [Raspberry Pi Zero 2W](https://docs.adeus.ai/guides/setup_raspberry_pi_zero.html)
-- ESP32 soon
+- [ESP32](https://docs.adeus.ai/guides/esp32-c3.html)
