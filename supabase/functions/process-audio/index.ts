@@ -78,7 +78,7 @@ const processAudio = async (req: Request) => {
 
       console.log('Audio data:', audioData.length);
       // 1 Channel, 8000 sample rate, 16 bit depth
-      const wavHeader = createWavHeader(audioData.length, 16000, 1, 16);
+      const wavHeader = createWavHeader(audioData.length, 8000, 1, 16);
       const wavBytes = new Uint8Array(wavHeader.length + audioData.length);
       wavBytes.set(wavHeader, 0);
       wavBytes.set(audioData, wavHeader.length);
