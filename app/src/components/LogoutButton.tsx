@@ -9,11 +9,11 @@ export default function LogoutButton({
 }) {
   return (
     <Button
-      size={'icon'}
-      className="bg-muted/20 text-muted-foreground hover:bg-muted/40 rounded-full"
+      className="bg-muted/20 text-muted-foreground hover:bg-muted/40 flex justify-start rounded-full"
       onClick={async () => await supabaseClient.auth.signOut()}
     >
-      <LogOut size={20} />
+      Logout
+      <LogOut className="ml-auto" size={20} />
     </Button>
   );
 }

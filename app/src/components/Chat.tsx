@@ -1,21 +1,21 @@
+import { Label } from '@radix-ui/react-menubar';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useSupabaseConfig } from '../utils/useSupabaseConfig';
 import ChatLog, { Message } from './ChatLog';
-import LogoutButton from './LogoutButton';
-import { NavMenu } from './NavMenu';
-import NewConversationButton from './NewConversationButton';
+import { useModelContext } from './ModelProvider';
+import { NewConversationMenuBar } from './NewConversationMenuBar';
 import PromptForm from './PromptForm';
 import SideMenu from './SideMenu';
-import { ThemeToggle } from './ThemeToggle';
 
 export default function Chat({
   supabaseClient,
 }: {
   supabaseClient: SupabaseClient;
 }) {
+  const { model } = useModelContext();
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -199,22 +199,20 @@ export default function Chat({
   return (
     <>
       <div className="from-background fixed top-0 flex h-24 w-full items-center justify-between bg-gradient-to-b"></div>
-      <div className="fixed left-4 top-4 flex space-x-4">
+      <div className="fixed inset-0 flex p-4">
         <SideMenu
           supabaseClient={supabaseClient}
           setConversationId={setConversationId}
+          newConversation={newConversation}
         />
-      </div>
-      <div className="fixed right-4 top-4 flex space-x-4">
-        <NavMenu>
-          <LogoutButton supabaseClient={supabaseClient} />
-          <NewConversationButton
-            createNewConversation={() => {
-              newConversation.mutate();
-            }}
-          />
-          <ThemeToggle />
-        </NavMenu>
+        <div className="ml-auto">
+          <Label>Conversation ID: {conversationId}</Label>
+          <Label>
+            Model from context:
+            {model ? model : 'No model selected'}
+          </Label>
+          <NewConversationMenuBar newConversation={newConversation} />
+        </div>
       </div>
 
       <div className="mb-32 mt-12 p-4 md:p-8">
