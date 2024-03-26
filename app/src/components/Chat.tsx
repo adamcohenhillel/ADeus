@@ -1,5 +1,8 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { Bluetooth } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useSupabaseConfig } from '../utils/useSupabaseConfig';
@@ -10,6 +13,7 @@ import NewConversationButton from './NewConversationButton';
 import PromptForm from './PromptForm';
 import SideMenu from './SideMenu';
 import { ThemeToggle } from './ThemeToggle';
+import { Button } from './ui/button';
 
 export default function Chat({
   supabaseClient,
@@ -18,6 +22,7 @@ export default function Chat({
 }) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const router = useRouter();
 
   const [entryData, setEntryData] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -207,12 +212,21 @@ export default function Chat({
       </div>
       <div className="fixed right-4 top-4 flex space-x-4">
         <NavMenu>
-          <LogoutButton supabaseClient={supabaseClient} />
           <NewConversationButton
             createNewConversation={() => {
               newConversation.mutate();
             }}
           />
+          <Button
+            asChild
+            size={'icon'}
+            className="bg-muted/20 text-muted-foreground hover:bg-muted/40 rounded-full"
+          >
+            <Link href="/connect">
+              <Bluetooth size={20} />
+            </Link>
+          </Button>
+          <LogoutButton supabaseClient={supabaseClient} />
           <ThemeToggle />
         </NavMenu>
       </div>

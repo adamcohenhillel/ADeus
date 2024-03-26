@@ -5,7 +5,12 @@ const config: CapacitorConfig = {
   appName: 'adeus',
   webDir: 'out',
   server: {
-    androidScheme: 'https',
+    androidScheme: 'https'
+  },
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
   },
 };
 
