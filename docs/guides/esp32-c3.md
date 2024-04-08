@@ -50,8 +50,20 @@ We recommend soldering a battery first.
 ### 1. Install ESP-IDF
 [Manual Installation](https://docs.espressif.com/projects/esp-idf/en/v5.2/esp32c3/get-started/linux-macos-setup.html#for-macos-users) or [VS Code](https://github.com/espressif/vscode-esp-idf-extension/blob/master/docs/tutorial/install.md)
 
+> **_WARNING:_**  Currently, this project can be used with ESP-IDF versions between 5.1.0 and 5.1.99, it won't work with a newer version.
 
-### 2. Flash the device
+### 2. Install Arduino dependencies
+```
+cd devices/esp32-c3
+cd components && \
+git clone https://github.com/espressif/arduino-esp32.git arduino && \
+cd arduino && \
+git submodule update --init --recursive && \
+cd ../.. && \
+idf.py menuconfig
+```
+
+### 3. Flash the device
 ```
 cd devices/esp32-c3
 idf.py flash
