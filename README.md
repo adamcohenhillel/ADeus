@@ -1,8 +1,7 @@
 <div align="center">
 
-```diff
-! ℹ️ Active development and community of Open Source AI Wearable can be found @ [Friend Repo](https://github.com/BasedHardware/Friend), and [Discord](https://discord.gg/kEXXsnb5b3)
-```
+! ℹ️ 🔴 Active development and community of Open Source AI Wearable can be found @ [Friend Repo](https://github.com/BasedHardware/Friend), and [Discord](https://discord.gg/kEXXsnb5b3)
+
 # **Adeus**
 
 Open-Source AI Wearable Device, the future depends on it!
