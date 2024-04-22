@@ -39,9 +39,17 @@ const processAudio = async (req: Request) => {
   try {
     const filenameTimestamp = `adeus_wav_${Date.now()}.wav`;
     const wavFile = await toFile(arrayBuffer, filenameTimestamp);
+    
+    const { data, error } = await supabase.storage
+      .from("test")
+      .upload(filenameTimestamp, wavFile);
+
+    if (error) {
+      console.error("Error uploading file:", error);
+    }
 
     const transcriptResponse = await openaiClient.audio.transcriptions.create({
-      file: await toFile(wavFile, filenameTimestamp),
+      file: wavFile,
       model: "whisper-1",
       prompt:
         'Listen to the entire audio file, if no audio is detected then respond with "None" ', // These types of prompts dont work well with Whisper -- https://platform.openai.com/docs/guides/speech-to-text/prompting
