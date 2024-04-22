@@ -1,8 +1,6 @@
 <div align="center">
 
-<span style="backgroundColor: green">
 Active development of Open Source AI Wearable can be found @ [Friend Repo](https://github.com/BasedHardware/Friend), and [Discord Community](https://discord.gg/kEXXsnb5b3)
-</span>
 
 # **Adeus**
 
