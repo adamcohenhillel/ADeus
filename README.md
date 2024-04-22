@@ -10,7 +10,7 @@ Open-Source AI Wearable Device, the future depends on it!
 
 <h3>
 
-[Homepage](https://www.adeus.ai/) | [Documentation](https://docs.adeus.ai/) | [Discord](https://discord.gg/N5c6KXBgWW)
+[Homepage](https://www.adeus.ai/) | [Documentation](https://docs.adeus.ai/) | [Discord](https://discord.gg/kEXXsnb5b3)
 
 </h3>
 
